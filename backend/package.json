@@ -6,8 +6,11 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
-    "test": "jest",
-    "test:watch": "jest --watch",
+    "test": "NODE_ENV=test jest",
+    "test:watch": "NODE_ENV=test jest --watch",
+    "test:coverage": "NODE_ENV=test jest --coverage",
+    "test:setup": "node scripts/test-setup.js",
+    "test:clean": "node scripts/clean-test-data.js",
     "migrate": "node scripts/run-migrations.js",
     "migrate:up": "node-pg-migrate up",
     "migrate:down": "node-pg-migrate down",

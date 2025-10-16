@@ -2,6 +2,12 @@ const express = require('express');
 const { body } = require('express-validator');
 const NotificacaoController = require('../controllers/NotificacaoController');
 const authMiddleware = require('../middlewares/auth');
+const {
+  handleValidationErrors,
+  sanitizeInput,
+  checkResourceOwnership
+} = require('../middlewares/validation');
+const { notificationPreferencesValidation } = require('../validators/userValidators');
 const router = express.Router();
 
 // Apply auth middleware to all routes
@@ -14,13 +20,21 @@ router.get('/', NotificacaoController.getAll);
 router.get('/unread-count', NotificacaoController.getUnreadCount);
 
 // Mark specific notification as read
-router.patch('/:id/read', NotificacaoController.markAsRead);
+router.patch('/:id/read',
+  checkResourceOwnership('notification'),
+  NotificacaoController.markAsRead
+);
 
 // Mark all notifications as read
-router.patch('/mark-all-read', NotificacaoController.markAllAsRead);
+router.patch('/mark-all-read',
+  NotificacaoController.markAllAsRead
+);
 
 // Delete specific notification
-router.delete('/:id', NotificacaoController.deleteNotification);
+router.delete('/:id',
+  checkResourceOwnership('notification'),
+  NotificacaoController.deleteNotification
+);
 
 // Push notification subscription
 router.post('/push/subscribe', [
@@ -47,34 +61,16 @@ router.post('/push/subscribe', [
 router.delete('/push/unsubscribe', NotificacaoController.unsubscribeFromPush);
 
 // Notification preferences
-router.get('/preferences', NotificacaoController.getPreferences);
+router.get('/preferences',
+  NotificacaoController.getPreferences
+);
 
-router.put('/preferences', [
-  body('email_bookings')
-    .optional()
-    .isBoolean()
-    .withMessage('email_bookings must be boolean'),
-  body('email_payments')
-    .optional()
-    .isBoolean()
-    .withMessage('email_payments must be boolean'),
-  body('email_messages')
-    .optional()
-    .isBoolean()
-    .withMessage('email_messages must be boolean'),
-  body('push_bookings')
-    .optional()
-    .isBoolean()
-    .withMessage('push_bookings must be boolean'),
-  body('push_payments')
-    .optional()
-    .isBoolean()
-    .withMessage('push_payments must be boolean'),
-  body('push_messages')
-    .optional()
-    .isBoolean()
-    .withMessage('push_messages must be boolean')
-], NotificacaoController.updatePreferences);
+router.put('/preferences',
+  sanitizeInput,
+  notificationPreferencesValidation,
+  handleValidationErrors,
+  NotificacaoController.updatePreferences
+);
 
 // Test notification (development only)
 router.post('/test', NotificacaoController.sendTestNotification);
