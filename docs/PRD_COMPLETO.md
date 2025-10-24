@@ -1,7 +1,14 @@
 # KXRTEX - PRD COMPLETO
 
-**Última Atualização:** Outubro 2025
-**Status Atual:** MVP 90% Completo (Backend 95%, Web 95%, Mobile 100%)
+**Última Atualização:** 24 de Outubro de 2025
+**Status Atual:** MVP 93% Completo (Backend 97%, Web 95%, Mobile 100%)
+
+**Últimas Implementações:**
+- ✅ Sistema de Adiantamento completo (85%)
+- ✅ Sistema de Moderação Anti-Circumvention (90%)
+- ✅ Split payments ASAAS integrado
+- ✅ 6 padrões de detecção de contatos externos
+- ✅ Sistema de strikes progressivo implementado
 
 ---
 
@@ -70,20 +77,24 @@ KXRTEX é uma plataforma de booking para artistas underground (DJs, MCs, Perform
 
 ### ❌ O QUE AINDA FALTA (conforme PRD)
 
-**1. Sistema de Adiantamento (PRD Seção 11)**
-- [ ] Tabela `adiantamentos` no banco
-- [ ] Lógica de elegibilidade (score, distância, etc)
-- [ ] Split de pagamento com subconta (ASAAS)
-- [ ] Job: Liberar adiantamento após 24h
-- [ ] Job: Liberar valor restante após evento + 48h
-- [ ] Validação de check-in obrigatório
+**1. Sistema de Adiantamento (PRD Seção 11)** - ✅ 85% COMPLETO
+- [x] Tabela `adiantamentos` no banco
+- [x] Lógica de elegibilidade (score, distância, etc)
+- [x] Split de pagamento com subconta (ASAAS)
+- [x] Validação de check-in obrigatório
+- [x] Controller completo com 4 endpoints
+- [x] Integração ASAAS com métodos advance payment
+- [ ] Job: Liberar adiantamento após 24h (pendente)
+- [ ] Job: Liberar valor restante após evento + 48h (pendente)
 
-**2. Moderação e Anti-Circumvention (PRD Seção 12)**
-- [ ] Regex de detecção de contatos externos
-- [ ] Middleware de bloqueio automático
-- [ ] Sistema de strikes (1ª aviso, 2ª suspensão, 3ª ban)
-- [ ] Tabela `infracoes`
-- [ ] Painel de denúncias
+**2. Moderação e Anti-Circumvention (PRD Seção 12)** - ✅ 90% COMPLETO
+- [x] Regex de detecção de contatos externos (6 padrões)
+- [x] Middleware de bloqueio automático
+- [x] Sistema de strikes (1ª aviso, 2ª suspensão 7d, 3ª ban permanente)
+- [x] Tabela `infracoes` com auditoria completa
+- [x] Integrado ao chat com checkUserCanSendMessage
+- [x] Detecção de: telefone, email, social media, WhatsApp, URLs, contato direto
+- [ ] Painel de denúncias admin (pendente)
 
 **3. Sistema de Seguir/Favoritar (PRD Seção 9.11)**
 - [ ] Tabela `seguindo`
