@@ -285,6 +285,17 @@ export default function BookingDetailPage() {
               </div>
             </div>
 
+            {/* Review Button for Completed Bookings */}
+            {booking.status === 'CONCLUIDO' && (
+              <button
+                onClick={() => navigate(`/bookings/${id}/review`)}
+                className="w-full py-4 bg-gradient-to-r from-yellow-600 to-yellow-500 text-white font-bold rounded-xl hover:scale-105 hover:shadow-lg hover:shadow-yellow-600/50 transition-all flex items-center justify-center gap-2"
+              >
+                <span className="text-2xl">⭐</span>
+                <span>Avaliar {isArtista ? 'Contratante' : 'Artista'}</span>
+              </button>
+            )}
+
             {/* Actions for Artist */}
             {isArtista && booking.status === 'PENDENTE' && (
               <div className="space-y-4">

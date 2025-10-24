@@ -8,6 +8,7 @@ import RegisterPage from './pages/RegisterPage';
 import BookingsPage from './pages/BookingsPage';
 import BookingDetailPage from './pages/BookingDetailPage';
 import CreateBookingPage from './pages/CreateBookingPage';
+import ReviewBookingPage from './pages/ReviewBookingPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import useAuthStore from './store/authStore';
 import { SocketProvider } from './contexts/SocketContext';
@@ -113,6 +114,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <CreateBookingPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/bookings/:id/review"
+                element={
+                  <ProtectedRoute>
+                    <ReviewBookingPage />
                   </ProtectedRoute>
                 }
               />
