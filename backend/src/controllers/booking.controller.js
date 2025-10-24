@@ -1,5 +1,6 @@
 import prisma from '../config/database.js';
 import { AppError } from '../middlewares/errorHandler.js';
+import { getSocketInstance } from '../utils/socket.js';
 
 const calcularTaxaPlataforma = (valorArtista, planoArtista) => {
   const taxas = {
@@ -83,6 +84,7 @@ export const createBooking = async (req, res, next) => {
           include: {
             usuario: {
               select: {
+                id: true,
                 nome: true,
                 foto: true
               }
@@ -93,6 +95,7 @@ export const createBooking = async (req, res, next) => {
           include: {
             usuario: {
               select: {
+                id: true,
                 nome: true,
                 foto: true
               }
@@ -102,6 +105,23 @@ export const createBooking = async (req, res, next) => {
         propostas: true
       }
     });
+
+    // Emitir evento Socket.IO para o artista
+    const io = getSocketInstance();
+    if (io) {
+      io.to(`user-${booking.artista.usuario.id}`).emit('new-booking-request', {
+        bookingId: booking.id,
+        contratante: {
+          nome: booking.contratante.usuario.nome,
+          foto: booking.contratante.usuario.foto
+        },
+        dataEvento: booking.dataEvento,
+        valorProposto: booking.valorArtista,
+        local: booking.local
+      });
+
+      console.log(`Socket.IO: Emitido new-booking-request para user-${booking.artista.usuario.id}`);
+    }
 
     res.status(201).json({
       message: 'Proposta de booking criada com sucesso',
@@ -276,6 +296,7 @@ export const acceptBooking = async (req, res, next) => {
           include: {
             usuario: {
               select: {
+                id: true,
                 nome: true,
                 foto: true
               }
@@ -286,6 +307,7 @@ export const acceptBooking = async (req, res, next) => {
           include: {
             usuario: {
               select: {
+                id: true,
                 nome: true,
                 foto: true
               }
@@ -294,6 +316,22 @@ export const acceptBooking = async (req, res, next) => {
         }
       }
     });
+
+    // Emitir evento Socket.IO para o contratante
+    const io = getSocketInstance();
+    if (io) {
+      io.to(`user-${bookingAtualizado.contratante.usuario.id}`).emit('booking-accepted', {
+        bookingId: bookingAtualizado.id,
+        artista: {
+          nome: bookingAtualizado.artista.usuario.nome,
+          foto: bookingAtualizado.artista.usuario.foto
+        },
+        dataEvento: bookingAtualizado.dataEvento,
+        status: bookingAtualizado.status
+      });
+
+      console.log(`Socket.IO: Emitido booking-accepted para user-${bookingAtualizado.contratante.usuario.id}`);
+    }
 
     res.json({
       message: 'Booking aceito com sucesso',
@@ -340,6 +378,7 @@ export const rejectBooking = async (req, res, next) => {
           include: {
             usuario: {
               select: {
+                id: true,
                 nome: true,
                 foto: true
               }
@@ -350,6 +389,7 @@ export const rejectBooking = async (req, res, next) => {
           include: {
             usuario: {
               select: {
+                id: true,
                 nome: true,
                 foto: true
               }

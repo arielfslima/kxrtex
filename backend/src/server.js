@@ -9,6 +9,7 @@ import { Server } from 'socket.io';
 // Configs
 import { rateLimiter } from './config/rateLimiter.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import { setSocketInstance } from './utils/socket.js';
 
 // Routes
 import authRoutes from './routes/auth.routes.js';
@@ -33,6 +34,9 @@ const io = new Server(httpServer, {
     methods: ['GET', 'POST']
   }
 });
+
+// Set socket instance for controllers
+setSocketInstance(io);
 
 // Middlewares
 app.use(helmet());
