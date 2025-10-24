@@ -204,7 +204,7 @@ export const getArtistById = async (req, res, next) => {
 
     delete response.seguidores;
 
-    res.json(response);
+    res.json({ data: response });
   } catch (error) {
     next(error);
   }

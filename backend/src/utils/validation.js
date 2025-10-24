@@ -75,6 +75,12 @@ export const updateArtistSchema = z.object({
   }).optional()
 });
 
+export const updateUserProfileSchema = z.object({
+  nome: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres').optional(),
+  telefone: phoneSchema.optional(),
+  foto: z.string().url('URL da foto inválida').optional()
+});
+
 // Booking schemas
 export const createBookingSchema = z.object({
   artistaId: z.string().uuid('ID do artista inválido'),

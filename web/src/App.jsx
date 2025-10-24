@@ -10,6 +10,7 @@ import BookingDetailPage from './pages/BookingDetailPage';
 import CreateBookingPage from './pages/CreateBookingPage';
 import ReviewBookingPage from './pages/ReviewBookingPage';
 import ProfilePage from './pages/ProfilePage';
+import EditProfilePage from './pages/EditProfilePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import useAuthStore from './store/authStore';
 import { SocketProvider } from './contexts/SocketContext';
@@ -128,6 +129,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/edit"
+                element={
+                  <ProtectedRoute>
+                    <EditProfilePage />
                   </ProtectedRoute>
                 }
               />

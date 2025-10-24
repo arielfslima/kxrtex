@@ -1,18 +1,16 @@
 import { Router } from 'express';
 import { authenticate } from '../middlewares/auth.js';
+import { validate } from '../middlewares/validator.js';
+import { updateUserProfileSchema } from '../utils/validation.js';
+import { getUserProfile, updateUserProfile } from '../controllers/user.controller.js';
 
 const router = Router();
 
 // Rotas protegidas - precisam de autenticação
 router.use(authenticate);
 
-// Placeholder: será implementado na próxima fase
-router.get('/profile', (req, res) => {
-  res.json({ message: 'User profile route - to be implemented' });
-});
+router.get('/profile', getUserProfile);
 
-router.patch('/profile', (req, res) => {
-  res.json({ message: 'Update profile route - to be implemented' });
-});
+router.patch('/profile', validate(updateUserProfileSchema), updateUserProfile);
 
 export default router;

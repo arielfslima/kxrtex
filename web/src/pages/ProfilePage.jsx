@@ -76,12 +76,20 @@ export default function ProfilePage() {
               <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-red-vibrant via-pink-500 to-purple-600 text-transparent bg-clip-text">
                 Meu Perfil
               </h1>
-              <button
-                onClick={handleLogout}
-                className="px-6 py-3 bg-red-600 text-white font-bold rounded-xl hover:bg-red-500 transition-colors"
-              >
-                Sair
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => navigate('/profile/edit')}
+                  className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold rounded-xl hover:scale-105 transition-all"
+                >
+                  Editar Perfil
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="px-6 py-3 bg-red-600 text-white font-bold rounded-xl hover:bg-red-500 transition-colors"
+                >
+                  Sair
+                </button>
+              </div>
             </div>
           </div>
         </div>
