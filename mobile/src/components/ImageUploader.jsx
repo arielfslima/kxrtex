@@ -104,17 +104,18 @@ const ImageUploader = ({
         type: fileType,
       });
 
-      formData.append('type', type);
+      const endpoint = type === 'profile' ? '/upload/profile-photo' : '/upload/portfolio';
 
-      const response = await api.post('/upload', formData, {
+      const response = await api.post(endpoint, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
-      if (response.data.success) {
-        onUploadSuccess?.(response.data.data.url);
-        Alert.alert('Sucesso', 'Imagem enviada com sucesso!');
+      if (response.data && response.data.data) {
+        const imageUrl = response.data.data.foto || response.data.data.portfolio?.[0];
+        onUploadSuccess?.(imageUrl);
+        Alert.alert('Sucesso', response.data.message || 'Imagem enviada com sucesso!');
       } else {
         throw new Error('Upload failed');
       }

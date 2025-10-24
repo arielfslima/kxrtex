@@ -47,18 +47,20 @@ describe('Image Upload - Critical Functions', () => {
     });
   });
 
-  describe('Image URL Generation', () => {
-    it('should generate correct image URLs', () => {
-      const generateImageUrl = (folder, filename) => {
-        const baseUrl = 'https://res.cloudinary.com/kxrtex';
-        return `${baseUrl}/${folder}/${filename}`;
+  describe('Cloudinary Folder Structure', () => {
+    it('should use correct folder paths for uploads', () => {
+      const getFolderPath = (type) => {
+        const folders = {
+          'profile': 'kxrtex/profiles',
+          'portfolio': 'kxrtex/portfolio',
+          'proof': 'kxrtex/proofs'
+        };
+        return folders[type];
       };
 
-      expect(generateImageUrl('profile', 'user123.jpg'))
-        .toBe('https://res.cloudinary.com/kxrtex/profile/user123.jpg');
-
-      expect(generateImageUrl('portfolio', 'image456.png'))
-        .toBe('https://res.cloudinary.com/kxrtex/portfolio/image456.png');
+      expect(getFolderPath('profile')).toBe('kxrtex/profiles');
+      expect(getFolderPath('portfolio')).toBe('kxrtex/portfolio');
+      expect(getFolderPath('proof')).toBe('kxrtex/proofs');
     });
   });
 
