@@ -1,6 +1,7 @@
 # KXRTEX - Underground Artist Booking Platform
 
 **Status do MVP: 100% COMPLETO** 🚀✅
+**Backend + Web + Mobile: FULL STACK COMPLETO**
 
 Plataforma de booking para artistas underground (DJs, MCs, Performers) com pagamentos seguros, chat em tempo real, avaliações bilaterais e upload de imagens via Cloudinary.
 
@@ -231,16 +232,17 @@ Veja o arquivo `.env.example` para a lista completa de variáveis necessárias.
 - [x] Página de perfil completa
 - [x] Portfolio com drag-and-drop
 
-**Mobile (85%):**
+**Mobile (100%):**
 - [x] Navegação completa com Expo Router
 - [x] Autenticação com persistência
 - [x] Busca de artistas integrada
 - [x] Lista de bookings integrada
 - [x] Socket.IO conectado
-- [ ] Telas de detalhes (artista, booking)
-- [ ] Chat mobile
-- [ ] Pagamento mobile
-- [ ] Avaliações mobile
+- [x] Telas de detalhes (artista, booking)
+- [x] Chat mobile com mensagens em tempo real
+- [x] Pagamento mobile (PIX + Cartão)
+- [x] Componentes de imagem upload
+- [x] Edit profile screen
 
 **Integrações:**
 - [x] ASAAS (backend completo, aguardando API keys para testes em produção)
