@@ -3,15 +3,28 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useAuthStore } from '../src/store/authStore';
+import socketService from '../src/services/socket';
 
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
-  const loadAuth = useAuthStore((state) => state.loadAuth);
+  const { loadAuth, token, isAuthenticated } = useAuthStore();
 
   useEffect(() => {
     loadAuth();
   }, []);
+
+  useEffect(() => {
+    if (isAuthenticated && token) {
+      socketService.connect(token);
+    } else {
+      socketService.disconnect();
+    }
+
+    return () => {
+      socketService.disconnect();
+    };
+  }, [isAuthenticated, token]);
 
   return (
     <QueryClientProvider client={queryClient}>

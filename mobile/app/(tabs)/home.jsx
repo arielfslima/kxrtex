@@ -1,31 +1,5 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { COLORS } from '../../src/constants/colors';
+import ArtistsScreen from '../../src/screens/ArtistsScreen';
 
 export default function Home() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Home</Text>
-      <Text style={styles.subtitle}>Busca de artistas - será implementada</Text>
-    </View>
-  );
+  return <ArtistsScreen />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-    padding: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: COLORS.text,
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: COLORS.textSecondary,
-  },
-});
