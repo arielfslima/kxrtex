@@ -107,6 +107,7 @@ model Usuario {
   notificacoes       Notificacao[]
   avaliacoesFeitas   Avaliacao[] @relation("AvaliacaoAvaliador")
   avaliacoesRecebidas Avaliacao[] @relation("AvaliacaoAvaliado")
+  infracoes          Infracao[]
 
   @@map("usuarios")
 }
@@ -383,4 +384,27 @@ model Notificacao {
   createdAt DateTime  @default(now())
 
   @@map("notificacoes")
+}
+
+// ========================================
+// MODELS - MODERAÇÃO
+// ========================================
+
+model Infracao {
+  id              String    @id @default(uuid())
+  usuarioId       String
+  usuario         Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  tipo            String    // CONTATO_EXTERNO, SPAM, ABUSO, etc
+  gravidade       String    // LEVE, MEDIA, GRAVE
+  descricao       String
+  conteudoOriginal String?  // Mensagem ou conteúdo que causou a infração
+  bookingId       String?   // Se relacionado a um booking específico
+
+  acaoTomada      String    // AVISO, SUSPENSAO, BANIMENTO
+  diasSuspensao   Int?      // Dias de suspensão, se aplicável
+
+  createdAt       DateTime  @default(now())
+
+  @@map("infracoes")
 }

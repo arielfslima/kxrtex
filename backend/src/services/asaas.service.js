@@ -227,3 +227,167 @@ export const calculateSplit = (valorTotal, taxaPlataforma, artistaWalletId) => {
     // A plataforma fica com o restante automaticamente
   ];
 };
+
+/**
+ * Create advance payment with split
+ * Used when artist is eligible for 50% advance payment
+ * Splits advance amount between platform and artist
+ */
+export const createAdvancePayment = async (advanceData) => {
+  try {
+    const {
+      customerId,
+      billingType,
+      totalValue,
+      artistWalletId,
+      taxaPlataforma,
+      dueDate,
+      description,
+      externalReference
+    } = advanceData;
+
+    // Calculate advance (50% of artist value after platform fee)
+    const valorPlataforma = totalValue * taxaPlataforma;
+    const valorArtista = totalValue - valorPlataforma;
+    const advanceAmount = valorArtista * 0.5;
+
+    // Create split for advance payment
+    const split = [
+      {
+        walletId: artistWalletId,
+        fixedValue: advanceAmount,
+        description: 'Adiantamento ao artista (50%)'
+      }
+    ];
+
+    const payload = {
+      customer: customerId,
+      billingType,
+      value: totalValue,
+      dueDate,
+      description: description || 'Adiantamento de booking',
+      externalReference,
+      split
+    };
+
+    const response = await asaasApi.post('/payments', payload);
+
+    return {
+      paymentId: response.data.id,
+      invoiceUrl: response.data.invoiceUrl,
+      pixQrCode: response.data.encodedImage,
+      pixCopyPaste: response.data.payload,
+      status: response.data.status,
+      advanceAmount,
+      remainingAmount: valorArtista - advanceAmount,
+      platformFee: valorPlataforma
+    };
+
+  } catch (error) {
+    console.error('Erro ao criar pagamento de adiantamento ASAAS:', error.response?.data);
+    throw new AppError('Erro ao criar pagamento de adiantamento', 500);
+  }
+};
+
+/**
+ * Release remaining payment to artist after event completion
+ * Called 48h after event ends successfully
+ */
+export const releaseRemainingPayment = async (releaseData) => {
+  try {
+    const {
+      artistWalletId,
+      remainingValue,
+      bookingId,
+      description
+    } = releaseData;
+
+    const payload = {
+      walletId: artistWalletId,
+      value: remainingValue,
+      description: description || `Pagamento restante do booking ${bookingId}`,
+      externalReference: bookingId
+    };
+
+    const response = await asaasApi.post('/transfers', payload);
+
+    return {
+      transferId: response.data.id,
+      status: response.data.status,
+      value: response.data.value,
+      effectiveDate: response.data.effectiveDate
+    };
+
+  } catch (error) {
+    console.error('Erro ao liberar pagamento restante ASAAS:', error.response?.data);
+    throw new AppError('Erro ao liberar pagamento restante', 500);
+  }
+};
+
+/**
+ * Cancel advance payment and process refund
+ * Used when artist doesn't complete check-in or event is cancelled
+ */
+export const cancelAdvancePayment = async (paymentId, refundReason) => {
+  try {
+    // First, refund the payment
+    const refundResponse = await asaasApi.post(`/payments/${paymentId}/refund`, {
+      description: refundReason || 'Cancelamento de adiantamento'
+    });
+
+    return {
+      refundId: refundResponse.data.id,
+      status: refundResponse.data.status,
+      value: refundResponse.data.value,
+      refundDate: refundResponse.data.refundDate
+    };
+
+  } catch (error) {
+    console.error('Erro ao cancelar adiantamento ASAAS:', error.response?.data);
+    throw new AppError('Erro ao cancelar adiantamento', 500);
+  }
+};
+
+/**
+ * Process webhook for advance payment events
+ * Handles payment confirmation, refunds, and failures
+ */
+export const processAdvanceWebhook = async (webhookPayload) => {
+  const { event, payment } = webhookPayload;
+
+  switch (event) {
+    case 'PAYMENT_CONFIRMED':
+    case 'PAYMENT_RECEIVED':
+      // Payment confirmed - can trigger automatic split transfer
+      return {
+        action: 'ADVANCE_CONFIRMED',
+        paymentId: payment.id,
+        value: payment.value,
+        confirmedDate: payment.confirmedDate
+      };
+
+    case 'PAYMENT_REFUNDED':
+      // Payment refunded - artist didn't check in or cancelled
+      return {
+        action: 'ADVANCE_REFUNDED',
+        paymentId: payment.id,
+        value: payment.value,
+        refundDate: payment.refundDate
+      };
+
+    case 'PAYMENT_OVERDUE':
+      // Payment overdue - contratante didn't pay
+      return {
+        action: 'ADVANCE_OVERDUE',
+        paymentId: payment.id,
+        dueDate: payment.dueDate
+      };
+
+    default:
+      return {
+        action: 'UNKNOWN',
+        event,
+        payment
+      };
+  }
+};

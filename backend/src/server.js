@@ -21,6 +21,7 @@ import reviewRoutes from './routes/review.routes.js';
 import chatRoutes from './routes/chat.routes.js';
 import paymentRoutes from './routes/payment.routes.js';
 import checkinRoutes from './routes/checkin.routes.js';
+import adiantamentoRoutes from './routes/adiantamento.routes.js';
 
 dotenv.config();
 
@@ -75,6 +76,7 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/checkin', checkinRoutes);
+app.use('/api/adiantamentos', adiantamentoRoutes);
 
 // Socket.IO connection handling
 io.on('connection', (socket) => {
