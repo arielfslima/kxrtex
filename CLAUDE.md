@@ -44,7 +44,7 @@ React Native + Expo Router (file-based routing) + Zustand (state)
 **State management:**
 - Global auth: `src/store/authStore.js` (Zustand) persists via AsyncStorage
 - API state: React Query wraps all API calls (configured in `app/_layout.jsx`)
-- Real-time: Socket.IO client connects to backend (not yet implemented in components)
+- Real-time: Socket.IO client connects to backend in `app/_layout.jsx` with automatic lifecycle management
 
 **Design system:**
 - Dark theme: Background `#0D0D0D`, Primary `#8B0000`, Accent `#FF4444`
@@ -101,6 +101,7 @@ cd backend
 npx prisma migrate dev --name <migration_name>  # Create migration
 npx prisma studio                                # Visual DB browser
 npx prisma generate                              # Regenerate Prisma Client
+npm run db:seed                                  # Populate database with test data
 ```
 
 ### Running Services
@@ -164,8 +165,8 @@ router.replace('/(tabs)/home');
 
 ### Mobile
 - `app/`: File-based routes (Expo Router)
-- `src/components/`: Reusable UI components (empty, to be created)
-- `src/screens/`: Complex screen logic extracted from `app/` (empty, to be created)
+- `src/components/`: Reusable UI components (BookingCard, ArtistCard, etc.)
+- `src/screens/`: Screen components (ArtistsScreen, BookingsScreen, CreateBookingScreen, EditProfileScreen, etc.)
 - `src/services/`: API calls, Socket.IO client
 - `src/store/`: Zustand stores (currently only auth)
 
@@ -180,27 +181,42 @@ Required for full functionality (see `.env.example`):
 
 ## Testing the API
 
+### Using Test Data (Recommended)
+
+First, populate the database with test users:
+```bash
+cd backend
+npm run db:seed
+```
+
+This creates 6 test users (all with password `senha123`):
+
+**Contratante:**
+- Email: `contratante@test.com`
+
+**Artists (across all tiers):**
+- `dj.underground@test.com` - DJ, FREE tier, R$ 500/h
+- `mc.flow@test.com` - MC, FREE tier, R$ 300/h
+- `dj.nexus@test.com` - DJ, PLUS tier, R$ 800/h, Verified
+- `performer.eclipse@test.com` - Performer, PLUS tier, R$ 600/h
+- `dj.phoenix@test.com` - DJ, PRO tier, R$ 1500/h, Verified
+
+### Manual Testing
+
 ```bash
 # Health check
 curl http://localhost:3000/health
 
-# Register contratante
-curl -X POST http://localhost:3000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "test@example.com",
-    "senha": "Test1234",
-    "tipo": "CONTRATANTE",
-    "nome": "Test User",
-    "telefone": "(11)99999-9999",
-    "cpfCnpj": "12345678900",
-    "tipoPessoa": "PF"
-  }'
-
-# Login
+# Login with test user
 curl -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email": "test@example.com", "senha": "Test1234"}'
+  -d '{"email": "contratante@test.com", "senha": "senha123"}'
+
+# List all artists
+curl http://localhost:3000/api/artists
+
+# Get artist details
+curl http://localhost:3000/api/artists/{artistId}
 
 # Authenticated request (replace <TOKEN>)
 curl http://localhost:3000/api/auth/me \
@@ -209,35 +225,51 @@ curl http://localhost:3000/api/auth/me \
 
 ## Current State & Next Steps
 
-**Implemented:**
+**Implemented (Backend - 100%):**
 - Complete database schema (14 tables)
 - JWT authentication (register, login, middleware)
-- Express server with Socket.IO
-- Mobile navigation structure with Expo Router
-- Design system and base screens
+- Artist CRUD with search/filter/ranking algorithm
+- Booking CRUD with state machine (create, accept, reject, confirm)
+- Express server with Socket.IO configured
+- Database seeds with 6 test users (backend/prisma/seed.js)
 
-**Immediate priorities (see docs/NEXT-STEPS.md):**
-1. Artist CRUD with search/filter/ranking
-2. Booking creation and acceptance flow
-3. Real-time chat integration
-4. ASAAS payment integration
-5. Image upload via Cloudinary
+**Implemented (Mobile - 95%):**
+- Complete navigation structure with Expo Router
+- Authentication screens (welcome, login, register)
+- Artist search with filters and pagination (home tab)
+- Artist detail screen with portfolio
+- Booking creation flow
+- Bookings list with status filters (bookings tab)
+- Booking detail screen
+- Profile screen with user info
+- Profile edit screen (artists only)
+- Socket.IO integration in root layout (auto connect/disconnect)
+- Design system and reusable components
+- Loading/error states in all screens
+- Pull-to-refresh functionality
+
+**Immediate priorities (see docs/SESSION_SUMMARY_2025-10-24.md):**
+1. Test complete booking flow end-to-end
+2. Test payment integration (PIX and Card)
+3. Test real-time chat functionality
+4. Implement image upload UI (expo-image-picker)
+5. Test on physical devices (Android/iOS)
 
 **Not yet implemented:**
-- All booking business logic
-- Payment processing
-- Chat functionality (Socket.IO configured but not used)
-- Image uploads
-- Review system
-- Advance payment logic
-- Check-in/check-out
+- Payment processing UI (components exist, need integration testing)
+- Chat UI (components exist, need integration testing)
+- Image upload UI
+- Review system UI
+- Check-in/check-out UI
 - Admin panel
-- Subscription management
-- Push notifications
+- Push notifications (Firebase)
 
 ## Important Documentation
 
 - `docs/KXRTEX-PRD-Optimized.md`: Complete product requirements (business rules, flows, features)
+- `docs/SESSION_SUMMARY_2025-10-24.md`: Latest session summary with all achievements and test credentials
+- `docs/MOBILE_INTEGRATION_COMPLETE.md`: Complete mobile integration guide
+- `docs/CURRENT_STATUS.md`: Current project status and testing instructions
 - `docs/NEXT-STEPS.md`: Detailed development roadmap
 - `docs/COMMANDS.md`: CLI reference for common tasks
 - `docs/SETUP-SUMMARY.md`: What was configured in initial setup

@@ -16,13 +16,14 @@
 - Upload de imagens via Cloudinary
 - **Novo**: Seeds de dados para testes
 
-### Mobile: 90% Completo ✅
+### Mobile: 95% Completo ✅
 - Navegação completa integrada
 - Todas as screens principais conectadas
 - Socket.IO integrado no layout raiz
 - Estados de loading/error implementados
 - Pull-to-refresh nas listas
-- **Novo**: Dependência expo-linking corrigida
+- Dependência expo-linking corrigida
+- **Novo**: Tela de edição de perfil implementada
 
 ---
 
@@ -149,7 +150,7 @@ Quando o Expo terminar de iniciar (aguarde alguns segundos):
 2. ✅ Ver bookings recebidos
 3. ✅ Aceitar/recusar booking
 4. ✅ Ver perfil
-5. 🔲 Editar perfil (não implementado)
+5. ✅ Editar perfil (nome artístico, bio, preço, cidades)
 6. 🔲 Upload de portfolio (não implementado)
 
 ### Funcionalidades Pendentes
@@ -178,9 +179,9 @@ Quando o Expo terminar de iniciar (aguarde alguns segundos):
    - Verificar sistema anti-contorno
 
 ### Prioridade Média
-4. **Implementar edição de perfil**
-   - Tela de editar perfil do artista
-   - Upload de foto de perfil
+4. ~~**Implementar edição de perfil**~~ ✅ CONCLUÍDO
+   - ✅ Tela de editar perfil do artista
+   - 🔲 Upload de foto de perfil (próximo passo)
 
 5. **Implementar upload de portfolio**
    - Galeria de fotos
@@ -259,12 +260,12 @@ Quando o Expo terminar de iniciar (aguarde alguns segundos):
 - [x] Lista de bookings
 - [x] Detalhes do booking
 - [x] Profile screen
+- [x] Edição de perfil (artistas)
 - [x] Socket.IO integrado
 - [x] Loading/Error states
 - [x] Pull-to-refresh
 - [ ] Tela de pagamento (componentes prontos)
 - [ ] Tela de chat (componentes prontos)
-- [ ] Edição de perfil
 - [ ] Upload de fotos
 - [ ] Check-in/Check-out
 - [ ] Avaliações
@@ -308,5 +309,6 @@ Quando o Expo terminar de iniciar (aguarde alguns segundos):
 
 ---
 
-**Última atualização**: 2025-10-24 15:05
+**Última atualização**: 2025-10-24 16:30
 **Próxima sessão**: Testes end-to-end e implementação de features restantes
+**Status do Projeto**: MVP 95% completo
