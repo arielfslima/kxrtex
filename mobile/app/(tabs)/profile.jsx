@@ -104,7 +104,7 @@ export default function Profile() {
           <>
             <TouchableOpacity
               style={styles.menuItem}
-              onPress={() => Alert.alert('Em breve', 'Funcionalidade em desenvolvimento')}
+              onPress={() => router.push('/profile/portfolio')}
             >
               <Text style={styles.menuIcon}>🎨</Text>
               <Text style={styles.menuText}>Gerenciar Portfolio</Text>

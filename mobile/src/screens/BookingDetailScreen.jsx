@@ -19,6 +19,7 @@ import {
 } from '../services/bookingService';
 import { useAuthStore } from '../store/authStore';
 import { COLORS } from '../constants/colors';
+import CheckInModal from '../components/CheckInModal';
 
 const BookingDetailScreen = () => {
   const router = useRouter();
@@ -36,6 +37,9 @@ const BookingDetailScreen = () => {
   const [showCounterOfferModal, setShowCounterOfferModal] = useState(false);
   const [counterValue, setCounterValue] = useState('');
   const [counterMessage, setCounterMessage] = useState('');
+
+  const [showCheckInModal, setShowCheckInModal] = useState(false);
+  const [showCheckOutModal, setShowCheckOutModal] = useState(false);
 
   const isArtist = user?.tipo === 'ARTISTA';
   const isContratante = user?.tipo === 'CONTRATANTE';
@@ -179,19 +183,33 @@ const BookingDetailScreen = () => {
           >
             <Text style={styles.actionButtonText}>💬 Abrir Chat</Text>
           </TouchableOpacity>
+          {isArtist && !booking.checkInArtista && (
+            <TouchableOpacity
+              style={styles.checkInButton}
+              onPress={() => setShowCheckInModal(true)}
+            >
+              <Text style={styles.actionButtonText}>📍 Fazer Check-in</Text>
+            </TouchableOpacity>
+          )}
         </View>
       );
     }
 
     // Booking Em Andamento
-    if (booking.status === 'EM_ANDAMENTO' && isArtist) {
+    if (booking.status === 'EM_ANDAMENTO' && isArtist && !booking.checkOutArtista) {
       return (
         <View style={styles.actionsContainer}>
           <TouchableOpacity
-            style={styles.checkoutButton}
-            onPress={() => router.push(`/checkin/${id}/checkout`)}
+            style={styles.chatButton}
+            onPress={() => router.push(`/chat/${id}`)}
           >
-            <Text style={styles.actionButtonText}>Fazer Check-out</Text>
+            <Text style={styles.actionButtonText}>💬 Abrir Chat</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.checkOutButton}
+            onPress={() => setShowCheckOutModal(true)}
+          >
+            <Text style={styles.actionButtonText}>✅ Fazer Check-out</Text>
           </TouchableOpacity>
         </View>
       );
@@ -448,6 +466,22 @@ const BookingDetailScreen = () => {
           </View>
         </View>
       </Modal>
+
+      {/* Check-in Modal */}
+      <CheckInModal
+        visible={showCheckInModal}
+        onClose={() => setShowCheckInModal(false)}
+        bookingId={id}
+        type="checkin"
+      />
+
+      {/* Check-out Modal */}
+      <CheckInModal
+        visible={showCheckOutModal}
+        onClose={() => setShowCheckOutModal(false)}
+        bookingId={id}
+        type="checkout"
+      />
     </>
   );
 };
@@ -758,6 +792,20 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
     fontSize: 16,
     fontWeight: '600',
+  },
+  checkInButton: {
+    backgroundColor: COLORS.info,
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: 'center',
+    marginTop: 12,
+  },
+  checkOutButton: {
+    backgroundColor: COLORS.success,
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: 'center',
+    marginTop: 12,
   },
 });
 

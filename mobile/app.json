@@ -7,6 +7,8 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "scheme": "kxrtex",
+    "description": "Underground Artist Booking Platform - Connect with underground artists for your events",
+    "primaryColor": "#8B0000",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -17,7 +19,12 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.kxrtex.app"
+      "bundleIdentifier": "com.kxrtex.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "KXRTEX precisa acessar sua câmera para tirar fotos de check-in e upload de perfil.",
+        "NSPhotoLibraryUsageDescription": "KXRTEX precisa acessar suas fotos para upload de imagens de perfil e portfolio.",
+        "NSLocationWhenInUseUsageDescription": "KXRTEX precisa acessar sua localização para check-in/check-out de eventos."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -27,15 +34,39 @@
       "package": "com.kxrtex.app",
       "permissions": [
         "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION"
       ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "name": "KXRTEX - Underground Booking",
+      "shortName": "KXRTEX",
+      "themeColor": "#8B0000",
+      "backgroundColor": "#0D0D0D"
     },
     "plugins": [
-      "expo-router"
-    ]
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "KXRTEX precisa acessar sua localização para check-in/check-out de eventos."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "KXRTEX precisa acessar suas fotos para upload de imagens de perfil e portfolio.",
+          "cameraPermission": "KXRTEX precisa acessar sua câmera para tirar fotos de check-in e upload de perfil."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "kxrtex-booking-platform"
+      }
+    }
   }
 }
