@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import useAuthStore from '../store/authStore';
+import ChatBox from '../components/ChatBox';
 
 const STATUS_CONFIG = {
   PENDENTE: { label: 'Pendente', color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/50' },
@@ -245,6 +246,9 @@ export default function BookingDetailPage() {
                 </div>
               </div>
             )}
+
+            {/* Chat Box */}
+            <ChatBox bookingId={id} />
           </div>
 
           {/* Sidebar */}
