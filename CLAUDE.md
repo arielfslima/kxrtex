@@ -42,19 +42,23 @@ Node.js + Express + Prisma ORM + PostgreSQL + Socket.IO
 ### Web Frontend (`web/`)
 React 18 + Vite + React Router + React Query + Tailwind CSS
 
-**Pages implemented (9 total):**
+**Pages implemented (10 total):**
 - `HomePage`: Landing page with platform introduction
 - `LoginPage` / `RegisterPage`: Authentication flows
 - `ArtistsPage`: Search with filters (categoria, cidade, preço, avaliação)
 - `ArtistDetailPage`: Complete artist profile with portfolio and reviews
 - `BookingsPage`: List all user bookings with status filters
-- `BookingDetailPage`: Full booking details with chat, payment, and actions
+- `BookingDetailPage`: Full booking details with chat, payment, check-in/out, and actions
 - `CreateBookingPage`: Booking request form
 - `ReviewBookingPage`: 6-criteria review system
+- `ProfilePage`: Complete profile management with image uploads
 
 **Components:**
 - `ChatBox`: Real-time chat with typing indicators and system warnings
 - `PaymentModal`: PIX payment with QR Code and auto-polling
+- `CheckInModal`: Check-in/check-out with geolocation and photo upload
+- `ImageUpload`: Profile photo upload with drag-and-drop
+- `PortfolioUpload`: Multiple image upload for artist portfolio with plan limits
 - `NotificationToast`: Real-time notifications via Socket.IO
 - `ProtectedRoute`: Authentication guard for routes
 
@@ -261,9 +265,9 @@ curl http://localhost:3000/api/auth/me \
 
 ## Current State & Next Steps
 
-### ✅ MVP Status: 95% Complete
+### ✅ MVP Status: 100% COMPLETE (Web Platform)
 
-**Backend (100% of core features):**
+**Backend (100% complete):**
 - ✅ Complete database schema (14 tables, 8 enums)
 - ✅ JWT authentication with role-based access control
 - ✅ Artist CRUD with advanced search/filter/ranking
@@ -273,17 +277,20 @@ curl http://localhost:3000/api/auth/me \
 - ✅ Review system with 6 criteria (bilateral)
 - ✅ Check-in/check-out with geolocation validation
 - ✅ Automatic payment release (48h after event)
+- ✅ Image upload via Cloudinary (profile + portfolio)
 - ✅ Database seeds with 6 test users
 
-**Web Frontend (95%):**
+**Web Frontend (100% complete):**
 - ✅ Complete authentication flows
-- ✅ All 9 pages implemented and functional
+- ✅ All 10 pages implemented and functional
 - ✅ Real-time chat with typing indicators
 - ✅ Payment modal with PIX QR Code
 - ✅ Review system fully integrated
+- ✅ Check-in/check-out with geolocation and photo upload
+- ✅ Image upload with drag-and-drop (profile + portfolio)
+- ✅ Profile management page
 - ✅ Real-time notifications via Socket.IO
 - ✅ Responsive design with Tailwind CSS
-- ⏳ Check-in/check-out UI (backend ready)
 
 **Mobile (85%):**
 - ✅ Complete navigation structure with Expo Router
