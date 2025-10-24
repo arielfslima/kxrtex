@@ -5,6 +5,7 @@ import api from '../services/api';
 import useAuthStore from '../store/authStore';
 import ChatBox from '../components/ChatBox';
 import PaymentModal from '../components/PaymentModal';
+import CheckInModal from '../components/CheckInModal';
 
 const STATUS_CONFIG = {
   PENDENTE: { label: 'Pendente', color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/50' },
@@ -25,6 +26,7 @@ export default function BookingDetailPage() {
   const [counterOfferMessage, setCounterOfferMessage] = useState('');
   const [rejectReason, setRejectReason] = useState('');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [checkInModalType, setCheckInModalType] = useState(null);
 
   const { data: booking, isLoading, error } = useQuery({
     queryKey: ['booking', id],
@@ -302,6 +304,62 @@ export default function BookingDetailPage() {
               </button>
             )}
 
+            {/* Check-in Button for Confirmed Bookings (Artist only) */}
+            {isArtista && booking.status === 'CONFIRMADO' && !booking.checkInArtista && (
+              <button
+                onClick={() => setCheckInModalType('checkin')}
+                className="w-full py-4 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-bold rounded-xl hover:scale-105 hover:shadow-lg hover:shadow-purple-600/50 transition-all flex items-center justify-center gap-2"
+              >
+                <span className="text-2xl">📍</span>
+                <span>Fazer Check-in</span>
+              </button>
+            )}
+
+            {/* Check-out Button for In Progress Bookings (Artist only) */}
+            {isArtista && booking.status === 'EM_ANDAMENTO' && booking.checkInArtista && !booking.checkOutArtista && (
+              <button
+                onClick={() => setCheckInModalType('checkout')}
+                className="w-full py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold rounded-xl hover:scale-105 hover:shadow-lg hover:shadow-blue-600/50 transition-all flex items-center justify-center gap-2"
+              >
+                <span className="text-2xl">✅</span>
+                <span>Fazer Check-out</span>
+              </button>
+            )}
+
+            {/* Check-in Status Display */}
+            {(booking.checkInArtista || booking.checkOutArtista) && (
+              <div className="bg-dark-800/50 border-2 border-dark-700 rounded-xl p-4 space-y-3">
+                <h4 className="text-white font-bold flex items-center gap-2">
+                  <span className="text-xl">📍</span>
+                  Status de Presença
+                </h4>
+
+                {booking.checkInArtista && (
+                  <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3">
+                    <div className="text-green-400 font-semibold mb-1 flex items-center gap-2">
+                      <span>✓</span>
+                      Check-in realizado
+                    </div>
+                    <div className="text-gray-400 text-sm">
+                      {new Date(booking.checkInArtista).toLocaleString('pt-BR')}
+                    </div>
+                  </div>
+                )}
+
+                {booking.checkOutArtista && (
+                  <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
+                    <div className="text-blue-400 font-semibold mb-1 flex items-center gap-2">
+                      <span>✓</span>
+                      Check-out realizado
+                    </div>
+                    <div className="text-gray-400 text-sm">
+                      {new Date(booking.checkOutArtista).toLocaleString('pt-BR')}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Review Button for Completed Bookings */}
             {booking.status === 'CONCLUIDO' && (
               <button
@@ -388,6 +446,19 @@ export default function BookingDetailPage() {
           onClose={() => setShowPaymentModal(false)}
           onSuccess={() => {
             setShowPaymentModal(false);
+            queryClient.invalidateQueries(['booking', id]);
+          }}
+        />
+      )}
+
+      {/* Check-in/Check-out Modal */}
+      {checkInModalType && (
+        <CheckInModal
+          bookingId={id}
+          type={checkInModalType}
+          onClose={() => setCheckInModalType(null)}
+          onSuccess={() => {
+            setCheckInModalType(null);
             queryClient.invalidateQueries(['booking', id]);
           }}
         />
