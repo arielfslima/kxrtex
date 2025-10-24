@@ -203,7 +203,7 @@ const BookingDetailScreen = () => {
         <View style={styles.actionsContainer}>
           <TouchableOpacity
             style={styles.reviewButton}
-            onPress={() => router.push(`/review/${id}`)}
+            onPress={() => router.push(`/booking/${id}/review`)}
           >
             <Text style={styles.actionButtonText}>⭐ Avaliar</Text>
           </TouchableOpacity>
