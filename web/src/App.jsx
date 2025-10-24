@@ -9,6 +9,7 @@ import BookingsPage from './pages/BookingsPage';
 import BookingDetailPage from './pages/BookingDetailPage';
 import CreateBookingPage from './pages/CreateBookingPage';
 import ReviewBookingPage from './pages/ReviewBookingPage';
+import ProfilePage from './pages/ProfilePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import useAuthStore from './store/authStore';
 import { SocketProvider } from './contexts/SocketContext';
@@ -51,16 +52,13 @@ function App() {
                     <Link to="/bookings" className="text-gray-300 hover:text-white font-medium transition">
                       Bookings
                     </Link>
+                    <Link to="/profile" className="text-gray-300 hover:text-white font-medium transition">
+                      Perfil
+                    </Link>
                     <div className="flex items-center gap-4">
                       <span className="text-gray-400 text-sm">
                         Olá, <span className="text-white font-medium">{user?.nome}</span>
                       </span>
-                      <button
-                        onClick={logout}
-                        className="px-4 py-2 border border-red-vibrant text-red-vibrant rounded-lg hover:bg-red-vibrant hover:text-white font-medium transition"
-                      >
-                        Sair
-                      </button>
                     </div>
                   </>
                 ) : (
@@ -122,6 +120,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <ReviewBookingPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
                   </ProtectedRoute>
                 }
               />
