@@ -143,7 +143,7 @@ export default function ArtistDetailPage() {
           </div>
 
           <Link
-            to={`/booking/create?artistId=${artist.id}`}
+            to={`/bookings/create?artistaId=${artist.id}`}
             className="px-10 py-5 bg-gradient-to-r from-red-vibrant to-pink-600 text-white font-bold text-lg rounded-xl hover:scale-105 hover:shadow-2xl hover:shadow-red-vibrant/60 transition-all"
           >
             Solicitar Booking
@@ -297,7 +297,7 @@ export default function ArtistDetailPage() {
 
             {/* CTA */}
             <Link
-              to={`/booking/create?artistId=${artist.id}`}
+              to={`/bookings/create?artistaId=${artist.id}`}
               className="block w-full px-8 py-4 bg-gradient-to-r from-red-vibrant to-pink-600 text-white font-bold text-center rounded-xl hover:scale-105 hover:shadow-2xl hover:shadow-red-vibrant/60 transition-all"
             >
               Solicitar Booking
