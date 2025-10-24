@@ -22,6 +22,7 @@ import chatRoutes from './routes/chat.routes.js';
 import paymentRoutes from './routes/payment.routes.js';
 import checkinRoutes from './routes/checkin.routes.js';
 import adiantamentoRoutes from './routes/adiantamento.routes.js';
+import adminRoutes from './routes/admin.routes.js';
 
 dotenv.config();
 
@@ -77,6 +78,7 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/checkin', checkinRoutes);
 app.use('/api/adiantamentos', adiantamentoRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Socket.IO connection handling
 io.on('connection', (socket) => {
