@@ -1,0 +1,386 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========================================
+// ENUMS
+// ========================================
+
+enum TipoUsuario {
+  CONTRATANTE
+  ARTISTA
+}
+
+enum StatusUsuario {
+  ATIVO
+  SUSPENSO
+  BANIDO
+}
+
+enum PlanoArtista {
+  FREE
+  PLUS
+  PRO
+}
+
+enum StatusVerificacao {
+  NAO_VERIFICADO
+  VERIFICADO
+  PENDENTE
+}
+
+enum CategoriaArtista {
+  DJ
+  MC
+  PERFORMER
+}
+
+enum StatusBooking {
+  PENDENTE
+  ACEITO
+  CONFIRMADO
+  EM_ANDAMENTO
+  CONCLUIDO
+  CANCELADO
+  DISPUTA
+}
+
+enum TipoProposta {
+  INICIAL
+  CONTRA_PROPOSTA
+}
+
+enum StatusTransacao {
+  PENDENTE
+  CONFIRMADO
+  FALHADO
+  REEMBOLSADO
+}
+
+enum MetodoPagamento {
+  PIX
+  CARTAO
+}
+
+enum StatusSaque {
+  SOLICITADO
+  PROCESSANDO
+  CONCLUIDO
+  FALHADO
+}
+
+enum TipoCheckIn {
+  EVENTO
+  HOTEL
+}
+
+// ========================================
+// MODELS - USUÁRIOS
+// ========================================
+
+model Usuario {
+  id           String         @id @default(uuid())
+  email        String         @unique
+  senhaHash    String
+  tipo         TipoUsuario
+  nome         String
+  telefone     String
+  cpfCnpj      String         @unique
+  foto         String?
+  status       StatusUsuario  @default(ATIVO)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  // Relações
+  artista      Artista?
+  contratante  Contratante?
+
+  mensagensEnviadas  Mensagem[]  @relation("MensagensEnviadas")
+  notificacoes       Notificacao[]
+  avaliacoesFeitas   Avaliacao[] @relation("AvaliacaoAvaliador")
+  avaliacoesRecebidas Avaliacao[] @relation("AvaliacaoAvaliado")
+
+  @@map("usuarios")
+}
+
+model Artista {
+  id                String              @id @default(uuid())
+  usuarioId         String              @unique
+  usuario           Usuario             @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  nomeArtistico     String
+  bio               String
+  valorBaseHora     Float
+  categoria         CategoriaArtista
+  subcategorias     String[]            // Array de strings
+  cidadesAtuacao    String[]            // Array de strings
+  portfolio         String[]            // URLs das imagens/vídeos
+  redesSociais      Json?               // { instagram, soundcloud, etc }
+
+  plano             PlanoArtista        @default(FREE)
+  statusVerificacao StatusVerificacao   @default(NAO_VERIFICADO)
+  documentos        String[]            // URLs dos documentos
+
+  notaMedia         Float               @default(0)
+  totalBookings     Int                 @default(0)
+
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  // Relações
+  bookings          Booking[]
+  saques            Saque[]
+  seguidores        Seguindo[]
+
+  @@map("artistas")
+}
+
+model Contratante {
+  id           String    @id @default(uuid())
+  usuarioId    String    @unique
+  usuario      Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  tipoPessoa   String    // PF ou PJ
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Relações
+  bookings     Booking[]
+  seguindo     Seguindo[]
+  indicacoes   Indicacao[] @relation("Indicador")
+  indicado     Indicacao?  @relation("Indicado")
+
+  @@map("contratantes")
+}
+
+// ========================================
+// MODELS - BOOKINGS
+// ========================================
+
+model Booking {
+  id                String          @id @default(uuid())
+
+  artistaId         String
+  artista           Artista         @relation(fields: [artistaId], references: [id])
+
+  contratanteId     String
+  contratante       Contratante     @relation(fields: [contratanteId], references: [id])
+
+  dataEvento        DateTime
+  horarioInicio     String          // HH:mm
+  duracao           Int             // Em horas
+  local             String
+  descricaoEvento   String
+
+  valorArtista      Float
+  taxaPlataforma    Float
+  valorTotal        Float
+
+  status            StatusBooking   @default(PENDENTE)
+
+  distanciaKm       Float?          // Para cálculo de adiantamento
+  precisaAdiantamento Boolean       @default(false)
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relações
+  propostas         Proposta[]
+  mensagens         Mensagem[]
+  checkIns          CheckIn[]
+  transacoes        Transacao[]
+  adiantamento      Adiantamento?
+  avaliacoes        Avaliacao[]
+
+  @@map("bookings")
+}
+
+model Proposta {
+  id              String        @id @default(uuid())
+  bookingId       String
+  booking         Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  tipo            TipoProposta
+  valorProposto   Float
+  mensagem        String?
+
+  createdAt       DateTime      @default(now())
+
+  @@map("propostas")
+}
+
+model CheckIn {
+  id          String      @id @default(uuid())
+  bookingId   String
+  booking     Booking     @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  tipo        TipoCheckIn
+  timestamp   DateTime    @default(now())
+  latitude    Float
+  longitude   Float
+  fotoUrl     String?
+
+  @@map("check_ins")
+}
+
+// ========================================
+// MODELS - FINANCEIRO
+// ========================================
+
+model Transacao {
+  id          String            @id @default(uuid())
+  bookingId   String
+  booking     Booking           @relation(fields: [bookingId], references: [id])
+
+  tipo        String            // PAGAMENTO, REEMBOLSO, LIBERACAO
+  valor       Float
+  metodo      MetodoPagamento
+  status      StatusTransacao   @default(PENDENTE)
+
+  asaasId     String?           // ID da transação no ASAAS
+
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@map("transacoes")
+}
+
+model Saque {
+  id              String        @id @default(uuid())
+  artistaId       String
+  artista         Artista       @relation(fields: [artistaId], references: [id])
+
+  valor           Float
+  pixChave        String
+  status          StatusSaque   @default(SOLICITADO)
+
+  asaasId         String?
+
+  solicitadoEm    DateTime      @default(now())
+  processadoEm    DateTime?
+
+  @@map("saques")
+}
+
+model Adiantamento {
+  id              String    @id @default(uuid())
+  bookingId       String    @unique
+  booking         Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  valor           Float
+  liberadoEm      DateTime?
+  fotoCheckinUrl  String?
+
+  createdAt       DateTime  @default(now())
+
+  @@map("adiantamentos")
+}
+
+// ========================================
+// MODELS - SOCIAL
+// ========================================
+
+model Avaliacao {
+  id                String    @id @default(uuid())
+  bookingId         String
+  booking           Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  avaliadorId       String
+  avaliador         Usuario   @relation("AvaliacaoAvaliador", fields: [avaliadorId], references: [id])
+
+  avaliadoId        String
+  avaliado          Usuario   @relation("AvaliacaoAvaliado", fields: [avaliadoId], references: [id])
+
+  // Critérios (1-5 estrelas)
+  profissionalismo  Int
+  pontualidade      Int
+  performance       Int?      // Apenas para artistas
+  comunicacao       Int
+  condicoes         Int?      // Apenas para contratantes
+  respeito          Int?      // Apenas para contratantes
+
+  comentario        String?
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@map("avaliacoes")
+}
+
+model Seguindo {
+  id              String      @id @default(uuid())
+
+  seguidorId      String
+  seguidor        Contratante @relation(fields: [seguidorId], references: [id], onDelete: Cascade)
+
+  seguidoId       String
+  seguido         Artista     @relation(fields: [seguidoId], references: [id], onDelete: Cascade)
+
+  createdAt       DateTime    @default(now())
+
+  @@unique([seguidorId, seguidoId])
+  @@map("seguindo")
+}
+
+model Indicacao {
+  id            String      @id @default(uuid())
+
+  indicadorId   String
+  indicador     Contratante @relation("Indicador", fields: [indicadorId], references: [id])
+
+  indicadoId    String      @unique
+  indicado      Contratante @relation("Indicado", fields: [indicadoId], references: [id])
+
+  codigo        String      @unique
+  status        String      @default("PENDENTE") // PENDENTE, COMPLETO
+  creditoGerado Float       @default(0)
+
+  createdAt     DateTime    @default(now())
+
+  @@map("indicacoes")
+}
+
+// ========================================
+// MODELS - COMUNICAÇÃO
+// ========================================
+
+model Mensagem {
+  id          String    @id @default(uuid())
+  bookingId   String
+  booking     Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  remetenteId String
+  remetente   Usuario   @relation("MensagensEnviadas", fields: [remetenteId], references: [id])
+
+  conteudo    String
+  tipo        String    @default("TEXTO") // TEXTO, IMAGEM, SISTEMA
+
+  timestamp   DateTime  @default(now())
+
+  @@map("mensagens")
+}
+
+model Notificacao {
+  id        String    @id @default(uuid())
+  usuarioId String
+  usuario   Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  tipo      String    // BOOKING, MENSAGEM, PAGAMENTO, etc
+  titulo    String
+  mensagem  String
+  link      String?
+  lida      Boolean   @default(false)
+
+  createdAt DateTime  @default(now())
+
+  @@map("notificacoes")
+}

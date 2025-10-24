@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(test:*)",
+      "Bash(npm install)",
+      "Bash(npm run dev:*)",
+      "Bash(pg_isready:*)",
+      "Bash(docker run:*)",
+      "Bash(npx prisma generate:*)",
+      "Bash(npx prisma migrate:*)",
+      "Bash(npm run web:*)",
+      "Bash(npx expo install react-native-web react-dom)",
+      "Bash(if not exist \".expo\\metro\\externals\" mkdir \".expo\\metro\\externals\")",
+      "Bash(cmd /c \"if not exist .expo\\metro\\externals mkdir .expo\\metro\\externals\")",
+      "Bash(timeout /t 10)",
+      "Bash(npx expo start:*)",
+      "Bash(npm install:*)",
+      "Bash(npx expo install:*)",
+      "Bash(npm create:*)",
+      "Bash(npx tailwindcss init:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
