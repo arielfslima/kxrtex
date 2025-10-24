@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router';
 import { useAuthStore } from '../store/authStore';
 import { api } from '../services/api';
 import { COLORS } from '../constants/colors';
+import ImageUploader from '../components/ImageUploader';
 
 const EditProfileScreen = () => {
   const router = useRouter();
@@ -20,6 +21,7 @@ const EditProfileScreen = () => {
   const isArtist = user?.tipo === 'ARTISTA';
 
   const [loading, setLoading] = useState(false);
+  const [uploadedPhotoUrl, setUploadedPhotoUrl] = useState(null);
   const [formData, setFormData] = useState({
     nome: user?.nome || '',
     telefone: user?.telefone || '',
@@ -28,6 +30,10 @@ const EditProfileScreen = () => {
     valorBaseHora: user?.artista?.valorBaseHora?.toString() || '',
     cidadesAtuacao: user?.artista?.cidadesAtuacao?.join(', ') || '',
   });
+
+  const handleImageUpload = (url) => {
+    setUploadedPhotoUrl(url);
+  };
 
   const handleUpdate = async () => {
     try {
@@ -48,6 +54,7 @@ const EditProfileScreen = () => {
 
         const updatedUser = {
           ...user,
+          foto: uploadedPhotoUrl || user.foto,
           artista: {
             ...user.artista,
             ...response.data.data,
@@ -114,6 +121,12 @@ const EditProfileScreen = () => {
         </TouchableOpacity>
         <Text style={styles.title}>Editar Perfil</Text>
       </View>
+
+      <ImageUploader
+        currentImageUrl={user?.foto}
+        onUploadSuccess={handleImageUpload}
+        type="profile"
+      />
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Nome Artístico</Text>
