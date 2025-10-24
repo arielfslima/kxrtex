@@ -11,6 +11,10 @@ import CreateBookingPage from './pages/CreateBookingPage';
 import ReviewBookingPage from './pages/ReviewBookingPage';
 import ProfilePage from './pages/ProfilePage';
 import EditProfilePage from './pages/EditProfilePage';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminUsuarios from './pages/admin/AdminUsuarios';
+import AdminBookings from './pages/admin/AdminBookings';
+import AdminInfracoes from './pages/admin/AdminInfracoes';
 import ProtectedRoute from './components/ProtectedRoute';
 import useAuthStore from './store/authStore';
 import { SocketProvider } from './contexts/SocketContext';
@@ -56,6 +60,11 @@ function App() {
                     <Link to="/profile" className="text-gray-300 hover:text-white font-medium transition">
                       Perfil
                     </Link>
+                    {user?.tipo === 'ADMIN' && (
+                      <Link to="/admin/dashboard" className="px-3 py-1 bg-red-vibrant/20 text-red-vibrant border border-red-vibrant/50 rounded-lg hover:bg-red-vibrant/30 font-medium transition text-sm">
+                        Admin
+                      </Link>
+                    )}
                     <div className="flex items-center gap-4">
                       <span className="text-gray-400 text-sm">
                         Olá, <span className="text-white font-medium">{user?.nome}</span>
@@ -137,6 +146,38 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <EditProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/usuarios"
+                element={
+                  <ProtectedRoute>
+                    <AdminUsuarios />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/bookings"
+                element={
+                  <ProtectedRoute>
+                    <AdminBookings />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/infracoes"
+                element={
+                  <ProtectedRoute>
+                    <AdminInfracoes />
                   </ProtectedRoute>
                 }
               />
