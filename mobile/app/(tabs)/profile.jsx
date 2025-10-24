@@ -93,7 +93,7 @@ export default function Profile() {
       <View style={styles.menu}>
         <TouchableOpacity
           style={styles.menuItem}
-          onPress={() => Alert.alert('Em breve', 'Funcionalidade em desenvolvimento')}
+          onPress={() => router.push('/profile/edit')}
         >
           <Text style={styles.menuIcon}>👤</Text>
           <Text style={styles.menuText}>Editar Perfil</Text>
