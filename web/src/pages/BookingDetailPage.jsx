@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import useAuthStore from '../store/authStore';
 import ChatBox from '../components/ChatBox';
+import PaymentModal from '../components/PaymentModal';
 
 const STATUS_CONFIG = {
   PENDENTE: { label: 'Pendente', color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/50' },
@@ -23,6 +24,7 @@ export default function BookingDetailPage() {
   const [counterOfferValue, setCounterOfferValue] = useState('');
   const [counterOfferMessage, setCounterOfferMessage] = useState('');
   const [rejectReason, setRejectReason] = useState('');
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const { data: booking, isLoading, error } = useQuery({
     queryKey: ['booking', id],
@@ -289,6 +291,17 @@ export default function BookingDetailPage() {
               </div>
             </div>
 
+            {/* Payment Button for Accepted Bookings (Contratante only) */}
+            {!isArtista && booking.status === 'ACEITO' && (
+              <button
+                onClick={() => setShowPaymentModal(true)}
+                className="w-full py-4 bg-gradient-to-r from-green-600 to-green-500 text-white font-bold rounded-xl hover:scale-105 hover:shadow-lg hover:shadow-green-600/50 transition-all flex items-center justify-center gap-2"
+              >
+                <span className="text-2xl">💳</span>
+                <span>Realizar Pagamento</span>
+              </button>
+            )}
+
             {/* Review Button for Completed Bookings */}
             {booking.status === 'CONCLUIDO' && (
               <button
@@ -367,6 +380,18 @@ export default function BookingDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Payment Modal */}
+      {showPaymentModal && (
+        <PaymentModal
+          bookingId={id}
+          onClose={() => setShowPaymentModal(false)}
+          onSuccess={() => {
+            setShowPaymentModal(false);
+            queryClient.invalidateQueries(['booking', id]);
+          }}
+        />
+      )}
     </div>
   );
 }
