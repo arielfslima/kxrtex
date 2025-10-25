@@ -102,11 +102,14 @@ export const getOrCreateCustomer = async (userData) => {
     // Primeiro tenta buscar por CPF/CNPJ
     const cpfCnpj = userData.cpfCnpj.replace(/\D/g, '');
 
+    console.log('Buscando cliente ASAAS com CPF/CNPJ:', cpfCnpj);
+
     const searchResponse = await asaasApi.get('/customers', {
       params: { cpfCnpj }
     });
 
     if (searchResponse.data.data.length > 0) {
+      console.log('Cliente encontrado:', searchResponse.data.data[0].id);
       return searchResponse.data.data[0].id;
     }
 
@@ -119,12 +122,24 @@ export const getOrCreateCustomer = async (userData) => {
       mobilePhone: userData.telefone.replace(/\D/g, '')
     };
 
+    console.log('Criando novo cliente ASAAS:', JSON.stringify(payload, null, 2));
+
     const createResponse = await asaasApi.post('/customers', payload);
 
+    console.log('Cliente criado:', createResponse.data.id);
     return createResponse.data.id;
   } catch (error) {
-    console.error('Erro ao buscar/criar cliente ASAAS:', error.response?.data);
-    throw new AppError('Erro ao processar dados do cliente', 500);
+    console.error('Erro detalhado ASAAS:', {
+      status: error.response?.status,
+      data: error.response?.data,
+      errors: error.response?.data?.errors
+    });
+
+    const errorMessage = error.response?.data?.errors?.[0]?.description
+      || error.response?.data?.message
+      || 'Erro ao processar dados do cliente';
+
+    throw new AppError(errorMessage, 500);
   }
 };
 
