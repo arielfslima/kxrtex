@@ -54,10 +54,18 @@ export default function PaymentModal({ bookingId, onClose, onSuccess }) {
       const response = await api.post(`/payments/booking/${bookingId}`, {
         billingType
       });
+      console.log('[PaymentModal] Payment created response:', response.data);
       return response.data;
     },
     onSuccess: (data) => {
+      console.log('[PaymentModal] Payment creation success:', {
+        paymentMethod,
+        hasData: !!data.data,
+        hasQrCode: !!data.data?.pixQrCode,
+        hasCopyPaste: !!data.data?.pixCopyPaste
+      });
       if (paymentMethod === 'PIX' && data.data.pixQrCode) {
+        console.log('[PaymentModal] Showing QR code from new payment');
         setPixData({
           qrCode: data.data.pixQrCode,
           copyPaste: data.data.pixCopyPaste
@@ -65,10 +73,14 @@ export default function PaymentModal({ bookingId, onClose, onSuccess }) {
         setShowPixCode(true);
         startPaymentPolling();
       } else {
+        console.log('[PaymentModal] No QR code in response, closing modal');
         queryClient.invalidateQueries(['booking', bookingId]);
         queryClient.invalidateQueries(['bookings']);
         onSuccess?.();
       }
+    },
+    onError: (error) => {
+      console.error('[PaymentModal] Payment creation error:', error);
     }
   });
 
