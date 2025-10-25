@@ -64,16 +64,19 @@ export default function CreateBookingPage() {
     const dataEventoISO = new Date(dataHora).toISOString();
 
     const dataToSend = {
-      ...formData,
       artistaId,
       dataEvento: dataEventoISO,
+      horarioInicio: formData.horarioInicio,
       duracao: parseInt(formData.duracao),
+      local: formData.local,
+      descricaoEvento: formData.descricaoEvento,
     };
 
     if (formData.valorProposto) {
       dataToSend.valorProposto = parseFloat(formData.valorProposto);
     }
 
+    console.log('Dados sendo enviados:', dataToSend);
     createBookingMutation.mutate(dataToSend);
   };
 
