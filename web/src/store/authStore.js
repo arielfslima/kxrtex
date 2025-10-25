@@ -43,4 +43,6 @@ const useAuthStore = create(
   )
 );
 
+// Export both default and named for compatibility
+export { useAuthStore };
 export default useAuthStore;
