@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
-import { useAuthStore } from '../../store/authStore';
+import useAuthStore from '../../store/authStore';
 
 const AdminUsuarios = () => {
   const navigate = useNavigate();
