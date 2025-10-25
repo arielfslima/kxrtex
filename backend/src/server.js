@@ -41,12 +41,13 @@ if (process.env.NODE_ENV === 'production') {
     ? 'https://sandbox.asaas.com/api/v3'
     : 'https://api.asaas.com/v3';
   process.env.ASAAS_WEBHOOK_SECRET = productionConfig.asaas.webhookSecret;
-  process.env.FIREBASE_SERVICE_ACCOUNT = JSON.stringify(productionConfig.firebase.serviceAccount);
+  // FIREBASE_SERVICE_ACCOUNT deve ser configurado via Railway environment variables
   process.env.FRONTEND_URL = productionConfig.frontendUrls.join(',');
   process.env.RATE_LIMIT_WINDOW_MS = String(productionConfig.rateLimit.windowMs);
   process.env.RATE_LIMIT_MAX_REQUESTS = String(productionConfig.rateLimit.maxRequests);
 
   console.log('Production config loaded from hardcoded values');
+  console.log('WARNING: Firebase credentials must be set via FIREBASE_SERVICE_ACCOUNT env var');
 }
 
 const app = express();
