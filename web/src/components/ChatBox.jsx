@@ -17,14 +17,14 @@ export default function ChatBox({ bookingId }) {
   const { data: messagesData, isLoading } = useQuery({
     queryKey: ['messages', bookingId],
     queryFn: async () => {
-      const response = await api.get(`/chat/${bookingId}`);
+      const response = await api.get(`/chat/booking/${bookingId}`);
       return response.data;
     },
     refetchInterval: false,
   });
 
   const sendMessageMutation = useMutation({
-    mutationFn: (content) => api.post(`/chat/${bookingId}`, { conteudo: content }),
+    mutationFn: (content) => api.post(`/chat/booking/${bookingId}`, { conteudo: content }),
     onSuccess: () => {
       queryClient.invalidateQueries(['messages', bookingId]);
       setMessage('');

@@ -22,7 +22,7 @@ export default function ArtistDetailPage() {
   const { data: reviewsData } = useQuery({
     queryKey: ['artist-reviews', id],
     queryFn: async () => {
-      const response = await api.get(`/artists/${id}/reviews`);
+      const response = await api.get(`/reviews/artist/${id}`);
       return response.data;
     },
     enabled: !!id,
