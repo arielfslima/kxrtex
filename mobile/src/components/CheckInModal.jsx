@@ -24,15 +24,15 @@ const CheckInModal = ({ visible, onClose, bookingId, type = 'checkin' }) => {
   const mutation = useMutation({
     mutationFn: async ({ bookingId, latitude, longitude, photo }) => {
       const formData = new FormData();
-      formData.append('latitude', latitude.toString());
-      formData.append('longitude', longitude.toString());
+      formData.append('latitude', parseFloat(latitude));
+      formData.append('longitude', parseFloat(longitude));
 
       if (photo) {
         const filename = photo.uri.split('/').pop();
         const match = /\.(\w+)$/.exec(filename);
         const fileType = match ? `image/${match[1]}` : 'image/jpeg';
 
-        formData.append('file', {
+        formData.append('image', {
           uri: photo.uri,
           name: filename,
           type: fileType,
@@ -41,8 +41,8 @@ const CheckInModal = ({ visible, onClose, bookingId, type = 'checkin' }) => {
 
       const endpoint =
         type === 'checkin'
-          ? `/bookings/${bookingId}/checkin`
-          : `/bookings/${bookingId}/checkout`;
+          ? `/checkin/booking/${bookingId}/checkin`
+          : `/checkin/booking/${bookingId}/checkout`;
 
       const response = await api.post(endpoint, formData, {
         headers: {

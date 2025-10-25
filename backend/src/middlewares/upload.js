@@ -18,7 +18,7 @@ const upload = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB
+    fileSize: 50 * 1024 * 1024 // 50MB - para suportar fotos de alta qualidade (iPhone, etc)
   }
 });
 

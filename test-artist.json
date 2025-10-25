@@ -1,0 +1,13 @@
+{
+  "email": "djtest@test.com",
+  "senha": "Senha123",
+  "nome": "DJ Test",
+  "telefone": "(11) 98888-8888",
+  "cpfCnpj": "987.654.321-00",
+  "tipo": "ARTISTA",
+  "nomeArtistico": "DJ Test Underground",
+  "categoria": "DJ",
+  "valorBaseHora": 500,
+  "cidadesAtuacao": ["São Paulo", "Rio de Janeiro"],
+  "bio": "DJ especializado em música underground e eletrônica"
+}

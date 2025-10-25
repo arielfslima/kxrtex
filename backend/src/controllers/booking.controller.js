@@ -240,6 +240,11 @@ export const getBookingById = async (req, res, next) => {
             timestamp: 'asc'
           },
           take: 50
+        },
+        checkIns: {
+          orderBy: {
+            timestamp: 'desc'
+          }
         }
       }
     });

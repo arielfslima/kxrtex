@@ -11,6 +11,7 @@ import {
   Modal,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   useBooking,
   useAcceptBooking,
@@ -20,6 +21,7 @@ import {
 import { useAuthStore } from '../store/authStore';
 import { COLORS } from '../constants/colors';
 import CheckInModal from '../components/CheckInModal';
+import api from '../services/api';
 
 const BookingDetailScreen = () => {
   const router = useRouter();
@@ -30,6 +32,18 @@ const BookingDetailScreen = () => {
   const acceptBooking = useAcceptBooking();
   const rejectBooking = useRejectBooking();
   const counterOffer = useCounterOffer();
+  const queryClient = useQueryClient();
+
+  const confirmarInicio = useMutation({
+    mutationFn: async ({ bookingId, motivo }) => {
+      const response = await api.post(`/checkin/booking/${bookingId}/confirmar-inicio`, { motivo });
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['booking', id] });
+      queryClient.invalidateQueries({ queryKey: ['bookings'] });
+    },
+  });
 
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
@@ -40,6 +54,8 @@ const BookingDetailScreen = () => {
 
   const [showCheckInModal, setShowCheckInModal] = useState(false);
   const [showCheckOutModal, setShowCheckOutModal] = useState(false);
+  const [showConfirmarInicioModal, setShowConfirmarInicioModal] = useState(false);
+  const [motivoConfirmacao, setMotivoConfirmacao] = useState('');
 
   const isArtist = user?.tipo === 'ARTISTA';
   const isContratante = user?.tipo === 'CONTRATANTE';
@@ -122,6 +138,20 @@ const BookingDetailScreen = () => {
     }
   };
 
+  const handleConfirmarInicio = async () => {
+    try {
+      await confirmarInicio.mutateAsync({
+        bookingId: id,
+        motivo: motivoConfirmacao || 'Artista sem celular / Confirmação manual'
+      });
+      setShowConfirmarInicioModal(false);
+      setMotivoConfirmacao('');
+      Alert.alert('Sucesso!', 'Evento iniciado com sucesso! O artista foi notificado.');
+    } catch (error) {
+      Alert.alert('Erro', error.response?.data?.error || 'Erro ao confirmar início do evento');
+    }
+  };
+
   const renderActions = () => {
     if (!booking) return null;
 
@@ -173,6 +203,10 @@ const BookingDetailScreen = () => {
       );
     }
 
+    // Verifica se existe check-in
+    const checkInChegada = booking.checkIns?.find(c => c.tipo === 'CHEGADA');
+    const checkOutSaida = booking.checkIns?.find(c => c.tipo === 'SAIDA');
+
     // Booking Confirmado
     if (booking.status === 'CONFIRMADO') {
       return (
@@ -183,7 +217,8 @@ const BookingDetailScreen = () => {
           >
             <Text style={styles.actionButtonText}>💬 Abrir Chat</Text>
           </TouchableOpacity>
-          {isArtist && !booking.checkInArtista && (
+
+          {isArtist && !checkInChegada && (
             <TouchableOpacity
               style={styles.checkInButton}
               onPress={() => setShowCheckInModal(true)}
@@ -191,12 +226,21 @@ const BookingDetailScreen = () => {
               <Text style={styles.actionButtonText}>📍 Fazer Check-in</Text>
             </TouchableOpacity>
           )}
+
+          {isContratante && !checkInChegada && (
+            <TouchableOpacity
+              style={styles.confirmarInicioButton}
+              onPress={() => setShowConfirmarInicioModal(true)}
+            >
+              <Text style={styles.actionButtonText}>✅ Confirmar Início do Evento</Text>
+            </TouchableOpacity>
+          )}
         </View>
       );
     }
 
     // Booking Em Andamento
-    if (booking.status === 'EM_ANDAMENTO' && isArtist && !booking.checkOutArtista) {
+    if (booking.status === 'EM_ANDAMENTO' && isArtist && !checkOutSaida) {
       return (
         <View style={styles.actionsContainer}>
           <TouchableOpacity
@@ -339,25 +383,28 @@ const BookingDetailScreen = () => {
                 </View>
               </View>
 
-              {booking.checkInArtista && (
+              {booking.checkIns?.find(c => c.tipo === 'CHEGADA') && (
                 <View style={styles.timelineItem}>
                   <View style={[styles.timelineDot, { backgroundColor: COLORS.success }]} />
                   <View style={styles.timelineContent}>
                     <Text style={styles.timelineTitle}>Check-in Realizado</Text>
                     <Text style={styles.timelineDate}>
-                      {new Date(booking.checkInArtista).toLocaleString('pt-BR')}
+                      {new Date(booking.checkIns.find(c => c.tipo === 'CHEGADA').timestamp).toLocaleString('pt-BR')}
                     </Text>
+                    {booking.checkIns.find(c => c.tipo === 'CHEGADA').status === 'PENDENTE' && (
+                      <Text style={styles.timelineStatus}>⏳ Aguardando aprovação</Text>
+                    )}
                   </View>
                 </View>
               )}
 
-              {booking.checkOutArtista && (
+              {booking.checkIns?.find(c => c.tipo === 'SAIDA') && (
                 <View style={styles.timelineItem}>
                   <View style={[styles.timelineDot, { backgroundColor: COLORS.success }]} />
                   <View style={styles.timelineContent}>
                     <Text style={styles.timelineTitle}>Check-out Realizado</Text>
                     <Text style={styles.timelineDate}>
-                      {new Date(booking.checkOutArtista).toLocaleString('pt-BR')}
+                      {new Date(booking.checkIns.find(c => c.tipo === 'SAIDA').timestamp).toLocaleString('pt-BR')}
                     </Text>
                   </View>
                 </View>
@@ -482,6 +529,55 @@ const BookingDetailScreen = () => {
         bookingId={id}
         type="checkout"
       />
+
+      {/* Confirmar Início do Evento Modal */}
+      <Modal
+        visible={showConfirmarInicioModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowConfirmarInicioModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Confirmar Início do Evento</Text>
+
+            <View style={styles.infoBox}>
+              <Text style={styles.infoBoxIcon}>ℹ️</Text>
+              <Text style={styles.infoBoxText}>
+                Use esta opção apenas se o artista estiver presente mas não conseguiu fazer check-in (sem celular, problemas técnicos, etc).
+              </Text>
+            </View>
+
+            <Text style={styles.modalLabel}>Motivo da confirmação manual (opcional):</Text>
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Ex: Artista sem celular, bateria acabou, etc..."
+              placeholderTextColor={COLORS.textTertiary}
+              value={motivoConfirmacao}
+              onChangeText={setMotivoConfirmacao}
+              multiline
+              numberOfLines={3}
+            />
+
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={handleConfirmarInicio}
+              disabled={confirmarInicio.isPending}
+            >
+              <Text style={styles.modalButtonText}>
+                {confirmarInicio.isPending ? 'Confirmando...' : 'Confirmar que o artista está presente'}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.modalCancelButton}
+              onPress={() => setShowConfirmarInicioModal(false)}
+            >
+              <Text style={styles.modalCancelButtonText}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 };
@@ -600,6 +696,12 @@ const styles = StyleSheet.create({
   timelineDate: {
     fontSize: 13,
     color: COLORS.textSecondary,
+  },
+  timelineStatus: {
+    fontSize: 12,
+    color: COLORS.warning,
+    marginTop: 4,
+    fontStyle: 'italic',
   },
   actionsContainer: {
     marginTop: 16,
@@ -806,6 +908,31 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     alignItems: 'center',
     marginTop: 12,
+  },
+  confirmarInicioButton: {
+    backgroundColor: COLORS.success,
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: 'center',
+    marginTop: 12,
+  },
+  infoBox: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(33, 150, 243, 0.1)',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    alignItems: 'flex-start',
+  },
+  infoBoxIcon: {
+    fontSize: 20,
+    marginRight: 12,
+  },
+  infoBoxText: {
+    flex: 1,
+    fontSize: 14,
+    color: COLORS.textSecondary,
+    lineHeight: 20,
   },
 });
 

@@ -1,0 +1,8 @@
+{
+  "email": "contratante@test.com",
+  "senha": "Senha123",
+  "nome": "Contratante Teste",
+  "telefone": "(11) 99999-9999",
+  "cpfCnpj": "123.456.789-01",
+  "tipo": "CONTRATANTE"
+}

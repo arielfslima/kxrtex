@@ -13,7 +13,7 @@ export default function CheckInModal({ bookingId, type, onClose, onSuccess }) {
   const { data: checkInStatus } = useQuery({
     queryKey: ['checkin-status', bookingId],
     queryFn: async () => {
-      const response = await api.get(`/checkin/${bookingId}/status`);
+      const response = await api.get(`/checkin/booking/${bookingId}/status`);
       return response.data;
     },
     retry: false
@@ -68,8 +68,8 @@ export default function CheckInModal({ bookingId, type, onClose, onSuccess }) {
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        alert('A foto deve ter no máximo 5MB');
+      if (file.size > 50 * 1024 * 1024) {
+        alert('A foto deve ter no máximo 50MB');
         return;
       }
 
@@ -87,9 +87,13 @@ export default function CheckInModal({ bookingId, type, onClose, onSuccess }) {
       const formData = new FormData();
       formData.append('latitude', location.latitude);
       formData.append('longitude', location.longitude);
-      formData.append('photo', photo);
+      formData.append('image', photo); // Mudado de 'photo' para 'image' para compatibilidade com o middleware
 
-      const response = await api.post(`/checkin/${bookingId}`, formData, {
+      const endpoint = type === 'checkin'
+        ? `/checkin/booking/${bookingId}/checkin`
+        : `/checkin/booking/${bookingId}/checkout`;
+
+      const response = await api.post(endpoint, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

@@ -167,8 +167,8 @@ export const refundRequestSchema = z.object({
 
 // Check-in schemas
 export const checkInSchema = z.object({
-  latitude: z.number().min(-90).max(90, 'Latitude inválida'),
-  longitude: z.number().min(-180).max(180, 'Longitude inválida')
+  latitude: z.number().min(-90).max(90, 'Latitude inválida').optional(),
+  longitude: z.number().min(-180).max(180, 'Longitude inválida').optional()
 });
 
 export const checkOutSchema = z.object({

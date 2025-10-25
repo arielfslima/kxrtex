@@ -79,8 +79,8 @@ enum StatusSaque {
 }
 
 enum TipoCheckIn {
-  EVENTO
-  HOTEL
+  CHEGADA
+  SAIDA
 }
 
 // ========================================
@@ -193,6 +193,11 @@ model Booking {
   distanciaKm       Float?          // Para cálculo de adiantamento
   precisaAdiantamento Boolean       @default(false)
 
+  // QR Code para check-in
+  qrCodeCheckIn     String?         // Token único para validar check-in
+  qrCodeGeradoEm    DateTime?       // Quando o QR foi gerado
+  qrCodeExpiracaoEm DateTime?       // Quando o QR expira
+
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
 
@@ -228,9 +233,21 @@ model CheckIn {
 
   tipo        TipoCheckIn
   timestamp   DateTime    @default(now())
-  latitude    Float
-  longitude   Float
-  fotoUrl     String?
+  latitude    Float?
+  longitude   Float?
+  fotoUrl     String      // Foto obrigatória para prova
+
+  // Validação e aprovação
+  status      String      @default("PENDENTE")  // PENDENTE, APROVADO, REJEITADO
+  aprovadoEm  DateTime?   // Quando foi aprovado (auto ou manual)
+  validadoPor String?     // ID do contratante que validou (null = auto-aprovação)
+  rejeitadoPor String?    // ID do contratante que rejeitou
+  motivoRejeicao String?  // Motivo se foi rejeitado
+
+  // Metadados para análise de fraude
+  distanciaDoLocal Float?  // Distância em metros do local do evento
+  dentroJanela Boolean @default(true) // Se estava dentro da janela de tempo
+  scoreConfiabilidade Int? // Score 0-100 calculado automaticamente
 
   @@map("check_ins")
 }

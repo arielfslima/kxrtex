@@ -11,6 +11,7 @@ import { rateLimiter } from './config/rateLimiter.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { setSocketInstance } from './utils/socket.js';
 import { productionConfig } from './config/production.js';
+import { startScheduledJobs } from './jobs/scheduler.js';
 
 // Routes
 import authRoutes from './routes/auth.routes.js';
@@ -172,6 +173,9 @@ httpServer.listen(PORT, () => {
 ║                                       ║
 ╚═══════════════════════════════════════╝
   `);
+
+  // Inicia jobs agendados
+  startScheduledJobs();
 });
 
 // Graceful shutdown
