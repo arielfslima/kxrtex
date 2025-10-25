@@ -11,7 +11,7 @@ export default function LocationAutocomplete({ value, onChange, placeholder = "D
     // Carregar Google Maps script
     if (!window.google) {
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&language=pt-BR`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&language=pt-BR&loading=async`;
       script.async = true;
       script.defer = true;
       script.onload = () => setIsLoaded(true);
@@ -28,7 +28,7 @@ export default function LocationAutocomplete({ value, onChange, placeholder = "D
     const autocomplete = new window.google.maps.places.Autocomplete(inputRef.current, {
       componentRestrictions: { country: 'br' },
       fields: ['address_components', 'formatted_address', 'geometry', 'name'],
-      types: ['address', 'establishment'],
+      types: ['geocode'], // Aceita endereços e locais
     });
 
     autocomplete.addListener('place_changed', () => {
