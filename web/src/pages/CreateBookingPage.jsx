@@ -58,8 +58,9 @@ export default function CreateBookingPage() {
       return;
     }
 
-    // Combinar data e horário no timezone de Brasília (UTC-3)
-    const dataHora = `${formData.dataEvento}T${formData.horarioInicio}:00`;
+    // Converter data de dd/mm/aaaa para ISO datetime
+    const [dia, mes, ano] = formData.dataEvento.split('/');
+    const dataHora = `${ano}-${mes}-${dia}T${formData.horarioInicio}:00`;
     const dataEventoISO = new Date(dataHora).toISOString();
 
     const dataToSend = {
@@ -175,13 +176,19 @@ export default function CreateBookingPage() {
                       Data do Evento *
                     </label>
                     <input
-                      type="date"
+                      type="text"
                       name="dataEvento"
                       value={formData.dataEvento}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/\D/g, '');
+                        if (value.length >= 2) value = value.slice(0,2) + '/' + value.slice(2);
+                        if (value.length >= 5) value = value.slice(0,5) + '/' + value.slice(5,9);
+                        setFormData({...formData, dataEvento: value});
+                      }}
                       required
-                      min={new Date().toISOString().split('T')[0]}
-                      className="w-full px-4 py-3 bg-dark-900 border border-dark-700 rounded-xl text-white focus:outline-none focus:border-red-vibrant transition-colors"
+                      placeholder="dd/mm/aaaa"
+                      maxLength="10"
+                      className="w-full px-4 py-3 bg-dark-900 border border-dark-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-red-vibrant transition-colors"
                     />
                   </div>
 
