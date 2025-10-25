@@ -81,7 +81,7 @@ export const createBookingPayment = async (req, res, next) => {
     const pagamentoExistente = await prisma.transacao.findFirst({
       where: {
         bookingId,
-        status: { in: ['PENDING', 'CONFIRMED', 'RECEIVED'] }
+        status: { in: ['PENDENTE', 'CONFIRMADO'] }
       }
     });
 
@@ -178,20 +178,20 @@ export const getPayment = async (req, res, next) => {
     }
 
     // Atualiza status do ASAAS
-    const asaasStatus = await getPaymentStatus(pagamento.asaasPaymentId);
+    const asaasStatus = await getPaymentStatus(pagamento.asaasId);
 
     // Se status mudou, atualiza no banco
     if (asaasStatus.status !== pagamento.status) {
+      const mappedStatus = mapAsaasStatus(asaasStatus.status);
       await prisma.transacao.update({
         where: { id: pagamento.id },
         data: {
-          status: asaasStatus.status,
-          dataPagamento: asaasStatus.confirmedDate ? new Date(asaasStatus.confirmedDate) : null
+          status: mappedStatus
         }
       });
 
       // Se foi confirmado, atualiza status do booking
-      if (asaasStatus.status === 'CONFIRMED' || asaasStatus.status === 'RECEIVED') {
+      if (mappedStatus === 'CONFIRMADO') {
         await prisma.booking.update({
           where: { id: bookingId },
           data: { status: 'CONFIRMADO' }
@@ -220,9 +220,9 @@ export const handleWebhook = async (req, res, next) => {
 
     console.log('Webhook ASAAS recebido:', event, payment.id);
 
-    // Busca pagamento pelo asaasPaymentId
+    // Busca pagamento pelo asaasId
     const pagamento = await prisma.transacao.findFirst({
-      where: { asaasPaymentId: payment.id },
+      where: { asaasId: payment.id },
       include: {
         booking: {
           include: {
@@ -246,8 +246,7 @@ export const handleWebhook = async (req, res, next) => {
         await prisma.transacao.update({
           where: { id: pagamento.id },
           data: {
-            status: 'CONFIRMED',
-            dataPagamento: new Date()
+            status: 'CONFIRMADO'
           }
         });
 
@@ -273,7 +272,7 @@ export const handleWebhook = async (req, res, next) => {
       case 'PAYMENT_OVERDUE':
         await prisma.transacao.update({
           where: { id: pagamento.id },
-          data: { status: 'OVERDUE' }
+          data: { status: 'PENDENTE' }
         });
 
         console.log('Pagamento vencido:', pagamento.id);
@@ -282,7 +281,7 @@ export const handleWebhook = async (req, res, next) => {
       case 'PAYMENT_REFUNDED':
         await prisma.transacao.update({
           where: { id: pagamento.id },
-          data: { status: 'REFUNDED' }
+          data: { status: 'REEMBOLSADO' }
         });
 
         await prisma.booking.update({
@@ -335,7 +334,7 @@ export const requestRefund = async (req, res, next) => {
     const pagamento = await prisma.transacao.findFirst({
       where: {
         bookingId,
-        status: { in: ['CONFIRMED', 'RECEIVED'] }
+        status: 'CONFIRMADO'
       }
     });
 
@@ -344,12 +343,12 @@ export const requestRefund = async (req, res, next) => {
     }
 
     // Processa estorno no ASAAS
-    const refund = await refundPayment(pagamento.asaasPaymentId, valorParcial);
+    const refund = await refundPayment(pagamento.asaasId, valorParcial);
 
     // Atualiza status
     await prisma.transacao.update({
       where: { id: pagamento.id },
-      data: { status: 'REFUNDED' }
+      data: { status: 'REEMBOLSADO' }
     });
 
     await prisma.booking.update({
@@ -414,7 +413,7 @@ export const releasePayment = async (req, res, next) => {
     const pagamento = await prisma.transacao.findFirst({
       where: {
         bookingId,
-        status: 'CONFIRMED'
+        status: 'CONFIRMADO'
       }
     });
 
@@ -423,12 +422,15 @@ export const releasePayment = async (req, res, next) => {
     }
 
     // Se tiver split configurado, o ASAAS já transferiu automaticamente
-    // Apenas atualiza status
-    await prisma.transacao.update({
-      where: { id: pagamento.id },
+    // Cria uma nova transação de LIBERACAO
+    await prisma.transacao.create({
       data: {
-        status: 'RELEASED',
-        dataLiberacao: new Date()
+        bookingId,
+        tipo: 'LIBERACAO',
+        valor: pagamento.valor,
+        metodo: pagamento.metodo,
+        status: 'CONFIRMADO',
+        asaasId: pagamento.asaasId
       }
     });
 
