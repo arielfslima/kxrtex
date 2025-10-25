@@ -19,17 +19,33 @@ export default function PaymentModal({ bookingId, onClose, onSuccess }) {
   });
 
   useEffect(() => {
+    console.log('[PaymentModal] paymentStatus:', paymentStatus);
     if (paymentStatus?.data) {
       const payment = paymentStatus.data;
+      console.log('[PaymentModal] Payment found:', {
+        metodo: payment.metodo,
+        status: payment.status,
+        hasQrCode: !!payment.pixQrCode,
+        hasCopyPaste: !!payment.pixCopyPaste
+      });
       const isPending = payment.status === 'PENDENTE' || payment.status === 'PENDING';
       if (payment.metodo === 'PIX' && isPending && payment.pixQrCode) {
+        console.log('[PaymentModal] Showing existing QR code');
         setPixData({
           qrCode: payment.pixQrCode,
           copyPaste: payment.pixCopyPaste
         });
         setShowPixCode(true);
         startPaymentPolling();
+      } else {
+        console.log('[PaymentModal] Not showing QR code:', {
+          isPix: payment.metodo === 'PIX',
+          isPending,
+          hasQrCode: !!payment.pixQrCode
+        });
       }
+    } else {
+      console.log('[PaymentModal] No payment data');
     }
   }, [paymentStatus]);
 
