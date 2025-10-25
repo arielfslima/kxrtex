@@ -156,7 +156,11 @@ export const getPaymentStatus = async (paymentId) => {
       value: response.data.value,
       netValue: response.data.netValue,
       confirmedDate: response.data.confirmedDate,
-      paymentDate: response.data.paymentDate
+      paymentDate: response.data.paymentDate,
+      pixQrCode: response.data.encodedImage,
+      pixCopyPaste: response.data.payload,
+      invoiceUrl: response.data.invoiceUrl,
+      bankSlipUrl: response.data.bankSlipUrl
     };
   } catch (error) {
     console.error('Erro ao consultar pagamento ASAAS:', error.response?.data);

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import api from '../services/api';
 
@@ -8,15 +8,29 @@ export default function PaymentModal({ bookingId, onClose, onSuccess }) {
   const [showPixCode, setShowPixCode] = useState(false);
   const [pixData, setPixData] = useState(null);
 
-  const { data: paymentStatus, refetch: refetchPayment } = useQuery({
+  const { data: paymentStatus, refetch: refetchPayment, isLoading: isLoadingPayment } = useQuery({
     queryKey: ['payment', bookingId],
     queryFn: async () => {
       const response = await api.get(`/payments/booking/${bookingId}`);
       return response.data;
     },
-    enabled: false,
+    enabled: true,
     retry: false
   });
+
+  useEffect(() => {
+    if (paymentStatus?.data) {
+      const payment = paymentStatus.data;
+      if (payment.metodo === 'PIX' && payment.status === 'PENDENTE' && payment.pixQrCode) {
+        setPixData({
+          qrCode: payment.pixQrCode,
+          copyPaste: payment.pixCopyPaste
+        });
+        setShowPixCode(true);
+        startPaymentPolling();
+      }
+    }
+  }, [paymentStatus]);
 
   const createPaymentMutation = useMutation({
     mutationFn: async (billingType) => {
@@ -123,6 +137,19 @@ export default function PaymentModal({ bookingId, onClose, onSuccess }) {
 
           <div className="text-gray-500 text-xs text-center">
             O pagamento PIX é processado instantaneamente
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoadingPayment) {
+    return (
+      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6">
+        <div className="bg-dark-800 border-2 border-red-vibrant rounded-2xl p-8 max-w-md w-full relative">
+          <div className="text-white text-center">
+            <div className="mb-4 text-4xl">⏳</div>
+            <div className="text-xl font-bold">Verificando pagamento...</div>
           </div>
         </div>
       </div>

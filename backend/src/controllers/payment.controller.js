@@ -203,7 +203,10 @@ export const getPayment = async (req, res, next) => {
       data: {
         ...pagamento,
         status: asaasStatus.status,
-        dataPagamento: asaasStatus.confirmedDate
+        dataPagamento: asaasStatus.confirmedDate,
+        pixQrCode: asaasStatus.pixQrCode,
+        pixCopyPaste: asaasStatus.pixCopyPaste,
+        invoiceUrl: asaasStatus.invoiceUrl
       }
     });
   } catch (error) {
