@@ -7,6 +7,10 @@ echo "🚀 Starting KXRTEX Backend..."
 echo "📦 Generating Prisma Client..."
 npx prisma generate
 
+# Run database migrations
+echo "🗄️  Running database migrations..."
+npx prisma migrate deploy
+
 # Start the server
 echo "✅ Starting Node server..."
 node src/server.js
