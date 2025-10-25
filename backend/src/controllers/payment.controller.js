@@ -8,6 +8,36 @@ import {
   refundPayment
 } from '../services/asaas.service.js';
 
+// NOTE: Using prisma.transacao instead of prisma.transacao to match schema.prisma model name
+
+/**
+ * Mapeia status do ASAAS para status do schema
+ */
+const mapAsaasStatus = (asaasStatus) => {
+  const statusMap = {
+    'PENDING': 'PENDENTE',
+    'CONFIRMED': 'CONFIRMADO',
+    'RECEIVED': 'CONFIRMADO',
+    'OVERDUE': 'PENDENTE',
+    'REFUNDED': 'REEMBOLSADO',
+    'REFUND_REQUESTED': 'REEMBOLSADO',
+    'CHARGEBACK_REQUESTED': 'FALHADO',
+    'CHARGEBACK_DISPUTE': 'FALHADO',
+    'AWAITING_CHARGEBACK_REVERSAL': 'FALHADO',
+    'DUNNING_REQUESTED': 'PENDENTE',
+    'DUNNING_RECEIVED': 'CONFIRMADO',
+    'AWAITING_RISK_ANALYSIS': 'PENDENTE'
+  };
+  return statusMap[asaasStatus] || 'PENDENTE';
+};
+
+/**
+ * Mapeia método de pagamento
+ */
+const mapBillingType = (billingType) => {
+  return billingType === 'CREDIT_CARD' ? 'CARTAO' : 'PIX';
+};
+
 /**
  * Cria um pagamento para um booking
  */
@@ -48,7 +78,7 @@ export const createBookingPayment = async (req, res, next) => {
     }
 
     // Valida que não existe pagamento pendente
-    const pagamentoExistente = await prisma.pagamento.findFirst({
+    const pagamentoExistente = await prisma.transacao.findFirst({
       where: {
         bookingId,
         status: { in: ['PENDING', 'CONFIRMED', 'RECEIVED'] }
@@ -90,18 +120,14 @@ export const createBookingPayment = async (req, res, next) => {
     const asaasPayment = await createPayment(paymentData);
 
     // Salva pagamento no banco de dados
-    const pagamento = await prisma.pagamento.create({
+    const pagamento = await prisma.transacao.create({
       data: {
         bookingId,
-        asaasPaymentId: asaasPayment.paymentId,
+        tipo: 'PAGAMENTO',
         valor: booking.valorTotal,
-        valorArtista: booking.valorArtista,
-        taxaPlataforma: booking.taxaPlataforma,
-        metodoPagamento: billingType,
-        status: asaasPayment.status,
-        dataVencimento: new Date(asaasPayment.dueDate),
-        pixQrCode: asaasPayment.pixQrCode,
-        pixCopyPaste: asaasPayment.pixCopyPaste
+        metodo: mapBillingType(billingType),
+        status: mapAsaasStatus(asaasPayment.status),
+        asaasId: asaasPayment.paymentId
       }
     });
 
@@ -142,7 +168,7 @@ export const getPayment = async (req, res, next) => {
       throw new AppError('Sem permissão para visualizar este pagamento', 403);
     }
 
-    const pagamento = await prisma.pagamento.findFirst({
+    const pagamento = await prisma.transacao.findFirst({
       where: { bookingId },
       orderBy: { criadoEm: 'desc' }
     });
@@ -156,7 +182,7 @@ export const getPayment = async (req, res, next) => {
 
     // Se status mudou, atualiza no banco
     if (asaasStatus.status !== pagamento.status) {
-      await prisma.pagamento.update({
+      await prisma.transacao.update({
         where: { id: pagamento.id },
         data: {
           status: asaasStatus.status,
@@ -195,7 +221,7 @@ export const handleWebhook = async (req, res, next) => {
     console.log('Webhook ASAAS recebido:', event, payment.id);
 
     // Busca pagamento pelo asaasPaymentId
-    const pagamento = await prisma.pagamento.findFirst({
+    const pagamento = await prisma.transacao.findFirst({
       where: { asaasPaymentId: payment.id },
       include: {
         booking: {
@@ -217,7 +243,7 @@ export const handleWebhook = async (req, res, next) => {
       case 'PAYMENT_CONFIRMED':
       case 'PAYMENT_RECEIVED':
         // Atualiza status do pagamento
-        await prisma.pagamento.update({
+        await prisma.transacao.update({
           where: { id: pagamento.id },
           data: {
             status: 'CONFIRMED',
@@ -245,7 +271,7 @@ export const handleWebhook = async (req, res, next) => {
         break;
 
       case 'PAYMENT_OVERDUE':
-        await prisma.pagamento.update({
+        await prisma.transacao.update({
           where: { id: pagamento.id },
           data: { status: 'OVERDUE' }
         });
@@ -254,7 +280,7 @@ export const handleWebhook = async (req, res, next) => {
         break;
 
       case 'PAYMENT_REFUNDED':
-        await prisma.pagamento.update({
+        await prisma.transacao.update({
           where: { id: pagamento.id },
           data: { status: 'REFUNDED' }
         });
@@ -306,7 +332,7 @@ export const requestRefund = async (req, res, next) => {
       throw new AppError('Sem permissão para solicitar estorno', 403);
     }
 
-    const pagamento = await prisma.pagamento.findFirst({
+    const pagamento = await prisma.transacao.findFirst({
       where: {
         bookingId,
         status: { in: ['CONFIRMED', 'RECEIVED'] }
@@ -321,7 +347,7 @@ export const requestRefund = async (req, res, next) => {
     const refund = await refundPayment(pagamento.asaasPaymentId, valorParcial);
 
     // Atualiza status
-    await prisma.pagamento.update({
+    await prisma.transacao.update({
       where: { id: pagamento.id },
       data: { status: 'REFUNDED' }
     });
@@ -385,7 +411,7 @@ export const releasePayment = async (req, res, next) => {
       throw new AppError('Pagamento só pode ser liberado 48h após conclusão do evento', 400);
     }
 
-    const pagamento = await prisma.pagamento.findFirst({
+    const pagamento = await prisma.transacao.findFirst({
       where: {
         bookingId,
         status: 'CONFIRMED'
@@ -398,7 +424,7 @@ export const releasePayment = async (req, res, next) => {
 
     // Se tiver split configurado, o ASAAS já transferiu automaticamente
     // Apenas atualiza status
-    await prisma.pagamento.update({
+    await prisma.transacao.update({
       where: { id: pagamento.id },
       data: {
         status: 'RELEASED',
