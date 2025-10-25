@@ -37,6 +37,9 @@ if (process.env.NODE_ENV === 'production') {
   process.env.CLOUDINARY_API_SECRET = productionConfig.cloudinary.apiSecret;
   process.env.ASAAS_API_KEY = productionConfig.asaas.apiKey;
   process.env.ASAAS_ENVIRONMENT = productionConfig.asaas.environment;
+  process.env.ASAAS_API_URL = productionConfig.asaas.environment === 'sandbox'
+    ? 'https://sandbox.asaas.com/api/v3'
+    : 'https://api.asaas.com/v3';
   process.env.ASAAS_WEBHOOK_SECRET = productionConfig.asaas.webhookSecret;
   process.env.FIREBASE_SERVICE_ACCOUNT = JSON.stringify(productionConfig.firebase.serviceAccount);
   process.env.FRONTEND_URL = productionConfig.frontendUrls.join(',');
