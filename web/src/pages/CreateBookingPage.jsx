@@ -58,8 +58,9 @@ export default function CreateBookingPage() {
       return;
     }
 
-    // Combinar data e horário em formato ISO datetime
-    const dataEventoISO = `${formData.dataEvento}T${formData.horarioInicio}:00.000Z`;
+    // Combinar data e horário no timezone de Brasília (UTC-3)
+    const dataHora = `${formData.dataEvento}T${formData.horarioInicio}:00`;
+    const dataEventoISO = new Date(dataHora).toISOString();
 
     const dataToSend = {
       ...formData,
