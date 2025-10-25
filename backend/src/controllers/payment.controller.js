@@ -228,6 +228,67 @@ export const getPayment = async (req, res, next) => {
 };
 
 /**
+ * TESTE: Simula confirmação de pagamento
+ * Remove este endpoint antes de ir para produção
+ */
+export const simulatePaymentConfirmation = async (req, res, next) => {
+  try {
+    const { bookingId } = req.params;
+
+    // Busca o pagamento mais recente do booking
+    const pagamento = await prisma.transacao.findFirst({
+      where: { bookingId },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        booking: {
+          include: {
+            artista: true,
+            contratante: true
+          }
+        }
+      }
+    });
+
+    if (!pagamento) {
+      throw new AppError('Pagamento não encontrado', 404);
+    }
+
+    // Atualiza status do pagamento
+    await prisma.transacao.update({
+      where: { id: pagamento.id },
+      data: { status: 'CONFIRMADO' }
+    });
+
+    // Atualiza status do booking para CONFIRMADO
+    await prisma.booking.update({
+      where: { id: bookingId },
+      data: { status: 'CONFIRMADO' }
+    });
+
+    // Cria mensagem de sistema
+    await prisma.mensagem.create({
+      data: {
+        bookingId,
+        remetenteId: pagamento.booking.contratante.usuarioId,
+        conteudo: '✅ Pagamento confirmado! O evento está confirmado e o artista será notificado.',
+        tipo: 'SISTEMA'
+      }
+    });
+
+    res.json({
+      message: 'Pagamento simulado com sucesso',
+      data: {
+        pagamentoId: pagamento.id,
+        bookingStatus: 'CONFIRMADO',
+        paymentStatus: 'CONFIRMADO'
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * Webhook do ASAAS para notificações de pagamento
  */
 export const handleWebhook = async (req, res, next) => {

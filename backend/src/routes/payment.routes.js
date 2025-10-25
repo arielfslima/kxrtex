@@ -10,7 +10,8 @@ import {
   getPayment,
   handleWebhook,
   requestRefund,
-  releasePayment
+  releasePayment,
+  simulatePaymentConfirmation
 } from '../controllers/payment.controller.js';
 
 const router = Router();
@@ -28,5 +29,8 @@ router.get('/booking/:bookingId', getPayment);
 router.post('/booking/:bookingId/refund', validate(refundRequestSchema), requestRefund);
 
 router.post('/booking/:bookingId/release', releasePayment);
+
+// TESTE: Simular confirmação de pagamento (REMOVER EM PRODUÇÃO)
+router.post('/booking/:bookingId/simulate-confirm', simulatePaymentConfirmation);
 
 export default router;
