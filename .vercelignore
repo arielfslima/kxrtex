@@ -1,9 +1,0 @@
-# Vercel ignore
-backend/
-mobile/
-docs/
-scripts/
-.git/
-node_modules/
-*.md
-!web/
