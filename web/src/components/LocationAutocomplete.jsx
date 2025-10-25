@@ -8,21 +8,59 @@ export default function LocationAutocomplete({ value, onChange, placeholder = "D
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // Carregar Google Maps script
-    if (!window.google) {
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&language=pt-BR&loading=async`;
-      script.async = true;
-      script.defer = true;
-      script.onload = () => setIsLoaded(true);
-      document.head.appendChild(script);
-    } else {
+    // Verificar se já foi carregado
+    if (window.google?.maps?.places) {
       setIsLoaded(true);
+      return;
     }
+
+    // Verificar se o script já está sendo carregado
+    if (document.querySelector('script[src*="maps.googleapis.com"]')) {
+      // Script já está carregando, aguardar
+      const checkLoaded = setInterval(() => {
+        if (window.google?.maps?.places) {
+          setIsLoaded(true);
+          clearInterval(checkLoaded);
+        }
+      }, 100);
+      return () => clearInterval(checkLoaded);
+    }
+
+    // Carregar Google Maps script
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&language=pt-BR`;
+    script.async = true;
+    script.defer = true;
+
+    script.onload = () => {
+      // Aguardar o Google Maps estar completamente inicializado
+      const checkReady = setInterval(() => {
+        if (window.google?.maps?.places) {
+          setIsLoaded(true);
+          clearInterval(checkReady);
+        }
+      }, 50);
+    };
+
+    script.onerror = () => {
+      console.error('Failed to load Google Maps script');
+    };
+
+    document.head.appendChild(script);
+
+    return () => {
+      // Cleanup não remove o script pois pode ser usado por outros componentes
+    };
   }, []);
 
   useEffect(() => {
     if (!isLoaded || !inputRef.current || autocompleteRef.current) return;
+
+    // Verificar se Google Maps está totalmente carregado
+    if (!window.google?.maps?.places?.Autocomplete) {
+      console.error('Google Maps Places API not loaded');
+      return;
+    }
 
     // Inicializar autocomplete
     const autocomplete = new window.google.maps.places.Autocomplete(inputRef.current, {
