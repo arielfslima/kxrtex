@@ -37,7 +37,7 @@ export default function BookingDetailPage() {
   });
 
   const acceptMutation = useMutation({
-    mutationFn: () => api.post(`/bookings/${id}/accept`),
+    mutationFn: () => api.patch(`/bookings/${id}/accept`),
     onSuccess: () => {
       queryClient.invalidateQueries(['booking', id]);
       queryClient.invalidateQueries(['bookings']);
@@ -45,7 +45,7 @@ export default function BookingDetailPage() {
   });
 
   const rejectMutation = useMutation({
-    mutationFn: (motivo) => api.post(`/bookings/${id}/reject`, { motivo }),
+    mutationFn: (motivo) => api.patch(`/bookings/${id}/reject`, { motivo }),
     onSuccess: () => {
       queryClient.invalidateQueries(['booking', id]);
       queryClient.invalidateQueries(['bookings']);
