@@ -174,11 +174,24 @@ export const getPayment = async (req, res, next) => {
     });
 
     if (!pagamento) {
-      throw new AppError('Pagamento não encontrado', 404);
+      return res.json({ data: null });
     }
 
     // Atualiza status do ASAAS
-    const asaasStatus = await getPaymentStatus(pagamento.asaasId);
+    let asaasStatus;
+    try {
+      asaasStatus = await getPaymentStatus(pagamento.asaasId);
+    } catch (asaasError) {
+      console.error('Erro ao consultar ASAAS:', asaasError);
+      return res.json({
+        data: {
+          ...pagamento,
+          pixQrCode: null,
+          pixCopyPaste: null,
+          invoiceUrl: null
+        }
+      });
+    }
 
     // Se status mudou, atualiza no banco
     if (asaasStatus.status !== pagamento.status) {
