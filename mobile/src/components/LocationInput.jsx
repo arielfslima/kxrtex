@@ -8,6 +8,8 @@ import {
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { COLORS } from '../constants/colors';
 
+// API Key do Google Maps - Places API
+// TODO: Mover para variável de ambiente em produção
 const GOOGLE_MAPS_API_KEY = 'AIzaSyA_50_Ix2-aFOjO8yP-NL_Fn-FRz26aQZU';
 
 const LocationInput = ({ value, onChange, error }) => {
@@ -15,6 +17,9 @@ const LocationInput = ({ value, onChange, error }) => {
   const autocompleteRef = useRef(null);
 
   const handlePlaceSelect = (data, details = null) => {
+    console.log('Place selected:', data);
+    console.log('Place details:', details);
+
     if (!details) return;
 
     const { geometry, address_components, formatted_address } = details;
@@ -69,6 +74,19 @@ const LocationInput = ({ value, onChange, error }) => {
         }}
         fetchDetails={true}
         enablePoweredByContainer={false}
+        debounce={400}
+        minLength={2}
+        keepResultsAfterBlur={false}
+        listViewDisplayed="auto"
+        renderDescription={(row) => row.description}
+        onFail={(error) => {
+          console.error('GooglePlacesAutocomplete Error:', error);
+          Alert.alert('Erro', 'Não foi possível buscar endereços. Verifique sua conexão.');
+        }}
+        requestUrl={{
+          useOnPlatform: 'all',
+          url: 'https://maps.googleapis.com/maps/api',
+        }}
         styles={{
           textInputContainer: styles.autocompleteContainer,
           textInput: [styles.input, error && styles.inputError],
@@ -79,6 +97,8 @@ const LocationInput = ({ value, onChange, error }) => {
         }}
         textInputProps={{
           placeholderTextColor: COLORS.textTertiary,
+          autoCapitalize: 'words',
+          autoCorrect: false,
         }}
       />
 
@@ -98,7 +118,7 @@ const LocationInput = ({ value, onChange, error }) => {
 const styles = StyleSheet.create({
   container: {
     marginBottom: 20,
-    zIndex: 1,
+    flex: 1,
   },
   label: {
     fontSize: 16,
@@ -107,33 +127,44 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   autocompleteContainer: {
-    backgroundColor: 'transparent',
+    flex: 0,
+    zIndex: 2,
   },
   input: {
     backgroundColor: COLORS.card,
     borderWidth: 1,
     borderColor: COLORS.border,
     borderRadius: 12,
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     fontSize: 16,
     color: COLORS.text,
+    height: 50,
   },
   inputError: {
     borderColor: COLORS.error,
   },
   listView: {
+    position: 'absolute',
+    top: 55,
+    left: 0,
+    right: 0,
     backgroundColor: COLORS.card,
     borderWidth: 1,
     borderColor: COLORS.border,
     borderRadius: 12,
-    marginTop: 8,
-    maxHeight: 200,
+    maxHeight: 250,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    zIndex: 999,
   },
   row: {
     backgroundColor: COLORS.card,
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
+    padding: 14,
+    minHeight: 44,
   },
   description: {
     fontSize: 14,
