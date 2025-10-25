@@ -151,18 +151,22 @@ export const createBookingPayment = async (req, res, next) => {
 export const getPayment = async (req, res, next) => {
   try {
     const { bookingId } = req.params;
+    console.log('[getPayment] Buscando pagamento para booking:', bookingId);
 
     const booking = await prisma.booking.findUnique({
       where: { id: bookingId }
     });
 
     if (!booking) {
+      console.log('[getPayment] Booking não encontrado:', bookingId);
       throw new AppError('Booking não encontrado', 404);
     }
 
     // Valida permissão
     const isArtista = req.user.tipo === 'ARTISTA' && booking.artistaId === req.user.artista?.id;
     const isContratante = req.user.tipo === 'CONTRATANTE' && booking.contratanteId === req.user.contratante?.id;
+
+    console.log('[getPayment] Validação de permissão:', { isArtista, isContratante, userTipo: req.user.tipo });
 
     if (!isArtista && !isContratante) {
       throw new AppError('Sem permissão para visualizar este pagamento', 403);
@@ -174,15 +178,20 @@ export const getPayment = async (req, res, next) => {
     });
 
     if (!pagamento) {
+      console.log('[getPayment] Nenhum pagamento encontrado para booking:', bookingId);
       return res.json({ data: null });
     }
+
+    console.log('[getPayment] Pagamento encontrado:', { id: pagamento.id, asaasId: pagamento.asaasId, status: pagamento.status });
 
     // Atualiza status do ASAAS
     let asaasStatus;
     try {
+      console.log('[getPayment] Consultando status no ASAAS:', pagamento.asaasId);
       asaasStatus = await getPaymentStatus(pagamento.asaasId);
+      console.log('[getPayment] Status ASAAS recebido:', asaasStatus.status);
     } catch (asaasError) {
-      console.error('Erro ao consultar ASAAS:', asaasError);
+      console.error('[getPayment] Erro ao consultar ASAAS:', asaasError.message);
       return res.json({
         data: {
           ...pagamento,
