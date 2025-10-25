@@ -78,6 +78,15 @@ export const createPayment = async (paymentData) => {
 
     const response = await asaasApi.post('/payments', payload);
 
+    console.log('[ASAAS] Payment created:', {
+      id: response.data.id,
+      status: response.data.status,
+      billingType: response.data.billingType,
+      hasEncodedImage: !!response.data.encodedImage,
+      hasPayload: !!response.data.payload,
+      fullResponse: JSON.stringify(response.data, null, 2)
+    });
+
     return {
       paymentId: response.data.id,
       invoiceUrl: response.data.invoiceUrl,
