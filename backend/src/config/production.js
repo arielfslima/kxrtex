@@ -13,10 +13,13 @@ export const productionConfig = {
     apiSecret: '70lRhwHIkV0JUVIUAaZescIzbwE'
   },
 
-  // ASAAS
+  // ASAAS - USANDO SANDBOX PARA TESTES (CPFs de teste funcionam)
   asaas: {
-    apiKey: '$aact_prod_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6Ojk1YTVmZjFkLTUyZTEtNDY1MS05YzBhLTcwOTdlOGMzY2I4Yzo6JGFhY2hfZWMxZGM0MWEtY2ZiNS00MDU3LThjY2ItNTdmMDUyODgyYjFl',
-    environment: 'production',
+    // Sandbox key - aceita CPFs de teste
+    apiKey: '$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzI3ODM1ODk6OjAwMDAwMDAwMDAwMDAwNzUyNzE6OiRhYWNoX2Y1NDMwZjIzLTU3NjctNGQ4MC04MjY5LTc3OTBhNjA5M2M0OQ==',
+    // Production key - requer CPFs reais cadastrados na RF
+    // apiKey: '$aact_prod_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6Ojk1YTVmZjFkLTUyZTEtNDY1MS05YzBhLTcwOTdlOGMzY2I4Yzo6JGFhY2hfZWMxZGM0MWEtY2ZiNS00MDU3LThjY2ItNTdmMDUyODgyYjFl',
+    environment: 'sandbox',
     webhookSecret: '95f6ff8be75a6fe793d44cd22184aa76655882b91a9459df85eb682d273d1455'
   },
 
