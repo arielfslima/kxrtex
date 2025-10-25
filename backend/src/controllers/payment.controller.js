@@ -166,7 +166,15 @@ export const getPayment = async (req, res, next) => {
     const isArtista = req.user.tipo === 'ARTISTA' && booking.artistaId === req.user.artista?.id;
     const isContratante = req.user.tipo === 'CONTRATANTE' && booking.contratanteId === req.user.contratante?.id;
 
-    console.log('[getPayment] Validação de permissão:', { isArtista, isContratante, userTipo: req.user.tipo });
+    console.log('[getPayment] Validação de permissão:', {
+      isArtista,
+      isContratante,
+      userTipo: req.user.tipo,
+      bookingArtistaId: booking.artistaId,
+      bookingContratanteId: booking.contratanteId,
+      userArtistaId: req.user.artista?.id,
+      userContratanteId: req.user.contratante?.id
+    });
 
     if (!isArtista && !isContratante) {
       throw new AppError('Sem permissão para visualizar este pagamento', 403);
