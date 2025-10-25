@@ -1,0 +1,86 @@
+# ================================================
+# RAILWAY ENVIRONMENT VARIABLES - KXRTEX PRODUCTION
+# ================================================
+# Copie estas variáveis para o Railway Dashboard
+# Variables tab do seu projeto
+# ================================================
+
+# ================================================
+# SERVER
+# ================================================
+NODE_ENV=production
+PORT=3000
+
+# ================================================
+# DATABASE (será auto-preenchido pelo Railway)
+# ================================================
+# Quando você adicionar o PostgreSQL, o Railway cria automaticamente:
+# DATABASE_URL=${{Postgres.DATABASE_URL}}
+#
+# Cole isso EXATAMENTE assim no Railway (ele substitui automaticamente)
+
+# ================================================
+# JWT SECRET
+# ================================================
+# GERE UM NOVO com este comando no terminal:
+# openssl rand -base64 64
+#
+# Depois cole o resultado aqui:
+JWT_SECRET=COLE_AQUI_O_RESULTADO_DO_COMANDO_OPENSSL
+JWT_EXPIRES_IN=7d
+
+# ================================================
+# CORS - FRONTEND URLS
+# ================================================
+# Atualize com seu domínio .com.br quando estiver pronto
+# Por enquanto, use o domínio do Railway + Vercel
+FRONTEND_URL=https://seu-projeto.vercel.app,https://www.seu-dominio.com.br,https://seu-dominio.com.br
+
+# ================================================
+# CLOUDINARY
+# ================================================
+CLOUDINARY_CLOUD_NAME=PREENCHER_COM_CLOUD_NAME
+CLOUDINARY_API_KEY=852783327391678
+CLOUDINARY_API_SECRET=70lRhwHIkV0JUVIUAaZescIzbwE
+
+# ================================================
+# ASAAS - PRODUÇÃO
+# ================================================
+ASAAS_API_KEY=$aact_prod_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6Ojk1YTVmZjFkLTUyZTEtNDY1MS05YzBhLTcwOTdlOGMzY2I4Yzo6JGFhY2hfZWMxZGM0MWEtY2ZiNS00MDU3LThjY2ItNTdmMDUyODgyYjFl
+ASAAS_ENVIRONMENT=production
+ASAAS_WEBHOOK_SECRET=GERAR_COM_OPENSSL_RAND_HEX_32
+
+# Para gerar o webhook secret, use:
+# openssl rand -hex 32
+
+# ================================================
+# FIREBASE (Push Notifications)
+# ================================================
+# Cole o JSON COMPLETO do Firebase Service Account aqui
+# IMPORTANTE: Cole em uma ÚNICA linha, sem quebras
+# Exemplo: {"type":"service_account","project_id":"..."}
+FIREBASE_SERVICE_ACCOUNT=COLE_AQUI_O_JSON_COMPLETO_DO_FIREBASE
+
+# ================================================
+# SENDGRID (Opcional - pode adicionar depois)
+# ================================================
+# SENDGRID_API_KEY=sua-key-aqui
+# SENDGRID_FROM_EMAIL=noreply@seu-dominio.com.br
+# SENDGRID_FROM_NAME=KXRTEX
+
+# ================================================
+# RATE LIMITING
+# ================================================
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=100
+
+# ================================================
+# INSTRUÇÕES PARA RAILWAY:
+# ================================================
+# 1. Vá para seu projeto no Railway
+# 2. Clique na aba "Variables"
+# 3. Clique em "Raw Editor"
+# 4. Cole TODAS as variáveis acima (uma por linha)
+# 5. Substitua os valores PREENCHER_COM_XXX
+# 6. Salve (Deploy automático acontecerá)
+# ================================================

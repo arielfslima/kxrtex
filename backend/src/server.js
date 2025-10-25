@@ -10,6 +10,7 @@ import { Server } from 'socket.io';
 import { rateLimiter } from './config/rateLimiter.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { setSocketInstance } from './utils/socket.js';
+import { productionConfig } from './config/production.js';
 
 // Routes
 import authRoutes from './routes/auth.routes.js';
@@ -26,6 +27,24 @@ import adminRoutes from './routes/admin.routes.js';
 import notificationRoutes from './routes/notification.routes.js';
 
 dotenv.config();
+
+// Aplicar configurações hardcoded em produção
+if (process.env.NODE_ENV === 'production') {
+  process.env.JWT_SECRET = productionConfig.jwtSecret;
+  process.env.JWT_EXPIRES_IN = productionConfig.jwtExpiresIn;
+  process.env.CLOUDINARY_CLOUD_NAME = productionConfig.cloudinary.cloudName;
+  process.env.CLOUDINARY_API_KEY = productionConfig.cloudinary.apiKey;
+  process.env.CLOUDINARY_API_SECRET = productionConfig.cloudinary.apiSecret;
+  process.env.ASAAS_API_KEY = productionConfig.asaas.apiKey;
+  process.env.ASAAS_ENVIRONMENT = productionConfig.asaas.environment;
+  process.env.ASAAS_WEBHOOK_SECRET = productionConfig.asaas.webhookSecret;
+  process.env.FIREBASE_SERVICE_ACCOUNT = JSON.stringify(productionConfig.firebase.serviceAccount);
+  process.env.FRONTEND_URL = productionConfig.frontendUrls.join(',');
+  process.env.RATE_LIMIT_WINDOW_MS = String(productionConfig.rateLimit.windowMs);
+  process.env.RATE_LIMIT_MAX_REQUESTS = String(productionConfig.rateLimit.maxRequests);
+
+  console.log('Production config loaded from hardcoded values');
+}
 
 const app = express();
 const httpServer = createServer(app);

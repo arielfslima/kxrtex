@@ -1,0 +1,26 @@
+# ================================================
+# VERCEL ENVIRONMENT VARIABLES - WEB FRONTEND
+# ================================================
+
+# Você precisa pegar a URL do Railway primeiro!
+# Vá para: Railway Dashboard → Seu serviço → Settings → Generate Domain
+# Ou use o domínio público que o Railway criou
+
+# Depois que tiver a URL do Railway, substitua abaixo:
+
+VITE_API_URL=https://SEU-PROJETO.up.railway.app
+VITE_SOCKET_URL=https://SEU-PROJETO.up.railway.app
+VITE_ENVIRONMENT=production
+
+# ================================================
+# COMO ADICIONAR NO VERCEL:
+# ================================================
+# 1. Vá para: https://vercel.com/dashboard
+# 2. Clique no seu projeto KXRTEX
+# 3. Settings → Environment Variables
+# 4. Adicione CADA variável acima (uma por vez):
+#    - Name: VITE_API_URL
+#    - Value: https://sua-url.railway.app
+#    - Environment: Production, Preview, Development (marcar todos)
+# 5. Clique em "Redeploy" após adicionar todas
+# ================================================
