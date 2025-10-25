@@ -383,7 +383,80 @@ export const autoAprovarCheckIns = async () => {
 };
 
 /**
- * Check-out do artista
+ * Contratante finaliza o evento
+ * Substitui o check-out do artista
+ */
+export const finalizarEvento = async (req, res, next) => {
+  try {
+    const { bookingId } = req.params;
+    const { feedback } = req.body; // Feedback opcional sobre o evento
+
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        artista: {
+          include: {
+            usuario: true
+          }
+        }
+      }
+    });
+
+    if (!booking) {
+      throw new AppError('Booking não encontrado', 404);
+    }
+
+    // Valida que o usuário é o contratante do booking
+    if (req.user.tipo !== 'CONTRATANTE' || booking.contratanteId !== req.user.contratante.id) {
+      throw new AppError('Apenas o contratante pode finalizar o evento', 403);
+    }
+
+    // Valida que o booking está em andamento
+    if (booking.status !== 'EM_ANDAMENTO') {
+      throw new AppError('Evento deve estar em andamento para ser finalizado', 400);
+    }
+
+    // Atualiza status do booking para CONCLUIDO
+    await prisma.booking.update({
+      where: { id: bookingId },
+      data: { status: 'CONCLUIDO' }
+    });
+
+    // Cria mensagem de sistema notificando finalização
+    const mensagemConteudo = `✅ Evento finalizado pelo contratante!
+${feedback ? `💬 Feedback: ${feedback}` : ''}
+
+💰 Pagamento será liberado em 48h.
+⭐ Não esqueça de avaliar o ${booking.artista.nomeArtistico}!`;
+
+    await prisma.mensagem.create({
+      data: {
+        bookingId,
+        remetenteId: req.user.id,
+        conteudo: mensagemConteudo,
+        tipo: 'SISTEMA'
+      }
+    });
+
+    // TODO: Enviar notificação push/email para artista
+    // TODO: Agendar liberação do pagamento para 48h
+
+    res.json({
+      message: 'Evento finalizado com sucesso',
+      data: {
+        status: 'CONCLUIDO',
+        liberacaoPagamentoEm: new Date(Date.now() + 48 * 60 * 60 * 1000) // +48h
+      }
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Check-out do artista (DEPRECADO - mantido por compatibilidade)
+ * Usar finalizarEvento() no lugar
  */
 export const checkOut = async (req, res, next) => {
   try {

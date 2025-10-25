@@ -45,6 +45,17 @@ const BookingDetailScreen = () => {
     },
   });
 
+  const finalizarEvento = useMutation({
+    mutationFn: async ({ bookingId, feedback }) => {
+      const response = await api.post(`/checkin/booking/${bookingId}/finalizar`, { feedback });
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['booking', id] });
+      queryClient.invalidateQueries({ queryKey: ['bookings'] });
+    },
+  });
+
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
 
@@ -53,9 +64,10 @@ const BookingDetailScreen = () => {
   const [counterMessage, setCounterMessage] = useState('');
 
   const [showCheckInModal, setShowCheckInModal] = useState(false);
-  const [showCheckOutModal, setShowCheckOutModal] = useState(false);
+  const [showFinalizarEventoModal, setShowFinalizarEventoModal] = useState(false);
   const [showConfirmarInicioModal, setShowConfirmarInicioModal] = useState(false);
   const [motivoConfirmacao, setMotivoConfirmacao] = useState('');
+  const [feedbackEvento, setFeedbackEvento] = useState('');
 
   const isArtist = user?.tipo === 'ARTISTA';
   const isContratante = user?.tipo === 'CONTRATANTE';
@@ -152,6 +164,20 @@ const BookingDetailScreen = () => {
     }
   };
 
+  const handleFinalizarEvento = async () => {
+    try {
+      await finalizarEvento.mutateAsync({
+        bookingId: id,
+        feedback: feedbackEvento
+      });
+      setShowFinalizarEventoModal(false);
+      setFeedbackEvento('');
+      Alert.alert('Sucesso!', 'Evento finalizado! Pagamento será liberado em 48h. Não esqueça de avaliar o artista!');
+    } catch (error) {
+      Alert.alert('Erro', error.response?.data?.error || 'Erro ao finalizar evento');
+    }
+  };
+
   const renderActions = () => {
     if (!booking) return null;
 
@@ -240,7 +266,7 @@ const BookingDetailScreen = () => {
     }
 
     // Booking Em Andamento
-    if (booking.status === 'EM_ANDAMENTO' && isArtist && !checkOutSaida) {
+    if (booking.status === 'EM_ANDAMENTO') {
       return (
         <View style={styles.actionsContainer}>
           <TouchableOpacity
@@ -249,12 +275,15 @@ const BookingDetailScreen = () => {
           >
             <Text style={styles.actionButtonText}>💬 Abrir Chat</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.checkOutButton}
-            onPress={() => setShowCheckOutModal(true)}
-          >
-            <Text style={styles.actionButtonText}>✅ Fazer Check-out</Text>
-          </TouchableOpacity>
+
+          {isContratante && (
+            <TouchableOpacity
+              style={styles.finalizarEventoButton}
+              onPress={() => setShowFinalizarEventoModal(true)}
+            >
+              <Text style={styles.actionButtonText}>🏁 Finalizar Evento</Text>
+            </TouchableOpacity>
+          )}
         </View>
       );
     }
@@ -522,13 +551,54 @@ const BookingDetailScreen = () => {
         type="checkin"
       />
 
-      {/* Check-out Modal */}
-      <CheckInModal
-        visible={showCheckOutModal}
-        onClose={() => setShowCheckOutModal(false)}
-        bookingId={id}
-        type="checkout"
-      />
+      {/* Finalizar Evento Modal */}
+      <Modal
+        visible={showFinalizarEventoModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowFinalizarEventoModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Finalizar Evento</Text>
+
+            <View style={styles.infoBox}>
+              <Text style={styles.infoBoxIcon}>🏁</Text>
+              <Text style={styles.infoBoxText}>
+                Confirme que o evento foi concluído. O pagamento será liberado ao artista em 48 horas.
+              </Text>
+            </View>
+
+            <Text style={styles.modalLabel}>Como foi o evento? (opcional)</Text>
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Compartilhe seu feedback sobre o evento..."
+              placeholderTextColor={COLORS.textTertiary}
+              value={feedbackEvento}
+              onChangeText={setFeedbackEvento}
+              multiline
+              numberOfLines={4}
+            />
+
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={handleFinalizarEvento}
+              disabled={finalizarEvento.isPending}
+            >
+              <Text style={styles.modalButtonText}>
+                {finalizarEvento.isPending ? 'Finalizando...' : 'Confirmar Finalização'}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.modalCancelButton}
+              onPress={() => setShowFinalizarEventoModal(false)}
+            >
+              <Text style={styles.modalCancelButtonText}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       {/* Confirmar Início do Evento Modal */}
       <Modal
@@ -902,7 +972,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 12,
   },
-  checkOutButton: {
+  finalizarEventoButton: {
     backgroundColor: COLORS.success,
     borderRadius: 12,
     paddingVertical: 16,
