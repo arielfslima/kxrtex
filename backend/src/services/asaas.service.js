@@ -39,6 +39,30 @@ export const createSubAccount = async (artistaData) => {
 };
 
 /**
+ * Obtém QR Code PIX de um pagamento
+ */
+export const getPixQrCode = async (paymentId) => {
+  try {
+    const response = await asaasApi.get(`/payments/${paymentId}/pixQrCode`);
+
+    console.log('[ASAAS] PIX QR Code retrieved:', {
+      paymentId,
+      hasEncodedImage: !!response.data.encodedImage,
+      hasPayload: !!response.data.payload
+    });
+
+    return {
+      pixQrCode: response.data.encodedImage,
+      pixCopyPaste: response.data.payload,
+      expirationDate: response.data.expirationDate
+    };
+  } catch (error) {
+    console.error('Erro ao buscar QR Code PIX:', error.response?.data);
+    throw new AppError('Erro ao gerar QR Code PIX', 500);
+  }
+};
+
+/**
  * Cria uma cobrança (PIX ou Cartão de Crédito)
  */
 export const createPayment = async (paymentData) => {
@@ -81,22 +105,34 @@ export const createPayment = async (paymentData) => {
     console.log('[ASAAS] Payment created:', {
       id: response.data.id,
       status: response.data.status,
-      billingType: response.data.billingType,
-      hasEncodedImage: !!response.data.encodedImage,
-      hasPayload: !!response.data.payload,
-      fullResponse: JSON.stringify(response.data, null, 2)
+      billingType: response.data.billingType
     });
 
-    return {
+    const result = {
       paymentId: response.data.id,
       invoiceUrl: response.data.invoiceUrl,
       bankSlipUrl: response.data.bankSlipUrl,
-      pixQrCode: response.data.encodedImage,
-      pixCopyPaste: response.data.payload,
       status: response.data.status,
       dueDate: response.data.dueDate,
-      value: response.data.value
+      value: response.data.value,
+      pixQrCode: null,
+      pixCopyPaste: null
     };
+
+    // Se for PIX, busca o QR Code em uma chamada separada
+    if (billingType === 'PIX') {
+      try {
+        const qrCodeData = await getPixQrCode(response.data.id);
+        result.pixQrCode = qrCodeData.pixQrCode;
+        result.pixCopyPaste = qrCodeData.pixCopyPaste;
+        console.log('[ASAAS] PIX QR Code added to payment response');
+      } catch (qrError) {
+        console.error('[ASAAS] Failed to get PIX QR Code:', qrError.message);
+        // Continua mesmo se falhar o QR Code
+      }
+    }
+
+    return result;
   } catch (error) {
     console.error('Erro ao criar cobrança ASAAS:', error.response?.data);
     throw new AppError(error.response?.data?.errors?.[0]?.description || 'Erro ao criar cobrança', 500);
@@ -159,18 +195,33 @@ export const getPaymentStatus = async (paymentId) => {
   try {
     const response = await asaasApi.get(`/payments/${paymentId}`);
 
-    return {
+    const result = {
       id: response.data.id,
       status: response.data.status,
+      billingType: response.data.billingType,
       value: response.data.value,
       netValue: response.data.netValue,
       confirmedDate: response.data.confirmedDate,
       paymentDate: response.data.paymentDate,
-      pixQrCode: response.data.encodedImage,
-      pixCopyPaste: response.data.payload,
       invoiceUrl: response.data.invoiceUrl,
-      bankSlipUrl: response.data.bankSlipUrl
+      bankSlipUrl: response.data.bankSlipUrl,
+      pixQrCode: null,
+      pixCopyPaste: null
     };
+
+    // Se for PIX, busca o QR Code em uma chamada separada
+    if (response.data.billingType === 'PIX') {
+      try {
+        const qrCodeData = await getPixQrCode(paymentId);
+        result.pixQrCode = qrCodeData.pixQrCode;
+        result.pixCopyPaste = qrCodeData.pixCopyPaste;
+      } catch (qrError) {
+        console.error('[ASAAS] Failed to get PIX QR Code in status check:', qrError.message);
+        // Continua mesmo se falhar o QR Code
+      }
+    }
+
+    return result;
   } catch (error) {
     console.error('Erro ao consultar pagamento ASAAS:', error.response?.data);
     throw new AppError('Erro ao consultar pagamento', 500);
