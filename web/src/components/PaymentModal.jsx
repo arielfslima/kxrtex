@@ -21,7 +21,8 @@ export default function PaymentModal({ bookingId, onClose, onSuccess }) {
   useEffect(() => {
     if (paymentStatus?.data) {
       const payment = paymentStatus.data;
-      if (payment.metodo === 'PIX' && payment.status === 'PENDENTE' && payment.pixQrCode) {
+      const isPending = payment.status === 'PENDENTE' || payment.status === 'PENDING';
+      if (payment.metodo === 'PIX' && isPending && payment.pixQrCode) {
         setPixData({
           qrCode: payment.pixQrCode,
           copyPaste: payment.pixCopyPaste
