@@ -58,9 +58,13 @@ export default function CreateBookingPage() {
       return;
     }
 
+    // Combinar data e horário em formato ISO datetime
+    const dataEventoISO = `${formData.dataEvento}T${formData.horarioInicio}:00.000Z`;
+
     const dataToSend = {
       ...formData,
       artistaId,
+      dataEvento: dataEventoISO,
       duracao: parseInt(formData.duracao),
     };
 
