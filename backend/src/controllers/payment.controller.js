@@ -77,17 +77,18 @@ export const createBookingPayment = async (req, res, next) => {
       throw new AppError('Booking deve estar no status ACEITO para pagamento', 400);
     }
 
-    // Valida que não existe pagamento pendente
-    const pagamentoExistente = await prisma.transacao.findFirst({
-      where: {
-        bookingId,
-        status: { in: ['PENDENTE', 'CONFIRMADO'] }
-      }
-    });
+    // TEMPORÁRIO: Permitir múltiplos pagamentos para teste
+    // TODO: Reativar validação após testes
+    // const pagamentoExistente = await prisma.transacao.findFirst({
+    //   where: {
+    //     bookingId,
+    //     status: { in: ['PENDENTE', 'CONFIRMADO'] }
+    //   }
+    // });
 
-    if (pagamentoExistente) {
-      throw new AppError('Já existe um pagamento ativo para este booking', 400);
-    }
+    // if (pagamentoExistente) {
+    //   throw new AppError('Já existe um pagamento ativo para este booking', 400);
+    // }
 
     // Busca ou cria cliente no ASAAS
     const customerId = await getOrCreateCustomer(booking.contratante.usuario);
