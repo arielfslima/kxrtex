@@ -7,7 +7,7 @@ export const initializeSocket = (userId) => {
     socket.disconnect();
   }
 
-  const SOCKET_URL = 'http://localhost:3000';
+  const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3000';
 
   socket = io(SOCKET_URL, {
     transports: ['websocket', 'polling'],
