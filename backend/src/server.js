@@ -23,6 +23,7 @@ import paymentRoutes from './routes/payment.routes.js';
 import checkinRoutes from './routes/checkin.routes.js';
 import adiantamentoRoutes from './routes/adiantamento.routes.js';
 import adminRoutes from './routes/admin.routes.js';
+import notificationRoutes from './routes/notification.routes.js';
 
 dotenv.config();
 
@@ -79,6 +80,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/checkin', checkinRoutes);
 app.use('/api/adiantamentos', adiantamentoRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Socket.IO connection handling
 io.on('connection', (socket) => {
@@ -159,3 +161,5 @@ process.on('SIGTERM', () => {
 });
 
 export { io };
+
+

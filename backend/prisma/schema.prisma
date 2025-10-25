@@ -109,6 +109,7 @@ model Usuario {
   avaliacoesFeitas   Avaliacao[] @relation("AvaliacaoAvaliador")
   avaliacoesRecebidas Avaliacao[] @relation("AvaliacaoAvaliado")
   infracoes          Infracao[]
+  deviceTokens       DeviceToken[]
 
   @@map("usuarios")
 }
@@ -408,4 +409,18 @@ model Infracao {
   createdAt       DateTime  @default(now())
 
   @@map("infracoes")
+}
+
+model DeviceToken {
+  id         String   @id @default(uuid())
+  usuarioId  String
+  usuario    Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  token      String   // FCM token
+  platform   String   // ios, android, web
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("device_tokens")
 }
