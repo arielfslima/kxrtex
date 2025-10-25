@@ -16,6 +16,7 @@ import { z } from 'zod';
 import { useCreateBooking } from '../services/bookingService';
 import { useArtist } from '../services/artistService';
 import { COLORS } from '../constants/colors';
+import LocationInput from '../components/LocationInput';
 
 // Schema de validação
 const bookingSchema = z.object({
@@ -33,11 +34,23 @@ const CreateBookingScreen = () => {
   const { data: artist } = useArtist(artistId);
   const createBooking = useCreateBooking();
 
+  // State separado para campos de localização
+  const [locationData, setLocationData] = useState({
+    local: '',
+    localEndereco: '',
+    localCidade: '',
+    localEstado: '',
+    localCEP: '',
+    localLatitude: null,
+    localLongitude: null,
+  });
+
   const {
     control,
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
@@ -64,12 +77,24 @@ const CreateBookingScreen = () => {
     return valorArtista + taxaPlataforma;
   };
 
+  const handleLocationChange = (data) => {
+    setLocationData((prev) => ({ ...prev, ...data }));
+    // Atualiza o campo 'local' do formulário
+    if (data.local) {
+      setValue('local', data.local);
+    }
+  };
+
   const onSubmit = async (data) => {
     try {
-      await createBooking.mutateAsync({
+      // Combina dados do formulário com dados de localização
+      const bookingData = {
         artistaId: artistId,
         ...data,
-      });
+        ...locationData, // Inclui coordenadas e campos estruturados
+      };
+
+      await createBooking.mutateAsync(bookingData);
 
       Alert.alert(
         'Sucesso!',
@@ -177,27 +202,11 @@ const CreateBookingScreen = () => {
           </View>
 
           {/* Local */}
-          <View style={styles.fieldContainer}>
-            <Text style={styles.label}>Local do Evento *</Text>
-            <Controller
-              control={control}
-              name="local"
-              render={({ field: { onChange, value } }) => (
-                <TextInput
-                  style={[styles.input, styles.textArea, errors.local && styles.inputError]}
-                  placeholder="Endereço completo do evento"
-                  placeholderTextColor={COLORS.textTertiary}
-                  value={value}
-                  onChangeText={onChange}
-                  multiline
-                  numberOfLines={3}
-                />
-              )}
-            />
-            {errors.local && (
-              <Text style={styles.errorText}>{errors.local.message}</Text>
-            )}
-          </View>
+          <LocationInput
+            value={locationData.local}
+            onChange={handleLocationChange}
+            error={errors.local?.message}
+          />
 
           {/* Descrição */}
           <View style={styles.fieldContainer}>
