@@ -182,7 +182,7 @@ export const getPayment = async (req, res, next) => {
 
     const pagamento = await prisma.transacao.findFirst({
       where: { bookingId },
-      orderBy: { criadoEm: 'desc' }
+      orderBy: { createdAt: 'desc' }
     });
 
     if (!pagamento) {
