@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import api from '../services/api';
 import useAuthStore from '../store/authStore';
+import LocationAutocomplete from '../components/LocationAutocomplete';
 
 export default function CreateBookingPage() {
   const navigate = useNavigate();
@@ -17,6 +18,15 @@ export default function CreateBookingPage() {
     local: '',
     descricaoEvento: '',
     valorProposto: '',
+  });
+  const [locationData, setLocationData] = useState({
+    local: '',
+    localEndereco: '',
+    localCidade: '',
+    localEstado: '',
+    localCEP: '',
+    localLatitude: null,
+    localLongitude: null,
   });
   const [error, setError] = useState('');
 
@@ -68,7 +78,13 @@ export default function CreateBookingPage() {
       dataEvento: dataEventoISO,
       horarioInicio: formData.horarioInicio,
       duracao: parseInt(formData.duracao),
-      local: formData.local,
+      local: locationData.local || formData.local,
+      localEndereco: locationData.localEndereco,
+      localCidade: locationData.localCidade,
+      localEstado: locationData.localEstado,
+      localCEP: locationData.localCEP,
+      localLatitude: locationData.localLatitude,
+      localLongitude: locationData.localLongitude,
       descricaoEvento: formData.descricaoEvento,
     };
 
@@ -85,6 +101,12 @@ export default function CreateBookingPage() {
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleLocationChange = (data) => {
+    setLocationData(data);
+    // Também atualiza o formData.local para validação
+    setFormData(prev => ({ ...prev, local: data.local }));
   };
 
   const calculateEstimatedValue = () => {
@@ -230,15 +252,16 @@ export default function CreateBookingPage() {
                   <label className="block text-sm font-medium text-gray-300 mb-2">
                     Local do Evento *
                   </label>
-                  <input
-                    type="text"
-                    name="local"
-                    value={formData.local}
-                    onChange={handleChange}
-                    required
-                    placeholder="Endereço completo ou nome do local"
-                    className="w-full px-4 py-3 bg-dark-900 border border-dark-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-red-vibrant transition-colors"
+                  <LocationAutocomplete
+                    value={locationData.local}
+                    onChange={handleLocationChange}
+                    placeholder="Digite o endereço do evento"
                   />
+                  {locationData.localLatitude && locationData.localLongitude && (
+                    <p className="text-xs text-green-400 mt-2">
+                      ✓ Localização selecionada: {locationData.localLatitude.toFixed(6)}, {locationData.localLongitude.toFixed(6)}
+                    </p>
+                  )}
                 </div>
 
                 <div>
