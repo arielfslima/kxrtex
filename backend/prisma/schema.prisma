@@ -181,7 +181,13 @@ model Booking {
   dataEvento        DateTime
   horarioInicio     String          // HH:mm
   duracao           Int             // Em horas
-  local             String
+  local             String          // Endereço completo formatado
+  localEndereco     String?         // Rua, número
+  localCidade       String?         // Cidade
+  localEstado       String?         // Estado (UF)
+  localCEP          String?         // CEP
+  localLatitude     Float?          // Coordenadas para calcular distância
+  localLongitude    Float?          // Coordenadas para calcular distância
   descricaoEvento   String
 
   valorArtista      Float

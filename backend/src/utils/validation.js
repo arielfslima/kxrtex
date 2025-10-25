@@ -88,6 +88,12 @@ export const createBookingSchema = z.object({
   horarioInicio: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Horário inválido (formato: HH:mm)'),
   duracao: z.number().int().positive('Duração deve ser positiva').max(24, 'Duração máxima: 24 horas'),
   local: z.string().min(5, 'Local deve ter no mínimo 5 caracteres'),
+  localEndereco: z.string().optional(),
+  localCidade: z.string().optional(),
+  localEstado: z.string().optional(),
+  localCEP: z.string().optional(),
+  localLatitude: z.number().optional(),
+  localLongitude: z.number().optional(),
   descricaoEvento: z.string().min(10, 'Descrição deve ter no mínimo 10 caracteres'),
   valorProposto: z.number().positive().optional()
 });

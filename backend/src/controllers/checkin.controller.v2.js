@@ -22,11 +22,49 @@ const calcularDistancia = (lat1, lon1, lat2, lon2) => {
 };
 
 /**
- * Extrai coordenadas do campo 'local' do booking
+ * Geocoding reverso - converte coordenadas em endereço legível
+ * Usa API do Google Maps (requer GOOGLE_MAPS_API_KEY no .env)
  */
-const extrairCoordenadas = (local) => {
+const obterEnderecoDeCoordenadas = async (latitude, longitude) => {
+  try {
+    // Se não tiver API key, retorna coordenadas formatadas
+    if (!process.env.GOOGLE_MAPS_API_KEY) {
+      return `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+    }
+
+    const response = await fetch(
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.GOOGLE_MAPS_API_KEY}&language=pt-BR`
+    );
+
+    const data = await response.json();
+
+    if (data.status === 'OK' && data.results[0]) {
+      return data.results[0].formatted_address;
+    }
+
+    // Fallback para coordenadas
+    return `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+  } catch (error) {
+    console.error('Erro ao fazer geocoding reverso:', error);
+    return `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+  }
+};
+
+/**
+ * Extrai coordenadas do booking (usa novos campos estruturados ou fallback para regex)
+ */
+const extrairCoordenadas = (booking) => {
+  // Prioriza campos estruturados
+  if (booking.localLatitude && booking.localLongitude) {
+    return {
+      latitude: booking.localLatitude,
+      longitude: booking.localLongitude
+    };
+  }
+
+  // Fallback: tentar extrair do campo 'local' (formato legado)
   const regex = /\((-?\d+\.?\d*),\s*(-?\d+\.?\d*)\)/;
-  const match = local.match(regex);
+  const match = booking.local.match(regex);
 
   if (match) {
     return {
@@ -138,8 +176,9 @@ export const checkIn = async (req, res, next) => {
     const dentroJanela = agora >= quatroHorasAntes && agora <= duasHorasDepois;
 
     // Calcula distância do local (se coordenadas disponíveis)
-    const coordenadasEvento = extrairCoordenadas(booking.local);
+    const coordenadasEvento = extrairCoordenadas(booking);
     let distanciaDoLocal = null;
+    let enderecoCheckIn = null;
 
     if (coordenadasEvento && latitude && longitude) {
       distanciaDoLocal = calcularDistancia(
@@ -147,6 +186,12 @@ export const checkIn = async (req, res, next) => {
         parseFloat(longitude),
         coordenadasEvento.latitude,
         coordenadasEvento.longitude
+      );
+
+      // Obter endereço legível do check-in
+      enderecoCheckIn = await obterEnderecoDeCoordenadas(
+        parseFloat(latitude),
+        parseFloat(longitude)
       );
     }
 
@@ -185,7 +230,8 @@ export const checkIn = async (req, res, next) => {
 
     // Cria mensagem de sistema notificando check-in
     const mensagemConteudo = `✅ Check-in realizado pelo artista!
-${distanciaDoLocal ? `📍 Distância do local: ${Math.round(distanciaDoLocal)}m` : ''}
+${enderecoCheckIn ? `📍 Local: ${enderecoCheckIn}` : ''}
+${distanciaDoLocal ? `📏 Distância do evento: ${Math.round(distanciaDoLocal)}m` : ''}
 ⏰ ${dentroJanela ? 'Dentro do horário esperado' : '⚠️ Fora do horário esperado'}
 🔍 Score: ${scoreConfiabilidade}/100
 
