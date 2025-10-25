@@ -16,7 +16,7 @@ export const productionConfig = {
   // ASAAS - USANDO SANDBOX PARA TESTES (CPFs de teste funcionam)
   asaas: {
     // Sandbox key - aceita CPFs de teste
-    apiKey: '$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzI3ODM1ODk6OjAwMDAwMDAwMDAwMDAwNzUyNzE6OiRhYWNoX2Y1NDMwZjIzLTU3NjctNGQ4MC04MjY5LTc3OTBhNjA5M2M0OQ==',
+    apiKey: '$aact_hmlg_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6OjAyZTkwYjBmLTUyZjEtNGYyNC05OTc2LTgwMTgwMDYxNGE1MDo6JGFhY2hfYTBkOGMwMzMtZTcwNi00MTc0LTg2Y2QtOWZlNjIwNWYzMzI2',
     // Production key - requer CPFs reais cadastrados na RF
     // apiKey: '$aact_prod_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6Ojk1YTVmZjFkLTUyZTEtNDY1MS05YzBhLTcwOTdlOGMzY2I4Yzo6JGFhY2hfZWMxZGM0MWEtY2ZiNS00MDU3LThjY2ItNTdmMDUyODgyYjFl',
     environment: 'sandbox',
