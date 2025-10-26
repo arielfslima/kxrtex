@@ -30,7 +30,9 @@ router.post('/booking/:bookingId/refund', validate(refundRequestSchema), request
 
 router.post('/booking/:bookingId/release', releasePayment);
 
-// TESTE: Simular confirmação de pagamento (REMOVER EM PRODUÇÃO)
-router.post('/booking/:bookingId/simulate-confirm', simulatePaymentConfirmation);
+// TESTE: Simular confirmação de pagamento (APENAS EM DESENVOLVIMENTO)
+if (process.env.NODE_ENV !== 'production') {
+  router.post('/booking/:bookingId/simulate-confirm', simulatePaymentConfirmation);
+}
 
 export default router;

@@ -1,20 +1,34 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { COLORS } from '../constants/colors';
-
-// API Key do Google Maps - Places API
-// TODO: Mover para variável de ambiente em produção
-const GOOGLE_MAPS_API_KEY = 'AIzaSyA_50_Ix2-aFOjO8yP-NL_Fn-FRz26aQZU';
+import { api } from '../services/api';
 
 const LocationInput = ({ value, onChange, error }) => {
   const [coordinates, setCoordinates] = useState(null);
+  const [apiKey, setApiKey] = useState(null);
   const autocompleteRef = useRef(null);
+
+  // Fetch API key from backend
+  useEffect(() => {
+    const fetchApiKey = async () => {
+      try {
+        const response = await api.get('/maps/token');
+        setApiKey(response.data.apiKey);
+      } catch (error) {
+        console.error('Failed to fetch Google Maps API key:', error);
+        Alert.alert('Erro', 'Não foi possível carregar o mapa. Tente novamente.');
+      }
+    };
+
+    fetchApiKey();
+  }, []);
 
   const handlePlaceSelect = (data, details = null) => {
     console.log('Place selected:', data);
@@ -59,6 +73,17 @@ const LocationInput = ({ value, onChange, error }) => {
     });
   };
 
+  if (!apiKey) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.label}>Local do Evento *</Text>
+        <View style={[styles.input, { justifyContent: 'center', alignItems: 'center' }]}>
+          <ActivityIndicator size="small" color={COLORS.accent} />
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Local do Evento *</Text>
@@ -68,7 +93,7 @@ const LocationInput = ({ value, onChange, error }) => {
         placeholder="Digite o endereço do evento"
         onPress={handlePlaceSelect}
         query={{
-          key: GOOGLE_MAPS_API_KEY,
+          key: apiKey || '',
           language: 'pt-BR',
           components: 'country:br',
         }}

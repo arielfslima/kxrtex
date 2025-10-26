@@ -139,21 +139,6 @@ export default function PaymentModal({ bookingId, onClose, onSuccess }) {
           <div className="text-gray-500 text-xs text-center">
             O pagamento PIX é processado instantaneamente
           </div>
-
-          {/* TESTE: Botão para simular confirmação de pagamento */}
-          <button
-            onClick={async () => {
-              try {
-                await api.post(`/payments/booking/${bookingId}/simulate-confirm`);
-                alert('Pagamento simulado! Aguarde a atualização...');
-              } catch (error) {
-                alert('Erro ao simular pagamento: ' + error.message);
-              }
-            }}
-            className="w-full mt-4 py-3 bg-purple-600 text-white font-bold rounded-lg hover:bg-purple-500 transition-colors"
-          >
-            🧪 SIMULAR CONFIRMAÇÃO (TESTE)
-          </button>
         </div>
       </div>
     );

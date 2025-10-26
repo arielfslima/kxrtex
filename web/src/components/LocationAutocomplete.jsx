@@ -1,13 +1,29 @@
 import { useEffect, useRef, useState } from 'react';
-
-const GOOGLE_MAPS_API_KEY = 'AIzaSyA_50_Ix2-aFOjO8yP-NL_Fn-FRz26aQZU';
+import api from '../services/api';
 
 export default function LocationAutocomplete({ value, onChange, placeholder = "Digite o endereço do evento" }) {
   const inputRef = useRef(null);
   const autocompleteRef = useRef(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [apiKey, setApiKey] = useState(null);
+
+  // Fetch API key from backend
+  useEffect(() => {
+    const fetchApiKey = async () => {
+      try {
+        const response = await api.get('/maps/token');
+        setApiKey(response.data.apiKey);
+      } catch (error) {
+        console.error('Failed to fetch Google Maps API key:', error);
+      }
+    };
+
+    fetchApiKey();
+  }, []);
 
   useEffect(() => {
+    if (!apiKey) return;
+
     // Verificar se já foi carregado
     if (window.google?.maps?.places) {
       setIsLoaded(true);
@@ -28,7 +44,7 @@ export default function LocationAutocomplete({ value, onChange, placeholder = "D
 
     // Carregar Google Maps script
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&language=pt-BR`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&language=pt-BR`;
     script.async = true;
     script.defer = true;
 
@@ -51,7 +67,7 @@ export default function LocationAutocomplete({ value, onChange, placeholder = "D
     return () => {
       // Cleanup não remove o script pois pode ser usado por outros componentes
     };
-  }, []);
+  }, [apiKey]);
 
   useEffect(() => {
     if (!isLoaded || !inputRef.current || autocompleteRef.current) return;
