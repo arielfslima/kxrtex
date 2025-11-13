@@ -11,6 +11,7 @@ import CreateBookingPage from './pages/CreateBookingPage';
 import ReviewBookingPage from './pages/ReviewBookingPage';
 import ProfilePage from './pages/ProfilePage';
 import EditProfilePage from './pages/EditProfilePage';
+import DemoPage from './pages/DemoPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsuarios from './pages/admin/AdminUsuarios';
 import AdminBookings from './pages/admin/AdminBookings';
@@ -52,6 +53,9 @@ function App() {
                 <Link to="/artists" className="text-gray-300 hover:text-white font-medium transition">
                   Artistas
                 </Link>
+                <Link to="/demo" className="text-gray-300 hover:text-white font-medium transition">
+                  Demo
+                </Link>
                 {isAuthenticated ? (
                   <>
                     <Link to="/bookings" className="text-gray-300 hover:text-white font-medium transition">
@@ -89,6 +93,7 @@ function App() {
           <main>
             <Routes>
               <Route path="/" element={<HomePage />} />
+              <Route path="/demo" element={<DemoPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/artists" element={<ArtistsPage />} />

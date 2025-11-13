@@ -16,6 +16,26 @@ KXRTEX conecta contratantes a artistas underground, oferecendo:
 - Sistema de avaliações bilateral
 - Adiantamento inteligente para eventos fora da cidade
 
+## 🎬 Demo Interativa
+
+Experimente a plataforma completa sem necessidade de cadastro através da nossa **Demo Page Interativa**!
+
+**Acesso**: `/demo` no frontend web
+
+A demo apresenta:
+- ✨ **8 seções interativas** cobrindo todo o fluxo da plataforma
+- 🎮 **Modo Auto-Play** para apresentações automáticas
+- 🎨 **Interface profissional** com animações suaves
+- 📱 **Totalmente responsiva** (desktop, tablet, mobile)
+
+**Perfeito para**:
+- Apresentações a investidores
+- Demos comerciais
+- Onboarding de novos usuários
+- Materiais de marketing
+
+📖 **Guia Completo**: [docs/DEMO_PAGE_GUIDE.md](docs/DEMO_PAGE_GUIDE.md)
+
 ## 🛠 Stack Tecnológica
 
 ### Backend
