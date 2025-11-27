@@ -8,8 +8,8 @@ const RATING_LABELS = {
   profissionalismo: 'Profissionalismo',
   pontualidade: 'Pontualidade',
   performance: 'Performance/Qualidade',
-  comunicacao: 'Comunicação',
-  condicoes: 'Condições do Local',
+  comunicacao: 'Comunicacao',
+  condicoes: 'Condicoes do Local',
   respeito: 'Respeito'
 };
 
@@ -49,7 +49,7 @@ export default function ReviewBookingPage() {
       setError(
         err.response?.data?.message ||
         err.response?.data?.error ||
-        'Erro ao enviar avaliação. Tente novamente.'
+        'Erro ao enviar avaliacao. Tente novamente.'
       );
     },
   });
@@ -67,7 +67,7 @@ export default function ReviewBookingPage() {
 
     const allRatingsSet = Object.values(ratings).every(r => r > 0);
     if (!allRatingsSet) {
-      setError('Por favor, avalie todos os critérios');
+      setError('Por favor, avalie todos os criterios');
       return;
     }
 
@@ -85,11 +85,13 @@ export default function ReviewBookingPage() {
             key={star}
             type="button"
             onClick={() => handleRatingChange(criterion, star)}
-            className={`text-3xl transition-all hover:scale-110 ${
-              star <= currentValue ? 'text-yellow-400' : 'text-gray-600'
+            className={`w-10 h-10 border-2 font-display text-lg transition-all hover:scale-110 ${
+              star <= currentValue
+                ? 'bg-neon-acid text-void border-neon-acid'
+                : 'bg-dark-800 text-chrome/30 border-dark-600 hover:border-neon-acid/50'
             }`}
           >
-            ★
+            {star}
           </button>
         ))}
       </div>
@@ -98,10 +100,10 @@ export default function ReviewBookingPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4 animate-pulse">⭐</div>
-          <div className="text-xl text-gray-400">Carregando...</div>
+          <div className="text-8xl font-display text-neon-acid mb-4 animate-pulse">...</div>
+          <div className="text-xl font-mono text-chrome/50 uppercase tracking-wider">Carregando</div>
         </div>
       </div>
     );
@@ -109,15 +111,15 @@ export default function ReviewBookingPage() {
 
   if (!booking) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4">⚠️</div>
-          <div className="text-2xl font-bold text-red-vibrant mb-2">
-            Booking não encontrado
+          <div className="text-8xl font-display text-neon-red mb-4">!</div>
+          <div className="text-2xl font-display tracking-wider text-chrome mb-2">
+            BOOKING NAO ENCONTRADO
           </div>
           <button
             onClick={() => navigate('/bookings')}
-            className="mt-4 px-6 py-3 bg-red-vibrant text-white font-bold rounded-lg hover:bg-pink-600 transition-colors"
+            className="mt-4 px-6 py-3 bg-neon-red text-void font-bold font-mono text-sm uppercase tracking-wider shadow-brutal hover:bg-neon-acid hover:shadow-brutal-acid transition-all"
           >
             Voltar para Bookings
           </button>
@@ -130,56 +132,56 @@ export default function ReviewBookingPage() {
   const otherUser = isArtista ? booking.contratante?.usuario : booking.artista?.usuario;
 
   return (
-    <div className="min-h-screen py-12">
+    <div className="min-h-screen bg-void py-12">
       <div className="max-w-3xl mx-auto px-6">
         {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => navigate(`/bookings/${bookingId}`)}
-            className="text-gray-400 hover:text-white mb-4 flex items-center gap-2 transition-colors"
+            className="text-chrome/50 hover:text-neon-red mb-4 flex items-center gap-2 font-mono text-sm uppercase tracking-wider transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             Voltar
           </button>
-          <h1 className="text-4xl md:text-5xl font-black mb-2 bg-gradient-to-r from-red-vibrant via-pink-500 to-purple-600 text-transparent bg-clip-text">
-            Avaliar {isArtista ? 'Contratante' : 'Artista'}
+          <h1 className="text-5xl md:text-6xl font-display tracking-wider text-chrome mb-2">
+            AVALIAR <span className="text-neon-acid">{isArtista ? 'CONTRATANTE' : 'ARTISTA'}</span>
           </h1>
-          <p className="text-gray-400 text-lg">
-            Como foi sua experiência com {otherUser?.nome}?
+          <p className="text-chrome/50 font-mono text-sm uppercase tracking-wider">
+            Como foi sua experiencia com {otherUser?.nome}?
           </p>
         </div>
 
         {/* User Card */}
-        <div className="bg-dark-800/50 backdrop-blur-sm border-2 border-dark-700 rounded-2xl p-6 mb-8">
+        <div className="bg-dark-800 border-2 border-dark-600 p-6 mb-8">
           <div className="flex items-center gap-4">
             {otherUser?.foto ? (
               <img
                 src={otherUser.foto}
                 alt={otherUser.nome}
-                className="w-20 h-20 rounded-full object-cover border-4 border-dark-700"
+                className="w-20 h-20 object-cover border-2 border-dark-600"
               />
             ) : (
-              <div className="w-20 h-20 rounded-full bg-dark-700 border-4 border-dark-600 flex items-center justify-center text-4xl">
-                {isArtista ? '📅' : '🎵'}
+              <div className="w-20 h-20 bg-dark-700 border-2 border-dark-600 flex items-center justify-center text-4xl font-display text-neon-red/50">
+                {isArtista ? 'C' : 'A'}
               </div>
             )}
             <div className="flex-1">
-              <div className="text-2xl font-bold text-white mb-1">
+              <div className="text-2xl font-display tracking-wider text-chrome mb-1 uppercase">
                 {isArtista ? otherUser?.nome : (booking.artista?.nomeArtistico || otherUser?.nome)}
               </div>
-              <div className="text-gray-400">
-                {new Date(booking.dataEvento).toLocaleDateString('pt-BR')} • {booking.local}
+              <div className="text-chrome/50 font-mono text-xs uppercase">
+                {new Date(booking.dataEvento).toLocaleDateString('pt-BR')} | {booking.local}
               </div>
             </div>
           </div>
         </div>
 
         {/* Review Form */}
-        <div className="bg-dark-800/50 backdrop-blur-sm border-2 border-dark-700 rounded-2xl p-8">
+        <div className="bg-dark-800 border-2 border-dark-600 p-8">
           {error && (
-            <div className="mb-6 p-4 bg-red-vibrant/10 border border-red-vibrant/50 rounded-xl text-red-vibrant text-sm">
+            <div className="mb-6 p-4 bg-neon-red/10 border-2 border-neon-red text-neon-red font-mono text-sm">
               {error}
             </div>
           )}
@@ -187,17 +189,17 @@ export default function ReviewBookingPage() {
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Rating Criteria */}
             <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-white mb-6">Avalie os critérios</h2>
+              <h2 className="text-2xl font-display tracking-wider text-chrome mb-6 uppercase">Avalie os Criterios</h2>
 
               {Object.entries(RATING_LABELS).map(([key, label]) => (
                 <div key={key} className="space-y-2">
-                  <label className="block text-lg font-medium text-gray-300">
+                  <label className="block font-mono text-sm text-chrome uppercase tracking-wider">
                     {label}
                   </label>
                   {renderStarRating(key, ratings[key])}
                   {ratings[key] > 0 && (
-                    <div className="text-sm text-gray-400 mt-1">
-                      {ratings[key]} {ratings[key] === 1 ? 'estrela' : 'estrelas'}
+                    <div className="text-chrome/30 font-mono text-xs mt-1 uppercase">
+                      {ratings[key]} de 5
                     </div>
                   )}
                 </div>
@@ -206,28 +208,28 @@ export default function ReviewBookingPage() {
 
             {/* Comment */}
             <div>
-              <label className="block text-lg font-medium text-gray-300 mb-3">
-                Comentário (opcional)
+              <label className="block font-mono text-sm text-chrome uppercase tracking-wider mb-3">
+                Comentario (opcional)
               </label>
               <textarea
                 value={comentario}
                 onChange={(e) => setComentario(e.target.value)}
                 rows="5"
-                placeholder="Conte mais sobre sua experiência..."
-                className="w-full px-4 py-3 bg-dark-900 border border-dark-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-red-vibrant transition-colors resize-none"
+                placeholder="Conte mais sobre sua experiencia..."
+                className="w-full px-4 py-4 bg-dark-900 border-2 border-dark-600 text-chrome font-mono text-sm placeholder-chrome/30 focus:outline-none focus:border-neon-red transition-colors resize-none"
               />
             </div>
 
             {/* Average Rating Display */}
             {Object.values(ratings).some(r => r > 0) && (
-              <div className="p-6 bg-dark-900 border border-dark-700 rounded-xl">
+              <div className="p-6 bg-dark-900 border-2 border-dark-600">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-400">Média Geral</span>
+                  <span className="text-chrome/50 font-mono text-xs uppercase">Media Geral</span>
                   <div className="flex items-center gap-3">
-                    <span className="text-yellow-400 text-3xl">★</span>
-                    <span className="text-3xl font-bold text-white">
+                    <span className="text-neon-acid font-display text-4xl">
                       {(Object.values(ratings).reduce((a, b) => a + b, 0) / Object.keys(ratings).length).toFixed(1)}
                     </span>
+                    <span className="text-chrome/30 font-mono text-xs uppercase">/5</span>
                   </div>
                 </div>
               </div>
@@ -237,9 +239,9 @@ export default function ReviewBookingPage() {
             <button
               type="submit"
               disabled={reviewMutation.isPending || Object.values(ratings).some(r => r === 0)}
-              className="w-full py-4 bg-gradient-to-r from-red-vibrant to-pink-600 text-white font-bold text-lg rounded-xl hover:scale-105 hover:shadow-2xl hover:shadow-red-vibrant/60 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="w-full py-4 bg-neon-red text-void font-bold font-mono text-sm uppercase tracking-widest shadow-brutal hover:bg-neon-acid hover:shadow-brutal-acid transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {reviewMutation.isPending ? 'Enviando Avaliação...' : 'Enviar Avaliação'}
+              {reviewMutation.isPending ? 'Enviando Avaliacao...' : 'Enviar Avaliacao'}
             </button>
           </form>
         </div>

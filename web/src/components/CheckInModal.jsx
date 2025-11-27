@@ -28,7 +28,7 @@ export default function CheckInModal({ bookingId, type, onClose, onSuccess }) {
     setLocationError(null);
 
     if (!navigator.geolocation) {
-      setLocationError('Geolocalização não é suportada pelo seu navegador');
+      setLocationError('Geolocalizacao nao e suportada pelo seu navegador');
       setLoadingLocation(false);
       return;
     }
@@ -42,16 +42,16 @@ export default function CheckInModal({ bookingId, type, onClose, onSuccess }) {
         setLoadingLocation(false);
       },
       (error) => {
-        let errorMessage = 'Erro ao obter localização';
+        let errorMessage = 'Erro ao obter localizacao';
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = 'Permissão de localização negada. Por favor, ative a localização no seu navegador.';
+            errorMessage = 'Permissao de localizacao negada. Por favor, ative a localizacao no seu navegador.';
             break;
           case error.POSITION_UNAVAILABLE:
-            errorMessage = 'Localização indisponível';
+            errorMessage = 'Localizacao indisponivel';
             break;
           case error.TIMEOUT:
-            errorMessage = 'Timeout ao obter localização';
+            errorMessage = 'Timeout ao obter localizacao';
             break;
         }
         setLocationError(errorMessage);
@@ -69,7 +69,7 @@ export default function CheckInModal({ bookingId, type, onClose, onSuccess }) {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 50 * 1024 * 1024) {
-        alert('A foto deve ter no máximo 50MB');
+        alert('A foto deve ter no maximo 50MB');
         return;
       }
 
@@ -87,7 +87,7 @@ export default function CheckInModal({ bookingId, type, onClose, onSuccess }) {
       const formData = new FormData();
       formData.append('latitude', location.latitude);
       formData.append('longitude', location.longitude);
-      formData.append('image', photo); // Mudado de 'photo' para 'image' para compatibilidade com o middleware
+      formData.append('image', photo);
 
       const endpoint = type === 'checkin'
         ? `/checkin/booking/${bookingId}/checkin`
@@ -128,13 +128,13 @@ export default function CheckInModal({ bookingId, type, onClose, onSuccess }) {
     e.preventDefault();
 
     if (!location) {
-      alert('Aguarde a obtenção da localização');
+      alert('Aguarde a obtencao da localizacao');
       return;
     }
 
     if (type === 'checkin') {
       if (!photo) {
-        alert('Selecione uma foto de comprovação');
+        alert('Selecione uma foto de comprovacao');
         return;
       }
       checkInMutation.mutate();
@@ -148,14 +148,14 @@ export default function CheckInModal({ bookingId, type, onClose, onSuccess }) {
 
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
     const R = 6371e3;
-    const φ1 = (lat1 * Math.PI) / 180;
-    const φ2 = (lat2 * Math.PI) / 180;
-    const Δφ = ((lat2 - lat1) * Math.PI) / 180;
-    const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+    const p1 = (lat1 * Math.PI) / 180;
+    const p2 = (lat2 * Math.PI) / 180;
+    const dp = ((lat2 - lat1) * Math.PI) / 180;
+    const dl = ((lon2 - lon1) * Math.PI) / 180;
 
     const a =
-      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+      Math.sin(dp / 2) * Math.sin(dp / 2) +
+      Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) * Math.sin(dl / 2);
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
@@ -172,71 +172,81 @@ export default function CheckInModal({ bookingId, type, onClose, onSuccess }) {
     : null;
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6">
-      <div className="bg-dark-800 border-2 border-red-vibrant rounded-2xl p-8 max-w-md w-full relative">
+    <div className="fixed inset-0 bg-void/90 backdrop-blur-sm flex items-center justify-center z-50 p-6">
+      <div className="bg-dark-800 border-2 border-neon-red p-8 max-w-md w-full relative shadow-brutal-lg">
+        {/* Corner accents */}
+        <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-neon-acid"></div>
+        <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-neon-acid"></div>
+        <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-neon-acid"></div>
+        <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-neon-acid"></div>
+
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors text-2xl"
+          className="absolute top-4 right-4 text-chrome/50 hover:text-neon-red transition-colors text-2xl font-display"
         >
-          ×
+          X
         </button>
 
-        <h2 className="text-3xl font-black text-white mb-4 text-center">
-          {isCheckIn ? 'Check-in no Evento' : 'Check-out do Evento'}
+        <h2 className="text-3xl font-display tracking-wider text-chrome mb-4 text-center uppercase">
+          {isCheckIn ? (
+            <>Check-<span className="text-neon-acid">in</span></>
+          ) : (
+            <>Check-<span className="text-neon-red">out</span></>
+          )}
         </h2>
 
-        <p className="text-gray-400 text-center mb-8">
+        <p className="text-chrome/50 font-mono text-xs text-center mb-8 uppercase">
           {isCheckIn
-            ? 'Confirme sua presença no local do evento'
-            : 'Confirme a conclusão do evento'}
+            ? 'Confirme sua presenca no local do evento'
+            : 'Confirme a conclusao do evento'}
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Localização */}
-          <div className="bg-dark-900 border border-dark-700 rounded-xl p-4">
+          {/* Localizacao */}
+          <div className="bg-dark-900 border-2 border-dark-600 p-4">
             <div className="flex items-center justify-between mb-3">
-              <div className="text-white font-bold flex items-center gap-2">
-                <span className="text-xl">📍</span>
-                Localização
+              <div className="text-chrome font-display tracking-wider uppercase flex items-center gap-2">
+                <span className="text-neon-pink font-mono text-lg">01</span>
+                Localizacao
               </div>
               {loadingLocation && (
-                <div className="text-yellow-400 text-sm">Obtendo...</div>
+                <div className="text-yellow-400 font-mono text-xs uppercase">Obtendo...</div>
               )}
             </div>
 
             {locationError ? (
-              <div className="text-red-vibrant text-sm mb-2">{locationError}</div>
+              <div className="text-neon-red font-mono text-sm mb-2">{locationError}</div>
             ) : location ? (
-              <div className="text-gray-400 text-sm space-y-1">
-                <div>Lat: {location.latitude.toFixed(6)}</div>
-                <div>Lon: {location.longitude.toFixed(6)}</div>
+              <div className="text-chrome/50 font-mono text-xs space-y-1">
+                <div>LAT: {location.latitude.toFixed(6)}</div>
+                <div>LON: {location.longitude.toFixed(6)}</div>
                 {distance !== null && (
-                  <div className={`font-bold mt-2 ${distance <= 500 ? 'text-green-400' : 'text-red-vibrant'}`}>
-                    Distância do evento: {Math.round(distance)}m
-                    {distance > 500 && ' (máximo permitido: 500m)'}
+                  <div className={`font-bold mt-2 uppercase ${distance <= 500 ? 'text-neon-acid' : 'text-neon-red'}`}>
+                    Distancia do evento: {Math.round(distance)}m
+                    {distance > 500 && ' (maximo permitido: 500m)'}
                   </div>
                 )}
               </div>
             ) : (
-              <div className="text-gray-500 text-sm">Aguardando localização...</div>
+              <div className="text-chrome/30 font-mono text-xs uppercase">Aguardando localizacao...</div>
             )}
 
             <button
               type="button"
               onClick={getLocation}
-              className="w-full mt-3 py-2 bg-dark-700 text-gray-300 text-sm rounded-lg hover:bg-dark-600 transition-colors"
+              className="w-full mt-3 py-2 bg-dark-700 border-2 border-dark-600 text-chrome font-mono text-xs uppercase tracking-wider hover:border-neon-red transition-colors"
               disabled={loadingLocation}
             >
-              {loadingLocation ? 'Obtendo...' : 'Atualizar Localização'}
+              {loadingLocation ? 'Obtendo...' : 'Atualizar Localizacao'}
             </button>
           </div>
 
           {/* Foto (apenas para check-in) */}
           {isCheckIn && (
-            <div className="bg-dark-900 border border-dark-700 rounded-xl p-4">
-              <div className="text-white font-bold flex items-center gap-2 mb-3">
-                <span className="text-xl">📸</span>
-                Foto de Comprovação
+            <div className="bg-dark-900 border-2 border-dark-600 p-4">
+              <div className="text-chrome font-display tracking-wider uppercase flex items-center gap-2 mb-3">
+                <span className="text-neon-pink font-mono text-lg">02</span>
+                Foto de Comprovacao
               </div>
 
               {photoPreview ? (
@@ -244,7 +254,7 @@ export default function CheckInModal({ bookingId, type, onClose, onSuccess }) {
                   <img
                     src={photoPreview}
                     alt="Preview"
-                    className="w-full h-48 object-cover rounded-lg mb-3"
+                    className="w-full h-48 object-cover border-2 border-dark-600 mb-3"
                   />
                   <button
                     type="button"
@@ -252,7 +262,7 @@ export default function CheckInModal({ bookingId, type, onClose, onSuccess }) {
                       setPhoto(null);
                       setPhotoPreview(null);
                     }}
-                    className="absolute top-2 right-2 bg-red-vibrant text-white px-3 py-1 rounded-lg text-sm hover:bg-red-700 transition-colors"
+                    className="absolute top-2 right-2 bg-neon-red text-void px-3 py-1 font-mono text-xs uppercase hover:bg-chrome transition-colors"
                   >
                     Remover
                   </button>
@@ -266,32 +276,32 @@ export default function CheckInModal({ bookingId, type, onClose, onSuccess }) {
                     onChange={handlePhotoChange}
                     className="hidden"
                   />
-                  <div className="w-full py-8 border-2 border-dashed border-dark-700 rounded-lg hover:border-red-vibrant transition-colors cursor-pointer flex flex-col items-center justify-center gap-2">
-                    <span className="text-4xl">📷</span>
-                    <span className="text-gray-400 text-sm">Clique para tirar/selecionar foto</span>
+                  <div className="w-full py-8 border-2 border-dashed border-dark-600 hover:border-neon-red transition-colors cursor-pointer flex flex-col items-center justify-center gap-2">
+                    <div className="text-5xl font-display text-neon-red/50">+</div>
+                    <span className="text-chrome/50 font-mono text-xs uppercase">Clique para tirar/selecionar foto</span>
                   </div>
                 </label>
               )}
 
-              <div className="text-gray-500 text-xs mt-2">
-                Máximo 5MB. A foto será usada como comprovação de presença.
+              <div className="text-chrome/30 font-mono text-xs mt-2 uppercase">
+                Maximo 5MB. A foto sera usada como comprovacao de presenca.
               </div>
             </div>
           )}
 
-          {/* Informações da janela de tempo */}
+          {/* Informacoes da janela de tempo */}
           {checkInStatus?.data?.janelas && (
-            <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
-              <div className="text-blue-400 text-sm">
+            <div className="bg-neon-pink/10 border-2 border-neon-pink/30 p-4">
+              <div className="text-neon-pink font-mono text-xs uppercase">
                 {isCheckIn ? (
                   <>
                     <div className="font-bold mb-1">Janela de Check-in:</div>
-                    <div>2h antes até 1h após o início do evento</div>
+                    <div>2h antes ate 1h apos o inicio do evento</div>
                   </>
                 ) : (
                   <>
                     <div className="font-bold mb-1">Janela de Check-out:</div>
-                    <div>Do início até 1h após o fim do evento</div>
+                    <div>Do inicio ate 1h apos o fim do evento</div>
                   </>
                 )}
               </div>
@@ -300,7 +310,7 @@ export default function CheckInModal({ bookingId, type, onClose, onSuccess }) {
 
           {/* Erro */}
           {mutation.error && (
-            <div className="p-4 bg-red-vibrant/10 border border-red-vibrant/50 rounded-xl text-red-vibrant text-sm">
+            <div className="p-4 bg-neon-red/10 border-2 border-neon-red text-neon-red font-mono text-sm">
               {mutation.error.response?.data?.message ||
                mutation.error.response?.data?.error ||
                `Erro ao realizar ${isCheckIn ? 'check-in' : 'check-out'}. Tente novamente.`}
@@ -312,7 +322,7 @@ export default function CheckInModal({ bookingId, type, onClose, onSuccess }) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-4 border-2 border-dark-700 text-gray-300 font-bold rounded-xl hover:border-dark-600 hover:text-white transition-all"
+              className="flex-1 py-4 bg-dark-800 text-chrome font-bold font-mono text-sm uppercase tracking-wider border-2 border-dark-600 hover:border-neon-red hover:text-neon-red transition-all"
             >
               Cancelar
             </button>
@@ -325,21 +335,21 @@ export default function CheckInModal({ bookingId, type, onClose, onSuccess }) {
                 (isCheckIn && !photo) ||
                 (distance !== null && distance > 500)
               }
-              className="flex-1 py-4 bg-gradient-to-r from-red-vibrant to-pink-600 text-white font-bold rounded-xl hover:scale-105 hover:shadow-lg hover:shadow-red-vibrant/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="flex-1 py-4 bg-neon-red text-void font-bold font-mono text-sm uppercase tracking-widest shadow-brutal hover:bg-neon-acid hover:shadow-brutal-acid transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {mutation.isPending
                 ? 'Processando...'
                 : isCheckIn
-                ? 'Confirmar Check-in'
-                : 'Confirmar Check-out'}
+                ? 'Confirmar'
+                : 'Confirmar'}
             </button>
           </div>
         </form>
 
-        <div className="mt-6 text-gray-500 text-xs text-center">
+        <div className="mt-6 text-chrome/30 font-mono text-xs text-center uppercase">
           {isCheckIn
-            ? 'Após o check-in, 50% do pagamento será liberado automaticamente'
-            : 'Após o check-out, o pagamento restante será liberado em 48h'}
+            ? 'Apos o check-in, 50% do pagamento sera liberado automaticamente'
+            : 'Apos o check-out, o pagamento restante sera liberado em 48h'}
         </div>
       </div>
     </div>

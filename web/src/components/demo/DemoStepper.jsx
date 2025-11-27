@@ -1,8 +1,8 @@
 const DemoStepper = ({ sections, currentSection, onSectionChange, progress }) => {
   return (
-    <div className="bg-dark-800 border-b border-dark-700 px-6 py-4 sticky top-0 z-50 backdrop-blur-sm bg-dark-800/90">
+    <div className="bg-dark-900 border-b-2 border-neon-red/30 px-6 py-4 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center gap-2 overflow-x-auto pb-2">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-dark-600">
           {sections.map((section, index) => {
             const isActive = index === currentSection;
             const isCompleted = index < currentSection;
@@ -13,39 +13,39 @@ const DemoStepper = ({ sections, currentSection, onSectionChange, progress }) =>
                 <button
                   onClick={() => isAccessible && onSectionChange(index)}
                   disabled={!isAccessible}
-                  className={`relative flex items-center gap-3 px-4 py-2 rounded-lg transition-all ${
+                  className={`relative flex items-center gap-3 px-4 py-2 border-2 transition-all font-mono text-sm ${
                     isActive
-                      ? 'bg-red-vibrant text-white scale-105 shadow-lg shadow-red-vibrant/30'
+                      ? 'border-neon-red bg-neon-red/10 text-chrome shadow-[0_0_20px_rgba(255,0,68,0.3)]'
                       : isCompleted
-                      ? 'bg-dark-700 text-gray-300 hover:bg-dark-600'
-                      : 'bg-dark-700/50 text-gray-500 cursor-not-allowed'
+                      ? 'border-neon-acid/50 bg-neon-acid/5 text-neon-acid hover:bg-neon-acid/10'
+                      : 'border-dark-600 bg-dark-800/50 text-chrome/30 cursor-not-allowed'
                   }`}
                 >
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold ${
+                    className={`w-7 h-7 border-2 flex items-center justify-center font-bold text-xs ${
                       isActive
-                        ? 'bg-white text-red-vibrant'
+                        ? 'border-neon-red bg-neon-red text-dark-950'
                         : isCompleted
-                        ? 'bg-green-500 text-white'
-                        : 'bg-dark-600 text-gray-400'
+                        ? 'border-neon-acid bg-neon-acid text-dark-950'
+                        : 'border-dark-500 text-chrome/50'
                     }`}
                   >
-                    {isCompleted ? '✓' : index + 1}
+                    {isCompleted ? 'OK' : String(index + 1).padStart(2, '0')}
                   </div>
-                  <span className="text-sm font-medium whitespace-nowrap">
+                  <span className="whitespace-nowrap uppercase tracking-wider">
                     {section.title}
                   </span>
 
                   {isActive && progress !== null && (
-                    <div className="absolute bottom-0 left-0 h-1 bg-white rounded-full transition-all"
+                    <div className="absolute bottom-0 left-0 h-0.5 bg-neon-red transition-all"
                       style={{ width: `${progress}%` }}
                     />
                   )}
                 </button>
 
                 {index < sections.length - 1 && (
-                  <div className={`w-8 h-0.5 mx-2 ${
-                    isCompleted ? 'bg-green-500' : 'bg-dark-700'
+                  <div className={`w-6 h-0.5 mx-1 ${
+                    isCompleted ? 'bg-neon-acid' : 'bg-dark-700'
                   }`} />
                 )}
               </div>

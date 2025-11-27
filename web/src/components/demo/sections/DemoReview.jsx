@@ -3,33 +3,27 @@ import { useState } from 'react';
 const criteriaInfo = {
   pontualidade: {
     label: 'Pontualidade',
-    description: 'Chegou no horário combinado?',
-    icon: '⏰',
+    description: 'Chegou no horario combinado?',
   },
   profissionalismo: {
     label: 'Profissionalismo',
-    description: 'Comportamento adequado e ético?',
-    icon: '💼',
+    description: 'Comportamento adequado e etico?',
   },
   qualidade: {
     label: 'Qualidade',
-    description: 'Qualidade técnica da apresentação?',
-    icon: '⭐',
+    description: 'Qualidade tecnica da apresentacao?',
   },
   comunicacao: {
-    label: 'Comunicação',
-    description: 'Comunicação clara e efetiva?',
-    icon: '💬',
+    label: 'Comunicacao',
+    description: 'Comunicacao clara e efetiva?',
   },
   custobeneficio: {
-    label: 'Custo-Benefício',
-    description: 'Valor justo pelo serviço prestado?',
-    icon: '💰',
+    label: 'Custo-Beneficio',
+    description: 'Valor justo pelo servico prestado?',
   },
   recomendacao: {
-    label: 'Recomendação',
+    label: 'Recomendacao',
     description: 'Contrataria novamente?',
-    icon: '👍',
   },
 };
 
@@ -43,7 +37,7 @@ const DemoReview = () => {
     recomendacao: 5,
   });
   const [comment, setComment] = useState(
-    'Excelente profissional! Superou todas as expectativas. O público adorou a apresentação e a energia que trouxe para o evento. Muito pontual, comunicativo e com equipamento de primeira qualidade. Recomendo fortemente!'
+    'Excelente profissional! Superou todas as expectativas. O publico adorou a apresentacao e a energia que trouxe para o evento. Muito pontual, comunicativo e com equipamento de primeira qualidade. Recomendo fortemente!'
   );
   const [submitted, setSubmitted] = useState(false);
 
@@ -68,56 +62,59 @@ const DemoReview = () => {
     return (
       <div className="space-y-8 animate-fade-in">
         <div className="text-center space-y-4">
-          <h2 className="text-4xl font-bold text-white">Avaliação Enviada!</h2>
-          <p className="text-gray-400 text-lg">
+          <h2 className="text-4xl font-black font-display text-chrome uppercase tracking-wider">
+            Avaliacao Enviada!
+          </h2>
+          <p className="text-chrome/50 font-mono text-sm uppercase tracking-widest">
             Obrigado por contribuir com a comunidade
           </p>
         </div>
 
         <div className="max-w-3xl mx-auto">
-          <div className="bg-green-500/10 border-2 border-green-500 rounded-2xl p-8 text-center space-y-4">
-            <div className="text-6xl">✓</div>
-            <h3 className="text-3xl font-bold text-green-500">Avaliação Registrada</h3>
-            <p className="text-gray-300">
-              Sua avaliação foi publicada e já está visível no perfil do artista.
+          <div className="border-4 border-neon-acid bg-neon-acid/10 p-8 text-center space-y-4">
+            <div className="text-6xl font-mono text-neon-acid">[OK]</div>
+            <h3 className="text-3xl font-black font-display text-neon-acid">AVALIACAO REGISTRADA</h3>
+            <p className="text-chrome/70 font-mono text-sm">
+              Sua avaliacao foi publicada e ja esta visivel no perfil do artista.
             </p>
 
-            <div className="bg-dark-800/50 rounded-xl p-6 max-w-md mx-auto">
-              <div className="text-5xl font-bold text-yellow-500 mb-2">
+            <div className="border-2 border-dark-600 bg-dark-900/50 p-6 max-w-md mx-auto">
+              <div className="text-5xl font-black font-mono text-neon-gold mb-2">
                 {calculateAverage()}
               </div>
-              <div className="text-gray-400">Nota Média</div>
+              <div className="text-xs font-mono text-chrome/50 uppercase tracking-wider">Nota Media</div>
 
-              <div className="mt-4 space-y-2 text-sm text-left">
+              <div className="mt-4 space-y-2 text-xs font-mono text-left">
                 {Object.entries(criteriaInfo).map(([key, info]) => (
-                  <div key={key} className="flex items-center justify-between">
-                    <span className="text-gray-400">
-                      {info.icon} {info.label}
-                    </span>
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <span
-                          key={i}
-                          className={
-                            i < ratings[key] ? 'text-yellow-500' : 'text-gray-600'
-                          }
-                        >
-                          ★
-                        </span>
-                      ))}
-                    </div>
+                  <div key={key} className="flex items-center justify-between border-b border-dark-700 pb-1">
+                    <span className="text-chrome/50">{info.label}</span>
+                    <span className="text-neon-gold font-bold">{ratings[key]}.0</span>
                   </div>
                 ))}
               </div>
             </div>
 
             <div className="pt-4">
-              <h4 className="font-semibold text-white mb-2">Impacto da sua avaliação:</h4>
-              <ul className="text-sm text-gray-300 space-y-1">
-                <li>✓ Ajuda outros contratantes na escolha</li>
-                <li>✓ Valoriza o trabalho do artista</li>
-                <li>✓ Melhora o ranking na plataforma</li>
-                <li>✓ Contribui para a transparência</li>
+              <h4 className="font-mono font-bold text-chrome text-xs uppercase tracking-wider mb-3">
+                [IMPACTO DA SUA AVALIACAO]
+              </h4>
+              <ul className="text-xs font-mono text-chrome/70 space-y-1">
+                <li className="flex items-center gap-2 justify-center">
+                  <span className="text-neon-acid">[OK]</span>
+                  <span>Ajuda outros contratantes na escolha</span>
+                </li>
+                <li className="flex items-center gap-2 justify-center">
+                  <span className="text-neon-acid">[OK]</span>
+                  <span>Valoriza o trabalho do artista</span>
+                </li>
+                <li className="flex items-center gap-2 justify-center">
+                  <span className="text-neon-acid">[OK]</span>
+                  <span>Melhora o ranking na plataforma</span>
+                </li>
+                <li className="flex items-center gap-2 justify-center">
+                  <span className="text-neon-acid">[OK]</span>
+                  <span>Contribui para a transparencia</span>
+                </li>
               </ul>
             </div>
           </div>
@@ -129,46 +126,45 @@ const DemoReview = () => {
   return (
     <div className="space-y-8 animate-fade-in">
       <div className="text-center space-y-4">
-        <h2 className="text-4xl font-bold text-white">Sistema de Avaliação</h2>
-        <p className="text-gray-400 text-lg">
-          Avalie sua experiência em 6 critérios objetivos
+        <h2 className="text-4xl font-black font-display text-chrome uppercase tracking-wider">
+          Sistema de Avaliacao
+        </h2>
+        <p className="text-chrome/50 font-mono text-sm uppercase tracking-widest">
+          Avalie sua experiencia em 6 criterios objetivos
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8">
-        <div className="md:col-span-2 space-y-6">
-          <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-700 rounded-2xl p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-white">
-                Avaliação do Artista
+      <div className="grid md:grid-cols-3 gap-6">
+        <div className="md:col-span-2 space-y-4">
+          <div className="border-2 border-dark-600 bg-dark-900/50 p-6">
+            <div className="flex items-center justify-between mb-6 border-b-2 border-dark-600 pb-3">
+              <h3 className="text-lg font-mono font-bold text-chrome uppercase tracking-wider">
+                [AVALIACAO DO ARTISTA]
               </h3>
               <div className="text-center">
-                <div className="text-3xl font-bold text-yellow-500">
+                <div className="text-3xl font-black font-mono text-neon-gold">
                   {calculateAverage()}
                 </div>
-                <div className="text-xs text-gray-400">Média</div>
+                <div className="text-[10px] font-mono text-chrome/50 uppercase">Media</div>
               </div>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-4">
               {Object.entries(criteriaInfo).map(([key, info]) => (
                 <div
                   key={key}
-                  className="bg-dark-700/50 rounded-xl p-4 hover:bg-dark-700 transition"
+                  className="border-2 border-dark-600 bg-dark-800/50 p-4 hover:border-dark-500 transition-all"
                 >
                   <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">{info.icon}</span>
-                      <div>
-                        <div className="font-semibold text-white">
-                          {info.label}
-                        </div>
-                        <div className="text-sm text-gray-400">
-                          {info.description}
-                        </div>
+                    <div>
+                      <div className="font-mono font-bold text-chrome text-sm uppercase tracking-wider">
+                        {info.label}
+                      </div>
+                      <div className="text-xs font-mono text-chrome/50">
+                        {info.description}
                       </div>
                     </div>
-                    <div className="text-xl font-bold text-yellow-500">
+                    <div className="text-xl font-black font-mono text-neon-gold">
                       {ratings[key]}.0
                     </div>
                   </div>
@@ -178,17 +174,13 @@ const DemoReview = () => {
                       <button
                         key={value}
                         onClick={() => handleRatingChange(key, value)}
-                        className="group"
+                        className={`w-10 h-10 border-2 font-mono font-bold text-sm transition-all ${
+                          value <= ratings[key]
+                            ? 'border-neon-gold bg-neon-gold text-dark-950'
+                            : 'border-dark-600 text-chrome/30 hover:border-neon-gold/50 hover:text-neon-gold/50'
+                        }`}
                       >
-                        <span
-                          className={`text-3xl transition ${
-                            value <= ratings[key]
-                              ? 'text-yellow-500'
-                              : 'text-gray-600 group-hover:text-yellow-500/50'
-                          }`}
-                        >
-                          ★
-                        </span>
+                        {value}
                       </button>
                     ))}
                   </div>
@@ -197,19 +189,19 @@ const DemoReview = () => {
             </div>
           </div>
 
-          <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-700 rounded-2xl p-6">
-            <h3 className="text-xl font-semibold text-white mb-4">
-              Comentário (Opcional)
+          <div className="border-2 border-dark-600 bg-dark-900/50 p-6">
+            <h3 className="text-lg font-mono font-bold text-chrome uppercase tracking-wider border-b-2 border-dark-600 pb-2 mb-4">
+              [COMENTARIO] (Opcional)
             </h3>
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               rows={5}
-              placeholder="Compartilhe mais detalhes sobre sua experiência..."
-              className="w-full bg-dark-700 text-white border border-dark-600 rounded-lg px-4 py-3 focus:outline-none focus:border-red-vibrant resize-none"
+              placeholder="Compartilhe mais detalhes sobre sua experiencia..."
+              className="w-full px-4 py-3 bg-dark-800 border-2 border-dark-600 text-chrome font-mono text-sm placeholder-chrome/30 focus:outline-none focus:border-neon-red transition-colors resize-none"
             />
             <div className="flex justify-between items-center mt-2">
-              <span className="text-sm text-gray-400">
+              <span className="text-xs font-mono text-chrome/50">
                 {comment.length} / 1000 caracteres
               </span>
             </div>
@@ -217,82 +209,74 @@ const DemoReview = () => {
 
           <button
             onClick={handleSubmit}
-            className="w-full px-6 py-3 bg-gradient-to-r from-red-vibrant to-pink-600 text-white rounded-lg hover:scale-105 transition font-semibold text-lg shadow-lg shadow-red-vibrant/30"
+            className="w-full px-6 py-4 border-2 border-neon-red bg-neon-red text-dark-950 font-mono font-bold text-sm uppercase tracking-wider hover:shadow-[0_0_30px_rgba(255,0,68,0.5)] transition-all"
           >
-            Enviar Avaliação
+            ENVIAR AVALIACAO
           </button>
         </div>
 
-        <div className="space-y-6">
-          <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-700 rounded-2xl p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">
-              Por que 6 critérios?
+        <div className="space-y-4">
+          <div className="border-2 border-dark-600 bg-dark-900/50 p-6">
+            <h3 className="text-sm font-mono font-bold text-chrome uppercase tracking-wider border-b-2 border-dark-600 pb-2 mb-4">
+              [POR QUE 6 CRITERIOS?]
             </h3>
-            <p className="text-sm text-gray-400 mb-4">
-              Sistema objetivo que avalia diferentes aspectos do serviço,
+            <p className="text-xs font-mono text-chrome/50 mb-4">
+              Sistema objetivo que avalia diferentes aspectos do servico,
               proporcionando feedback detalhado e justo.
             </p>
-            <div className="space-y-2 text-sm">
+            <div className="space-y-2 text-xs font-mono">
               <div className="flex items-start gap-2">
-                <span className="text-green-500">✓</span>
-                <span className="text-gray-300">
-                  Mais preciso que nota única
-                </span>
+                <span className="text-neon-acid">[OK]</span>
+                <span className="text-chrome/70">Mais preciso que nota unica</span>
               </div>
               <div className="flex items-start gap-2">
-                <span className="text-green-500">✓</span>
-                <span className="text-gray-300">
-                  Feedback específico e útil
-                </span>
+                <span className="text-neon-acid">[OK]</span>
+                <span className="text-chrome/70">Feedback especifico e util</span>
               </div>
               <div className="flex items-start gap-2">
-                <span className="text-green-500">✓</span>
-                <span className="text-gray-300">
-                  Reduz avaliações injustas
-                </span>
+                <span className="text-neon-acid">[OK]</span>
+                <span className="text-chrome/70">Reduz avaliacoes injustas</span>
               </div>
               <div className="flex items-start gap-2">
-                <span className="text-green-500">✓</span>
-                <span className="text-gray-300">
-                  Transparente e objetivo
-                </span>
+                <span className="text-neon-acid">[OK]</span>
+                <span className="text-chrome/70">Transparente e objetivo</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
-            <h4 className="font-semibold text-blue-400 mb-2">
-              🤝 Avaliação Bilateral
+          <div className="border-2 border-neon-cyan/30 bg-neon-cyan/5 p-4">
+            <h4 className="font-mono font-bold text-neon-cyan text-xs uppercase tracking-wider mb-2">
+              [INFO] AVALIACAO BILATERAL
             </h4>
-            <p className="text-sm text-blue-300 mb-2">
-              Após você avaliar, o artista também poderá avaliar você como contratante.
+            <p className="text-xs font-mono text-neon-cyan/80 mb-2">
+              Apos voce avaliar, o artista tambem podera avaliar voce como contratante.
             </p>
-            <p className="text-xs text-blue-400">
-              Isso cria um ambiente de respeito mútuo e profissionalismo.
+            <p className="text-[10px] font-mono text-neon-cyan/60 uppercase">
+              Isso cria um ambiente de respeito mutuo e profissionalismo.
             </p>
           </div>
 
-          <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4">
-            <h4 className="font-semibold text-purple-400 mb-2">
-              📊 Impacto no Ranking
+          <div className="border-2 border-neon-purple/30 bg-neon-purple/5 p-4">
+            <h4 className="font-mono font-bold text-neon-purple text-xs uppercase tracking-wider mb-2">
+              [STATS] IMPACTO NO RANKING
             </h4>
-            <p className="text-sm text-purple-300">
-              Avaliações positivas:
+            <p className="text-xs font-mono text-neon-purple/80">
+              Avaliacoes positivas:
             </p>
-            <ul className="text-sm text-purple-300 space-y-1 mt-2">
-              <li>• Melhoram posição na busca</li>
-              <li>• Aumentam credibilidade</li>
-              <li>• Atraem mais contratantes</li>
+            <ul className="text-xs font-mono text-neon-purple/70 space-y-1 mt-2">
+              <li>- Melhoram posicao na busca</li>
+              <li>- Aumentam credibilidade</li>
+              <li>- Atraem mais contratantes</li>
             </ul>
           </div>
 
-          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4">
-            <h4 className="font-semibold text-yellow-400 mb-2">
-              ⚖️ Sistema de Disputa
+          <div className="border-2 border-neon-gold/30 bg-neon-gold/5 p-4">
+            <h4 className="font-mono font-bold text-neon-gold text-xs uppercase tracking-wider mb-2">
+              [LEGAL] SISTEMA DE DISPUTA
             </h4>
-            <p className="text-sm text-yellow-300">
-              Em caso de desacordo com avaliações, ambas as partes podem
-              solicitar mediação através do sistema de disputas.
+            <p className="text-xs font-mono text-neon-gold/80">
+              Em caso de desacordo com avaliacoes, ambas as partes podem
+              solicitar mediacao atraves do sistema de disputas.
             </p>
           </div>
         </div>

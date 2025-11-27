@@ -8,13 +8,13 @@ import PaymentModal from '../components/PaymentModal';
 import CheckInModal from '../components/CheckInModal';
 
 const STATUS_CONFIG = {
-  PENDENTE: { label: 'Pendente', color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/50' },
-  ACEITO: { label: 'Aceito', color: 'bg-blue-500/20 text-blue-400 border-blue-500/50' },
-  CONFIRMADO: { label: 'Confirmado', color: 'bg-green-500/20 text-green-400 border-green-500/50' },
-  EM_ANDAMENTO: { label: 'Em Andamento', color: 'bg-purple-500/20 text-purple-400 border-purple-500/50' },
-  CONCLUIDO: { label: 'Concluído', color: 'bg-gray-500/20 text-gray-400 border-gray-500/50' },
-  CANCELADO: { label: 'Cancelado', color: 'bg-red-500/20 text-red-400 border-red-500/50' },
-  DISPUTA: { label: 'Em Disputa', color: 'bg-orange-500/20 text-orange-400 border-orange-500/50' },
+  PENDENTE: { label: 'PENDENTE', color: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30' },
+  ACEITO: { label: 'ACEITO', color: 'bg-blue-500/10 text-blue-400 border-blue-500/30' },
+  CONFIRMADO: { label: 'CONFIRMADO', color: 'bg-neon-acid/10 text-neon-acid border-neon-acid/30' },
+  EM_ANDAMENTO: { label: 'EM ANDAMENTO', color: 'bg-neon-pink/10 text-neon-pink border-neon-pink/30' },
+  CONCLUIDO: { label: 'CONCLUIDO', color: 'bg-chrome/10 text-chrome/50 border-chrome/30' },
+  CANCELADO: { label: 'CANCELADO', color: 'bg-neon-red/10 text-neon-red border-neon-red/30' },
+  DISPUTA: { label: 'DISPUTA', color: 'bg-orange-500/10 text-orange-400 border-orange-500/30' },
 };
 
 export default function BookingDetailPage() {
@@ -78,10 +78,10 @@ export default function BookingDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4 animate-pulse">📅</div>
-          <div className="text-xl text-gray-400">Carregando booking...</div>
+          <div className="text-8xl font-display text-neon-red mb-4 animate-pulse">...</div>
+          <div className="text-xl font-mono text-chrome/50 uppercase tracking-wider">Carregando booking</div>
         </div>
       </div>
     );
@@ -89,18 +89,18 @@ export default function BookingDetailPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4">⚠️</div>
-          <div className="text-2xl font-bold text-red-vibrant mb-2">
-            Erro ao carregar booking
+          <div className="text-8xl font-display text-neon-red mb-4">!</div>
+          <div className="text-2xl font-display tracking-wider text-chrome mb-2">
+            ERRO AO CARREGAR BOOKING
           </div>
-          <div className="text-gray-400 mb-6">
+          <div className="text-chrome/50 font-mono text-sm mb-6">
             {error.message}
           </div>
           <button
             onClick={() => navigate('/bookings')}
-            className="px-6 py-3 bg-red-vibrant text-white font-bold rounded-lg hover:bg-pink-600 transition-colors"
+            className="px-6 py-3 bg-neon-red text-void font-bold font-mono text-sm uppercase tracking-wider shadow-brutal hover:bg-neon-acid hover:shadow-brutal-acid transition-all"
           >
             Voltar para Bookings
           </button>
@@ -113,18 +113,18 @@ export default function BookingDetailPage() {
   const otherUser = isArtista ? booking.contratante?.usuario : booking.artista?.usuario;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-void">
       {/* Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900 border-b border-dark-700">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-red-vibrant rounded-full filter blur-[100px] animate-pulse"></div>
+      <div className="relative overflow-hidden bg-surface border-b-2 border-neon-red/30">
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-neon-red/10 rounded-full filter blur-[150px]"></div>
         </div>
 
         <div className="relative py-12 px-6">
           <div className="max-w-5xl mx-auto">
             <button
               onClick={() => navigate('/bookings')}
-              className="text-gray-400 hover:text-white mb-4 flex items-center gap-2 transition-colors"
+              className="text-chrome/50 hover:text-neon-red mb-4 flex items-center gap-2 font-mono text-sm uppercase tracking-wider transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -133,10 +133,10 @@ export default function BookingDetailPage() {
             </button>
 
             <div className="flex items-center justify-between">
-              <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-red-vibrant via-pink-500 to-purple-600 text-transparent bg-clip-text">
-                Detalhes do Booking
+              <h1 className="text-5xl md:text-6xl font-display tracking-wider text-chrome">
+                DETALHES DO <span className="text-neon-red">BOOKING</span>
               </h1>
-              <div className={`px-6 py-3 rounded-full border text-lg font-bold ${STATUS_CONFIG[booking.status].color}`}>
+              <div className={`px-4 py-2 border-2 font-mono text-sm uppercase tracking-wider ${STATUS_CONFIG[booking.status].color}`}>
                 {STATUS_CONFIG[booking.status].label}
               </div>
             </div>
@@ -149,69 +149,69 @@ export default function BookingDetailPage() {
           {/* Main Content */}
           <div className="md:col-span-2 space-y-6">
             {/* Event Details Card */}
-            <div className="bg-dark-800/50 backdrop-blur-sm border-2 border-dark-700 rounded-2xl p-8">
-              <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                <span className="text-3xl">📅</span>
+            <div className="bg-dark-800 border-2 border-dark-600 p-8">
+              <h2 className="text-2xl font-display tracking-wider text-chrome mb-6 uppercase flex items-center gap-3">
+                <span className="text-neon-red font-mono text-lg">01</span>
                 Detalhes do Evento
               </h2>
 
               <div className="space-y-4">
                 <div>
-                  <div className="text-gray-500 text-sm mb-1">Data</div>
-                  <div className="text-white font-medium text-lg capitalize">
+                  <div className="text-chrome/30 font-mono text-xs uppercase mb-1">Data</div>
+                  <div className="text-chrome font-mono text-sm capitalize">
                     {formatDate(booking.dataEvento)}
                   </div>
                 </div>
 
                 <div>
-                  <div className="text-gray-500 text-sm mb-1">Horário de Início</div>
-                  <div className="text-white font-medium">{booking.horarioInicio}</div>
+                  <div className="text-chrome/30 font-mono text-xs uppercase mb-1">Horario de Inicio</div>
+                  <div className="text-chrome font-mono text-sm">{booking.horarioInicio}</div>
                 </div>
 
                 <div>
-                  <div className="text-gray-500 text-sm mb-1">Duração</div>
-                  <div className="text-white font-medium">{booking.duracao}h</div>
+                  <div className="text-chrome/30 font-mono text-xs uppercase mb-1">Duracao</div>
+                  <div className="text-chrome font-mono text-sm">{booking.duracao}h</div>
                 </div>
 
                 <div>
-                  <div className="text-gray-500 text-sm mb-1">Local</div>
-                  <div className="text-white font-medium">{booking.local}</div>
+                  <div className="text-chrome/30 font-mono text-xs uppercase mb-1">Local</div>
+                  <div className="text-chrome font-mono text-sm">{booking.local}</div>
                 </div>
 
                 {booking.descricaoEvento && (
                   <div>
-                    <div className="text-gray-500 text-sm mb-1">Descrição</div>
-                    <div className="text-white">{booking.descricaoEvento}</div>
+                    <div className="text-chrome/30 font-mono text-xs uppercase mb-1">Descricao</div>
+                    <div className="text-chrome/70 font-mono text-sm">{booking.descricaoEvento}</div>
                   </div>
                 )}
               </div>
             </div>
 
             {/* Financial Details Card */}
-            <div className="bg-dark-800/50 backdrop-blur-sm border-2 border-dark-700 rounded-2xl p-8">
-              <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                <span className="text-3xl">💰</span>
+            <div className="bg-dark-800 border-2 border-dark-600 p-8">
+              <h2 className="text-2xl font-display tracking-wider text-chrome mb-6 uppercase flex items-center gap-3">
+                <span className="text-neon-acid font-mono text-lg">02</span>
                 Valores
               </h2>
 
               <div className="space-y-4">
-                <div className="flex justify-between items-center pb-4 border-b border-dark-700">
-                  <div className="text-gray-400">Valor do Artista</div>
-                  <div className="text-white font-medium text-lg">
+                <div className="flex justify-between items-center pb-4 border-b-2 border-dark-600">
+                  <div className="text-chrome/50 font-mono text-xs uppercase">Valor do Artista</div>
+                  <div className="text-chrome font-mono text-sm">
                     R$ {booking.valorArtista?.toFixed(2)}
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center pb-4 border-b border-dark-700">
-                  <div className="text-gray-400">Taxa da Plataforma</div>
-                  <div className="text-white font-medium">
+                <div className="flex justify-between items-center pb-4 border-b-2 border-dark-600">
+                  <div className="text-chrome/50 font-mono text-xs uppercase">Taxa da Plataforma</div>
+                  <div className="text-chrome font-mono text-sm">
                     R$ {booking.taxaPlataforma?.toFixed(2)}
                   </div>
                 </div>
 
                 <div className="flex justify-between items-center pt-2">
-                  <div className="text-white font-bold text-lg">Valor Total</div>
-                  <div className="text-red-vibrant font-bold text-2xl">
+                  <div className="text-chrome font-display tracking-wider uppercase">Valor Total</div>
+                  <div className="text-neon-red font-display text-3xl">
                     R$ {booking.valorTotal?.toFixed(2)}
                   </div>
                 </div>
@@ -220,28 +220,28 @@ export default function BookingDetailPage() {
 
             {/* Proposals History */}
             {booking.propostas && booking.propostas.length > 0 && (
-              <div className="bg-dark-800/50 backdrop-blur-sm border-2 border-dark-700 rounded-2xl p-8">
-                <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                  <span className="text-3xl">💬</span>
-                  Histórico de Propostas
+              <div className="bg-dark-800 border-2 border-dark-600 p-8">
+                <h2 className="text-2xl font-display tracking-wider text-chrome mb-6 uppercase flex items-center gap-3">
+                  <span className="text-neon-pink font-mono text-lg">03</span>
+                  Historico de Propostas
                 </h2>
 
                 <div className="space-y-4">
                   {booking.propostas.map((proposta, index) => (
-                    <div key={proposta.id} className="border-l-4 border-red-vibrant pl-4 py-2">
+                    <div key={proposta.id} className="border-l-4 border-neon-red pl-4 py-2">
                       <div className="flex justify-between items-start mb-2">
-                        <div className="text-gray-400 text-sm">
+                        <div className="text-chrome/50 font-mono text-xs uppercase">
                           {proposta.tipo === 'INICIAL' ? 'Proposta Inicial' : 'Contra-Proposta'}
                         </div>
-                        <div className="text-gray-500 text-xs">
+                        <div className="text-chrome/30 font-mono text-xs">
                           {formatDateTime(proposta.createdAt)}
                         </div>
                       </div>
-                      <div className="text-white font-bold text-lg">
+                      <div className="text-neon-red font-display text-2xl">
                         R$ {proposta.valorProposto?.toFixed(2)}
                       </div>
                       {proposta.mensagem && (
-                        <div className="text-gray-400 text-sm mt-2">
+                        <div className="text-chrome/50 font-mono text-sm mt-2">
                           {proposta.mensagem}
                         </div>
                       )}
@@ -258,8 +258,8 @@ export default function BookingDetailPage() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Other User Card */}
-            <div className="bg-dark-800/50 backdrop-blur-sm border-2 border-dark-700 rounded-2xl p-6">
-              <h3 className="text-lg font-bold text-white mb-4">
+            <div className="bg-dark-800 border-2 border-dark-600 p-6">
+              <h3 className="text-lg font-display tracking-wider text-chrome mb-4 uppercase">
                 {isArtista ? 'Contratante' : 'Artista'}
               </h3>
 
@@ -268,27 +268,27 @@ export default function BookingDetailPage() {
                   <img
                     src={otherUser.foto}
                     alt={otherUser.nome}
-                    className="w-24 h-24 rounded-full object-cover border-4 border-dark-700 mb-4"
+                    className="w-24 h-24 object-cover border-2 border-dark-600 mb-4"
                   />
                 ) : (
-                  <div className="w-24 h-24 rounded-full bg-dark-700 border-4 border-dark-600 flex items-center justify-center text-4xl mb-4">
-                    {isArtista ? '📅' : '🎵'}
+                  <div className="w-24 h-24 bg-dark-700 border-2 border-dark-600 flex items-center justify-center text-4xl font-display text-neon-red/50 mb-4">
+                    {isArtista ? 'C' : 'A'}
                   </div>
                 )}
 
-                <div className="text-xl font-bold text-white mb-1">
+                <div className="text-xl font-display tracking-wider text-chrome mb-1 uppercase">
                   {isArtista ? otherUser?.nome : (booking.artista?.nomeArtistico || otherUser?.nome)}
                 </div>
 
                 {!isArtista && booking.artista?.categoria && (
-                  <div className="text-gray-400 text-sm mb-2">
+                  <div className="text-chrome/50 font-mono text-xs uppercase mb-2">
                     {booking.artista.categoria}
                   </div>
                 )}
 
-                <div className="text-gray-500 text-sm mb-4">{otherUser?.email}</div>
+                <div className="text-chrome/30 font-mono text-xs mb-4">{otherUser?.email}</div>
                 {otherUser?.telefone && (
-                  <div className="text-gray-400 text-sm mb-4">{otherUser.telefone}</div>
+                  <div className="text-chrome/50 font-mono text-xs mb-4">{otherUser.telefone}</div>
                 )}
               </div>
             </div>
@@ -297,10 +297,9 @@ export default function BookingDetailPage() {
             {!isArtista && booking.status === 'ACEITO' && (
               <button
                 onClick={() => setShowPaymentModal(true)}
-                className="w-full py-4 bg-gradient-to-r from-green-600 to-green-500 text-white font-bold rounded-xl hover:scale-105 hover:shadow-lg hover:shadow-green-600/50 transition-all flex items-center justify-center gap-2"
+                className="w-full py-4 bg-neon-acid text-void font-bold font-mono text-sm uppercase tracking-widest shadow-brutal-acid hover:bg-neon-pink hover:shadow-brutal transition-all flex items-center justify-center gap-2"
               >
-                <span className="text-2xl">💳</span>
-                <span>Realizar Pagamento</span>
+                Realizar Pagamento
               </button>
             )}
 
@@ -308,10 +307,9 @@ export default function BookingDetailPage() {
             {isArtista && booking.status === 'CONFIRMADO' && !booking.checkInArtista && (
               <button
                 onClick={() => setCheckInModalType('checkin')}
-                className="w-full py-4 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-bold rounded-xl hover:scale-105 hover:shadow-lg hover:shadow-purple-600/50 transition-all flex items-center justify-center gap-2"
+                className="w-full py-4 bg-neon-pink text-void font-bold font-mono text-sm uppercase tracking-widest shadow-brutal hover:bg-neon-acid hover:shadow-brutal-acid transition-all flex items-center justify-center gap-2"
               >
-                <span className="text-2xl">📍</span>
-                <span>Fazer Check-in</span>
+                Fazer Check-in
               </button>
             )}
 
@@ -319,40 +317,36 @@ export default function BookingDetailPage() {
             {isArtista && booking.status === 'EM_ANDAMENTO' && booking.checkInArtista && !booking.checkOutArtista && (
               <button
                 onClick={() => setCheckInModalType('checkout')}
-                className="w-full py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold rounded-xl hover:scale-105 hover:shadow-lg hover:shadow-blue-600/50 transition-all flex items-center justify-center gap-2"
+                className="w-full py-4 bg-neon-acid text-void font-bold font-mono text-sm uppercase tracking-widest shadow-brutal-acid hover:bg-neon-pink hover:shadow-brutal transition-all flex items-center justify-center gap-2"
               >
-                <span className="text-2xl">✅</span>
-                <span>Fazer Check-out</span>
+                Fazer Check-out
               </button>
             )}
 
             {/* Check-in Status Display */}
             {(booking.checkInArtista || booking.checkOutArtista) && (
-              <div className="bg-dark-800/50 border-2 border-dark-700 rounded-xl p-4 space-y-3">
-                <h4 className="text-white font-bold flex items-center gap-2">
-                  <span className="text-xl">📍</span>
-                  Status de Presença
+              <div className="bg-dark-800 border-2 border-dark-600 p-4 space-y-3">
+                <h4 className="text-chrome font-display tracking-wider uppercase flex items-center gap-2">
+                  Status de Presenca
                 </h4>
 
                 {booking.checkInArtista && (
-                  <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3">
-                    <div className="text-green-400 font-semibold mb-1 flex items-center gap-2">
-                      <span>✓</span>
+                  <div className="bg-neon-acid/10 border-2 border-neon-acid/30 p-3">
+                    <div className="text-neon-acid font-mono text-xs uppercase mb-1 flex items-center gap-2">
                       Check-in realizado
                     </div>
-                    <div className="text-gray-400 text-sm">
+                    <div className="text-chrome/50 font-mono text-xs">
                       {new Date(booking.checkInArtista).toLocaleString('pt-BR')}
                     </div>
                   </div>
                 )}
 
                 {booking.checkOutArtista && (
-                  <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
-                    <div className="text-blue-400 font-semibold mb-1 flex items-center gap-2">
-                      <span>✓</span>
+                  <div className="bg-neon-pink/10 border-2 border-neon-pink/30 p-3">
+                    <div className="text-neon-pink font-mono text-xs uppercase mb-1 flex items-center gap-2">
                       Check-out realizado
                     </div>
-                    <div className="text-gray-400 text-sm">
+                    <div className="text-chrome/50 font-mono text-xs">
                       {new Date(booking.checkOutArtista).toLocaleString('pt-BR')}
                     </div>
                   </div>
@@ -364,10 +358,9 @@ export default function BookingDetailPage() {
             {booking.status === 'CONCLUIDO' && (
               <button
                 onClick={() => navigate(`/bookings/${id}/review`)}
-                className="w-full py-4 bg-gradient-to-r from-yellow-600 to-yellow-500 text-white font-bold rounded-xl hover:scale-105 hover:shadow-lg hover:shadow-yellow-600/50 transition-all flex items-center justify-center gap-2"
+                className="w-full py-4 bg-neon-red text-void font-bold font-mono text-sm uppercase tracking-widest shadow-brutal hover:bg-neon-acid hover:shadow-brutal-acid transition-all flex items-center justify-center gap-2"
               >
-                <span className="text-2xl">⭐</span>
-                <span>Avaliar {isArtista ? 'Contratante' : 'Artista'}</span>
+                Avaliar {isArtista ? 'Contratante' : 'Artista'}
               </button>
             )}
 
@@ -377,27 +370,27 @@ export default function BookingDetailPage() {
                 <button
                   onClick={() => acceptMutation.mutate()}
                   disabled={acceptMutation.isPending}
-                  className="w-full py-4 bg-gradient-to-r from-green-600 to-green-500 text-white font-bold rounded-xl hover:scale-105 hover:shadow-lg hover:shadow-green-600/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-4 bg-neon-acid text-void font-bold font-mono text-sm uppercase tracking-widest shadow-brutal-acid hover:bg-neon-pink hover:shadow-brutal transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {acceptMutation.isPending ? 'Aceitando...' : 'Aceitar Booking'}
                 </button>
 
                 {/* Counter Offer Form */}
-                <div className="bg-dark-800/50 border-2 border-dark-700 rounded-xl p-4">
-                  <h4 className="text-white font-bold mb-3">Fazer Contra-Proposta</h4>
+                <div className="bg-dark-800 border-2 border-dark-600 p-4">
+                  <h4 className="text-chrome font-display tracking-wider uppercase mb-3">Fazer Contra-Proposta</h4>
                   <input
                     type="number"
                     placeholder="Novo valor (R$)"
                     value={counterOfferValue}
                     onChange={(e) => setCounterOfferValue(e.target.value)}
-                    className="w-full px-4 py-3 bg-dark-900 border border-dark-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-vibrant mb-3"
+                    className="w-full px-4 py-3 bg-dark-900 border-2 border-dark-600 text-chrome font-mono text-sm placeholder-chrome/30 focus:outline-none focus:border-neon-red mb-3 transition-colors"
                   />
                   <textarea
                     placeholder="Mensagem (opcional)"
                     value={counterOfferMessage}
                     onChange={(e) => setCounterOfferMessage(e.target.value)}
                     rows="3"
-                    className="w-full px-4 py-3 bg-dark-900 border border-dark-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-vibrant mb-3 resize-none"
+                    className="w-full px-4 py-3 bg-dark-900 border-2 border-dark-600 text-chrome font-mono text-sm placeholder-chrome/30 focus:outline-none focus:border-neon-red mb-3 resize-none transition-colors"
                   />
                   <button
                     onClick={() => {
@@ -409,26 +402,26 @@ export default function BookingDetailPage() {
                       }
                     }}
                     disabled={!counterOfferValue || counterOfferMutation.isPending}
-                    className="w-full py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full py-3 bg-neon-pink text-void font-bold font-mono text-sm uppercase tracking-wider hover:bg-neon-acid transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {counterOfferMutation.isPending ? 'Enviando...' : 'Enviar Contra-Proposta'}
                   </button>
                 </div>
 
                 {/* Reject Form */}
-                <div className="bg-dark-800/50 border-2 border-dark-700 rounded-xl p-4">
-                  <h4 className="text-white font-bold mb-3">Recusar Booking</h4>
+                <div className="bg-dark-800 border-2 border-dark-600 p-4">
+                  <h4 className="text-chrome font-display tracking-wider uppercase mb-3">Recusar Booking</h4>
                   <textarea
                     placeholder="Motivo da recusa"
                     value={rejectReason}
                     onChange={(e) => setRejectReason(e.target.value)}
                     rows="3"
-                    className="w-full px-4 py-3 bg-dark-900 border border-dark-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-vibrant mb-3 resize-none"
+                    className="w-full px-4 py-3 bg-dark-900 border-2 border-dark-600 text-chrome font-mono text-sm placeholder-chrome/30 focus:outline-none focus:border-neon-red mb-3 resize-none transition-colors"
                   />
                   <button
                     onClick={() => rejectReason && rejectMutation.mutate(rejectReason)}
                     disabled={!rejectReason || rejectMutation.isPending}
-                    className="w-full py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full py-3 bg-neon-red text-void font-bold font-mono text-sm uppercase tracking-wider hover:bg-neon-acid transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {rejectMutation.isPending ? 'Recusando...' : 'Recusar Booking'}
                   </button>

@@ -77,7 +77,7 @@ export default function PaymentModal({ bookingId, onClose, onSuccess }) {
   const handleCopyPixCode = () => {
     if (pixData?.copyPaste) {
       navigator.clipboard.writeText(pixData.copyPaste);
-      alert('Código PIX copiado!');
+      alert('Codigo PIX copiado!');
     }
   };
 
@@ -87,25 +87,31 @@ export default function PaymentModal({ bookingId, onClose, onSuccess }) {
 
   if (showPixCode && pixData) {
     return (
-      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6">
-        <div className="bg-dark-800 border-2 border-red-vibrant rounded-2xl p-8 max-w-md w-full relative">
+      <div className="fixed inset-0 bg-void/90 backdrop-blur-sm flex items-center justify-center z-50 p-6">
+        <div className="bg-dark-800 border-2 border-neon-red p-8 max-w-md w-full relative shadow-brutal-lg">
+          {/* Corner accents */}
+          <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-neon-acid"></div>
+          <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-neon-acid"></div>
+          <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-neon-acid"></div>
+          <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-neon-acid"></div>
+
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors text-2xl"
+            className="absolute top-4 right-4 text-chrome/50 hover:text-neon-red transition-colors text-2xl font-display"
           >
-            ×
+            X
           </button>
 
-          <h2 className="text-3xl font-black text-white mb-4 text-center">
-            Pagamento PIX
+          <h2 className="text-3xl font-display tracking-wider text-chrome mb-4 text-center uppercase">
+            Pagamento <span className="text-neon-acid">PIX</span>
           </h2>
 
-          <p className="text-gray-400 text-center mb-6">
-            Escaneie o QR Code ou copie o código PIX
+          <p className="text-chrome/50 font-mono text-xs text-center mb-6 uppercase">
+            Escaneie o QR Code ou copie o codigo PIX
           </p>
 
           <div className="flex justify-center mb-6">
-            <div className="p-4 bg-white rounded-2xl">
+            <div className="p-4 bg-chrome border-2 border-dark-600">
               <img
                 src={`data:image/png;base64,${pixData.qrCode}`}
                 alt="QR Code PIX"
@@ -114,30 +120,30 @@ export default function PaymentModal({ bookingId, onClose, onSuccess }) {
             </div>
           </div>
 
-          <div className="bg-dark-900 border border-dark-700 rounded-xl p-4 mb-6">
-            <div className="text-gray-500 text-xs mb-2">Código PIX Copia e Cola</div>
-            <div className="text-white text-sm break-all mb-3 font-mono">
+          <div className="bg-dark-900 border-2 border-dark-600 p-4 mb-6">
+            <div className="text-chrome/30 font-mono text-xs mb-2 uppercase">Codigo PIX Copia e Cola</div>
+            <div className="text-chrome font-mono text-xs break-all mb-3">
               {pixData.copyPaste}
             </div>
             <button
               onClick={handleCopyPixCode}
-              className="w-full py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-500 transition-colors"
+              className="w-full py-3 bg-neon-pink text-void font-bold font-mono text-sm uppercase tracking-wider hover:bg-neon-acid transition-colors"
             >
-              Copiar Código PIX
+              Copiar Codigo PIX
             </button>
           </div>
 
-          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 mb-6">
-            <div className="text-yellow-400 text-sm text-center">
-              Aguardando confirmação do pagamento...
+          <div className="bg-yellow-500/10 border-2 border-yellow-500/30 p-4 mb-6">
+            <div className="text-yellow-400 font-mono text-xs text-center uppercase">
+              Aguardando confirmacao do pagamento...
             </div>
-            <div className="text-yellow-400/70 text-xs text-center mt-1">
-              A página será atualizada automaticamente quando o pagamento for confirmado
+            <div className="text-yellow-400/70 font-mono text-xs text-center mt-1 uppercase">
+              A pagina sera atualizada automaticamente quando o pagamento for confirmado
             </div>
           </div>
 
-          <div className="text-gray-500 text-xs text-center">
-            O pagamento PIX é processado instantaneamente
+          <div className="text-chrome/30 font-mono text-xs text-center uppercase">
+            O pagamento PIX e processado instantaneamente
           </div>
         </div>
       </div>
@@ -146,11 +152,11 @@ export default function PaymentModal({ bookingId, onClose, onSuccess }) {
 
   if (isLoadingPayment) {
     return (
-      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6">
-        <div className="bg-dark-800 border-2 border-red-vibrant rounded-2xl p-8 max-w-md w-full relative">
-          <div className="text-white text-center">
-            <div className="mb-4 text-4xl">⏳</div>
-            <div className="text-xl font-bold">Verificando pagamento...</div>
+      <div className="fixed inset-0 bg-void/90 backdrop-blur-sm flex items-center justify-center z-50 p-6">
+        <div className="bg-dark-800 border-2 border-neon-red p-8 max-w-md w-full relative">
+          <div className="text-chrome text-center">
+            <div className="mb-4 text-6xl font-display text-neon-red animate-pulse">...</div>
+            <div className="text-xl font-display tracking-wider uppercase">Verificando pagamento</div>
           </div>
         </div>
       </div>
@@ -158,62 +164,68 @@ export default function PaymentModal({ bookingId, onClose, onSuccess }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-6">
-      <div className="bg-dark-800 border-2 border-red-vibrant rounded-2xl p-8 max-w-md w-full relative">
+    <div className="fixed inset-0 bg-void/90 backdrop-blur-sm flex items-center justify-center z-50 p-6">
+      <div className="bg-dark-800 border-2 border-neon-red p-8 max-w-md w-full relative shadow-brutal-lg">
+        {/* Corner accents */}
+        <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-neon-acid"></div>
+        <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-neon-acid"></div>
+        <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-neon-acid"></div>
+        <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-neon-acid"></div>
+
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors text-2xl"
+          className="absolute top-4 right-4 text-chrome/50 hover:text-neon-red transition-colors text-2xl font-display"
         >
-          ×
+          X
         </button>
 
-        <h2 className="text-3xl font-black text-white mb-4 text-center">
-          Realizar Pagamento
+        <h2 className="text-3xl font-display tracking-wider text-chrome mb-4 text-center uppercase">
+          Realizar <span className="text-neon-red">Pagamento</span>
         </h2>
 
-        <p className="text-gray-400 text-center mb-8">
-          Selecione o método de pagamento
+        <p className="text-chrome/50 font-mono text-xs text-center mb-8 uppercase">
+          Selecione o metodo de pagamento
         </p>
 
         <div className="space-y-4 mb-8">
           <button
             onClick={() => setPaymentMethod('PIX')}
-            className={`w-full p-6 rounded-xl border-2 transition-all ${
+            className={`w-full p-6 border-2 transition-all ${
               paymentMethod === 'PIX'
-                ? 'border-red-vibrant bg-red-vibrant/10'
-                : 'border-dark-700 hover:border-dark-600'
+                ? 'border-neon-red bg-neon-red/10 shadow-brutal-sm'
+                : 'border-dark-600 hover:border-dark-500'
             }`}
           >
             <div className="flex items-center gap-4">
-              <div className="text-4xl">💳</div>
+              <div className="text-3xl font-display text-neon-acid">01</div>
               <div className="flex-1 text-left">
-                <div className="text-white font-bold text-lg">PIX</div>
-                <div className="text-gray-400 text-sm">
-                  Pagamento instantâneo via QR Code
+                <div className="text-chrome font-display tracking-wider text-lg uppercase">PIX</div>
+                <div className="text-chrome/50 font-mono text-xs uppercase">
+                  Pagamento instantaneo via QR Code
                 </div>
               </div>
               {paymentMethod === 'PIX' && (
-                <div className="text-red-vibrant text-2xl">✓</div>
+                <div className="text-neon-acid font-display text-2xl">OK</div>
               )}
             </div>
           </button>
 
           <button
             onClick={() => setPaymentMethod('CREDIT_CARD')}
-            className={`w-full p-6 rounded-xl border-2 transition-all ${
+            className={`w-full p-6 border-2 transition-all ${
               paymentMethod === 'CREDIT_CARD'
-                ? 'border-red-vibrant bg-red-vibrant/10'
-                : 'border-dark-700 hover:border-dark-600'
+                ? 'border-neon-red bg-neon-red/10'
+                : 'border-dark-600 hover:border-dark-500'
             }`}
             disabled
           >
             <div className="flex items-center gap-4">
-              <div className="text-4xl opacity-50">💳</div>
+              <div className="text-3xl font-display text-chrome/30">02</div>
               <div className="flex-1 text-left">
-                <div className="text-white font-bold text-lg opacity-50">
-                  Cartão de Crédito
+                <div className="text-chrome/30 font-display tracking-wider text-lg uppercase">
+                  Cartao de Credito
                 </div>
-                <div className="text-gray-400 text-sm">
+                <div className="text-chrome/20 font-mono text-xs uppercase">
                   Em breve
                 </div>
               </div>
@@ -222,7 +234,7 @@ export default function PaymentModal({ bookingId, onClose, onSuccess }) {
         </div>
 
         {createPaymentMutation.error && (
-          <div className="mb-6 p-4 bg-red-vibrant/10 border border-red-vibrant/50 rounded-xl text-red-vibrant text-sm">
+          <div className="mb-6 p-4 bg-neon-red/10 border-2 border-neon-red text-neon-red font-mono text-sm">
             {createPaymentMutation.error.response?.data?.message ||
              createPaymentMutation.error.response?.data?.error ||
              'Erro ao criar pagamento. Tente novamente.'}
@@ -232,20 +244,20 @@ export default function PaymentModal({ bookingId, onClose, onSuccess }) {
         <div className="flex gap-4">
           <button
             onClick={onClose}
-            className="flex-1 py-4 border-2 border-dark-700 text-gray-300 font-bold rounded-xl hover:border-dark-600 hover:text-white transition-all"
+            className="flex-1 py-4 bg-dark-800 text-chrome font-bold font-mono text-sm uppercase tracking-wider border-2 border-dark-600 hover:border-neon-red hover:text-neon-red transition-all"
           >
             Cancelar
           </button>
           <button
             onClick={handlePayment}
             disabled={createPaymentMutation.isPending || paymentMethod === 'CREDIT_CARD'}
-            className="flex-1 py-4 bg-gradient-to-r from-red-vibrant to-pink-600 text-white font-bold rounded-xl hover:scale-105 hover:shadow-lg hover:shadow-red-vibrant/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="flex-1 py-4 bg-neon-red text-void font-bold font-mono text-sm uppercase tracking-widest shadow-brutal hover:bg-neon-acid hover:shadow-brutal-acid transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {createPaymentMutation.isPending ? 'Processando...' : 'Confirmar Pagamento'}
+            {createPaymentMutation.isPending ? 'Processando...' : 'Confirmar'}
           </button>
         </div>
 
-        <div className="mt-6 text-gray-500 text-xs text-center">
+        <div className="mt-6 text-chrome/30 font-mono text-xs text-center uppercase">
           Pagamento seguro processado pelo ASAAS
         </div>
       </div>

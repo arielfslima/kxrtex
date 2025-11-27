@@ -117,21 +117,21 @@ export default function ChatBox({ bookingId }) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-gray-400">Carregando mensagens...</div>
+      <div className="flex items-center justify-center p-8 bg-dark-800 border-2 border-dark-600">
+        <div className="text-chrome/50 font-mono text-sm uppercase tracking-wider">Carregando mensagens...</div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-[600px] bg-dark-800/50 backdrop-blur-sm border-2 border-dark-700 rounded-2xl overflow-hidden">
+    <div className="flex flex-col h-[600px] bg-dark-800 border-2 border-dark-600 overflow-hidden">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-dark-700 bg-dark-800/80">
-        <h3 className="text-xl font-bold text-white flex items-center gap-2">
-          <span className="text-2xl">💬</span>
+      <div className="px-6 py-4 border-b-2 border-dark-600 bg-dark-900">
+        <h3 className="text-xl font-display tracking-wider text-chrome uppercase flex items-center gap-2">
+          <span className="text-neon-pink font-mono text-lg">04</span>
           Chat do Booking
         </h3>
-        <p className="text-gray-400 text-sm mt-1">
+        <p className="text-chrome/50 font-mono text-xs uppercase mt-1">
           Negocie diretamente com {user?.tipo === 'ARTISTA' ? 'o contratante' : 'o artista'}
         </p>
       </div>
@@ -139,10 +139,10 @@ export default function ChatBox({ bookingId }) {
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-6 space-y-4">
         {messages.length === 0 ? (
-          <div className="text-center text-gray-500 py-8">
-            <div className="text-4xl mb-2">💬</div>
-            <div>Nenhuma mensagem ainda</div>
-            <div className="text-sm mt-1">Comece a conversa!</div>
+          <div className="text-center py-8">
+            <div className="text-4xl font-display text-neon-pink/50 mb-2">...</div>
+            <div className="text-chrome/30 font-mono text-sm uppercase">Nenhuma mensagem ainda</div>
+            <div className="text-chrome/20 font-mono text-xs mt-1 uppercase">Comece a conversa!</div>
           </div>
         ) : (
           messages.map((msg) => {
@@ -152,7 +152,7 @@ export default function ChatBox({ bookingId }) {
             if (isSystem) {
               return (
                 <div key={msg.id} className="flex justify-center">
-                  <div className="max-w-md px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400 text-sm text-center">
+                  <div className="max-w-md px-4 py-2 bg-yellow-500/10 border-2 border-yellow-500/30 text-yellow-400 font-mono text-xs text-center uppercase">
                     {msg.conteudo}
                   </div>
                 </div>
@@ -166,21 +166,21 @@ export default function ChatBox({ bookingId }) {
               >
                 <div className={`max-w-[70%] ${isOwn ? 'order-2' : 'order-1'}`}>
                   {!isOwn && (
-                    <div className="text-xs text-gray-500 mb-1 px-3">
+                    <div className="text-chrome/30 font-mono text-xs mb-1 px-3 uppercase">
                       {msg.remetente?.nome}
                     </div>
                   )}
                   <div
-                    className={`px-4 py-3 rounded-2xl ${
+                    className={`px-4 py-3 ${
                       isOwn
-                        ? 'bg-gradient-to-r from-red-vibrant to-pink-600 text-white rounded-br-none'
-                        : 'bg-dark-700 text-white rounded-bl-none'
+                        ? 'bg-neon-red text-void'
+                        : 'bg-dark-700 text-chrome border-2 border-dark-600'
                     }`}
                   >
-                    <div className="break-words">{msg.conteudo}</div>
+                    <div className="break-words font-mono text-sm">{msg.conteudo}</div>
                     <div
-                      className={`text-xs mt-1 ${
-                        isOwn ? 'text-white/70' : 'text-gray-500'
+                      className={`font-mono text-xs mt-1 uppercase ${
+                        isOwn ? 'text-void/70' : 'text-chrome/30'
                       }`}
                     >
                       {formatTime(msg.timestamp)}
@@ -196,13 +196,13 @@ export default function ChatBox({ bookingId }) {
 
       {/* Typing Indicator */}
       {typingUser && (
-        <div className="px-6 py-2 text-sm text-gray-400 italic">
-          {typingUser} está digitando...
+        <div className="px-6 py-2 text-chrome/50 font-mono text-xs italic uppercase">
+          {typingUser} esta digitando...
         </div>
       )}
 
       {/* Input */}
-      <form onSubmit={handleSend} className="px-6 py-4 border-t border-dark-700 bg-dark-800/80">
+      <form onSubmit={handleSend} className="px-6 py-4 border-t-2 border-dark-600 bg-dark-900">
         <div className="flex gap-3">
           <input
             type="text"
@@ -212,19 +212,19 @@ export default function ChatBox({ bookingId }) {
               handleTyping();
             }}
             placeholder="Digite sua mensagem..."
-            className="flex-1 px-4 py-3 bg-dark-900 border border-dark-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-red-vibrant transition-colors"
+            className="flex-1 px-4 py-3 bg-dark-800 border-2 border-dark-600 text-chrome font-mono text-sm placeholder-chrome/30 focus:outline-none focus:border-neon-red transition-colors"
             disabled={sendMessageMutation.isPending}
           />
           <button
             type="submit"
             disabled={!message.trim() || sendMessageMutation.isPending}
-            className="px-6 py-3 bg-gradient-to-r from-red-vibrant to-pink-600 text-white font-bold rounded-xl hover:scale-105 hover:shadow-lg hover:shadow-red-vibrant/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="px-6 py-3 bg-neon-red text-void font-bold font-mono text-sm uppercase tracking-wider shadow-brutal-sm hover:bg-neon-acid hover:shadow-brutal-acid transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {sendMessageMutation.isPending ? '...' : 'Enviar'}
           </button>
         </div>
-        <div className="text-xs text-gray-500 mt-2">
-          ⚠️ Não compartilhe telefone, email ou redes sociais. Mantenha a negociação na plataforma para sua proteção.
+        <div className="text-chrome/30 font-mono text-xs mt-2 uppercase">
+          Nao compartilhe telefone, email ou redes sociais. Mantenha a negociacao na plataforma.
         </div>
       </form>
     </div>

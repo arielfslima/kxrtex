@@ -37,36 +37,38 @@ const DemoChat = () => {
   return (
     <div className="space-y-8 animate-fade-in">
       <div className="text-center space-y-4">
-        <h2 className="text-4xl font-bold text-white">Chat em Tempo Real</h2>
-        <p className="text-gray-400 text-lg">
-          Comunicação segura com detecção de anti-circumvenção
+        <h2 className="text-4xl font-black font-display text-chrome uppercase tracking-wider">
+          Chat em Tempo Real
+        </h2>
+        <p className="text-chrome/50 font-mono text-sm uppercase tracking-widest">
+          Comunicacao segura com deteccao de anti-circumvencao
         </p>
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
         <div className="md:col-span-2">
-          <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-700 rounded-2xl overflow-hidden flex flex-col h-[600px]">
-            <div className="bg-dark-700 px-6 py-4 border-b border-dark-600 flex items-center justify-between">
+          <div className="border-2 border-dark-600 bg-dark-900/50 overflow-hidden flex flex-col h-[600px]">
+            <div className="bg-dark-800 px-6 py-4 border-b-2 border-dark-600 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <img
                     src="https://i.pravatar.cc/40?img=33"
                     alt="DJ Phoenix"
-                    className="w-10 h-10 rounded-full"
+                    className="w-10 h-10 grayscale border-2 border-dark-600"
                   />
-                  <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-dark-700 rounded-full"></div>
+                  <div className="absolute bottom-0 right-0 w-3 h-3 bg-neon-acid border-2 border-dark-800"></div>
                 </div>
                 <div>
-                  <div className="font-semibold text-white">DJ Phoenix</div>
-                  <div className="text-xs text-green-400">Online</div>
+                  <div className="font-mono font-bold text-chrome text-sm">DJ Phoenix</div>
+                  <div className="text-[10px] font-mono text-neon-acid uppercase tracking-wider">Online</div>
                 </div>
               </div>
-              <div className="text-sm text-gray-400">
-                Booking: #DEMO-001
+              <div className="text-xs font-mono text-chrome/50">
+                BOOKING: #DEMO-001
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-dark-900/50">
+            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-dark-950/50 scrollbar-thin scrollbar-thumb-dark-600">
               {messages.map((message) => {
                 const isSystem = message.tipo === 'SISTEMA';
                 const isSent = message.remetente?.id === 'demo-contratante-1';
@@ -74,14 +76,14 @@ const DemoChat = () => {
                 if (isSystem) {
                   return (
                     <div key={message.id} className="flex justify-center">
-                      <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-lg px-4 py-2 max-w-md text-center">
+                      <div className="border-2 border-neon-gold/50 bg-neon-gold/10 px-4 py-2 max-w-md text-center">
                         <div className="flex items-center gap-2 justify-center mb-1">
-                          <span className="text-yellow-500">⚠️</span>
-                          <span className="text-xs font-semibold text-yellow-400 uppercase">
+                          <span className="text-neon-gold font-mono text-xs">[!]</span>
+                          <span className="text-[10px] font-mono font-bold text-neon-gold uppercase tracking-wider">
                             Aviso do Sistema
                           </span>
                         </div>
-                        <p className="text-sm text-yellow-300">
+                        <p className="text-xs font-mono text-neon-gold/80">
                           {message.conteudo}
                         </p>
                       </div>
@@ -95,21 +97,21 @@ const DemoChat = () => {
                     className={`flex ${isSent ? 'justify-end' : 'justify-start'}`}
                   >
                     <div
-                      className={`max-w-md ${
+                      className={`max-w-md border-2 px-4 py-3 ${
                         isSent
-                          ? 'bg-gradient-to-r from-red-vibrant to-pink-600'
-                          : 'bg-dark-700'
-                      } rounded-2xl px-4 py-3`}
+                          ? 'border-neon-red bg-neon-red/10'
+                          : 'border-dark-600 bg-dark-800'
+                      }`}
                     >
                       {!isSent && (
-                        <div className="text-xs font-semibold text-gray-400 mb-1">
+                        <div className="text-[10px] font-mono font-bold text-chrome/50 uppercase tracking-wider mb-1">
                           {message.remetente?.usuario?.nome || message.remetente?.nomeArtistico}
                         </div>
                       )}
-                      <p className="text-white text-sm">{message.conteudo}</p>
+                      <p className="text-chrome font-mono text-sm">{message.conteudo}</p>
                       <div
-                        className={`text-xs mt-1 ${
-                          isSent ? 'text-white/70' : 'text-gray-500'
+                        className={`text-[10px] font-mono mt-1 ${
+                          isSent ? 'text-neon-red/70' : 'text-chrome/30'
                         }`}
                       >
                         {formatTime(message.timestamp)}
@@ -121,15 +123,15 @@ const DemoChat = () => {
 
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-dark-700 rounded-2xl px-4 py-3">
+                  <div className="border-2 border-dark-600 bg-dark-800 px-4 py-3">
                     <div className="flex gap-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-chrome/50 animate-bounce"></div>
                       <div
-                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                        className="w-2 h-2 bg-chrome/50 animate-bounce"
                         style={{ animationDelay: '0.1s' }}
                       ></div>
                       <div
-                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                        className="w-2 h-2 bg-chrome/50 animate-bounce"
                         style={{ animationDelay: '0.2s' }}
                       ></div>
                     </div>
@@ -140,97 +142,88 @@ const DemoChat = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            <div className="bg-dark-700 px-6 py-4 border-t border-dark-600">
+            <div className="bg-dark-800 px-6 py-4 border-t-2 border-dark-600">
               <div className="flex gap-3">
                 <input
                   type="text"
                   placeholder="Digite sua mensagem..."
                   disabled
-                  className="flex-1 bg-dark-800 text-white border border-dark-600 rounded-lg px-4 py-2 focus:outline-none focus:border-red-vibrant"
+                  className="flex-1 px-4 py-3 bg-dark-900 border-2 border-dark-600 text-chrome font-mono text-sm placeholder-chrome/30"
                 />
-                <button className="px-6 py-2 bg-gradient-to-r from-red-vibrant to-pink-600 text-white rounded-lg hover:scale-105 transition font-medium">
-                  Enviar
+                <button className="px-6 py-3 border-2 border-neon-red bg-neon-red text-dark-950 font-mono text-xs font-bold uppercase">
+                  ENVIAR
                 </button>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="space-y-6">
-          <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-700 rounded-2xl p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">
-              Recursos do Chat
+        <div className="space-y-4">
+          <div className="border-2 border-dark-600 bg-dark-900/50 p-6">
+            <h3 className="text-sm font-mono font-bold text-chrome uppercase tracking-wider border-b-2 border-dark-600 pb-2 mb-4">
+              [RECURSOS DO CHAT]
             </h3>
-            <div className="space-y-3 text-sm">
+            <div className="space-y-3 text-xs font-mono">
               <div className="flex items-start gap-3">
-                <div className="text-green-500 text-xl">✓</div>
+                <span className="text-neon-acid">[OK]</span>
                 <div>
-                  <div className="text-white font-medium">Tempo Real</div>
-                  <div className="text-gray-400">
-                    Mensagens instantâneas via Socket.IO
-                  </div>
+                  <div className="text-chrome font-bold">Tempo Real</div>
+                  <div className="text-chrome/50">Mensagens instantaneas via Socket.IO</div>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="text-green-500 text-xl">✓</div>
+                <span className="text-neon-acid">[OK]</span>
                 <div>
-                  <div className="text-white font-medium">Status Online</div>
-                  <div className="text-gray-400">
-                    Veja quando o outro usuário está online
-                  </div>
+                  <div className="text-chrome font-bold">Status Online</div>
+                  <div className="text-chrome/50">Veja quando o outro usuario esta online</div>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="text-green-500 text-xl">✓</div>
+                <span className="text-neon-acid">[OK]</span>
                 <div>
-                  <div className="text-white font-medium">Indicador de Digitação</div>
-                  <div className="text-gray-400">
-                    Saiba quando estão respondendo
-                  </div>
+                  <div className="text-chrome font-bold">Indicador de Digitacao</div>
+                  <div className="text-chrome/50">Saiba quando estao respondendo</div>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="text-green-500 text-xl">✓</div>
+                <span className="text-neon-acid">[OK]</span>
                 <div>
-                  <div className="text-white font-medium">Histórico Completo</div>
-                  <div className="text-gray-400">
-                    Todas as mensagens salvas
-                  </div>
+                  <div className="text-chrome font-bold">Historico Completo</div>
+                  <div className="text-chrome/50">Todas as mensagens salvas</div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
-            <h4 className="font-semibold text-red-400 mb-2 flex items-center gap-2">
-              <span>👁️</span>
-              Anti-Circumvenção
+          <div className="border-2 border-neon-red/30 bg-neon-red/5 p-4">
+            <h4 className="font-mono font-bold text-neon-red text-xs uppercase tracking-wider mb-2">
+              [!] ANTI-CIRCUMVENCAO
             </h4>
-            <p className="text-sm text-red-300 mb-2">
+            <p className="text-xs font-mono text-neon-red/80 mb-2">
               Sistema detecta automaticamente:
             </p>
-            <ul className="text-sm text-red-300 space-y-1">
-              <li>• Números de telefone</li>
-              <li>• Endereços de e-mail</li>
-              <li>• Redes sociais (@usuario)</li>
-              <li>• Links externos</li>
+            <ul className="text-xs font-mono text-neon-red/70 space-y-1">
+              <li>- Numeros de telefone</li>
+              <li>- Enderecos de e-mail</li>
+              <li>- Redes sociais (@usuario)</li>
+              <li>- Links externos</li>
             </ul>
-            <div className="mt-3 pt-3 border-t border-red-500/30">
-              <p className="text-xs text-red-400">
-                Violações podem resultar em suspensão da conta
+            <div className="mt-3 pt-3 border-t border-neon-red/30">
+              <p className="text-[10px] font-mono text-neon-red/60 uppercase">
+                Violacoes podem resultar em suspensao da conta
               </p>
             </div>
           </div>
 
-          <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
-            <h4 className="font-semibold text-blue-400 mb-2">
-              📋 Boas Práticas
+          <div className="border-2 border-neon-cyan/30 bg-neon-cyan/5 p-4">
+            <h4 className="font-mono font-bold text-neon-cyan text-xs uppercase tracking-wider mb-2">
+              [INFO] BOAS PRATICAS
             </h4>
-            <ul className="text-sm text-blue-300 space-y-1">
-              <li>• Seja profissional e respeitoso</li>
-              <li>• Mantenha tudo na plataforma</li>
-              <li>• Confirme detalhes por escrito</li>
-              <li>• Responda prontamente</li>
+            <ul className="text-xs font-mono text-neon-cyan/80 space-y-1">
+              <li>- Seja profissional e respeitoso</li>
+              <li>- Mantenha tudo na plataforma</li>
+              <li>- Confirme detalhes por escrito</li>
+              <li>- Responda prontamente</li>
             </ul>
           </div>
         </div>

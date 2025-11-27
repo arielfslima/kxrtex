@@ -5,6 +5,12 @@ import api from '../services/api';
 import ImageUpload from '../components/ImageUpload';
 import PortfolioUpload from '../components/PortfolioUpload';
 
+const PLANOS = {
+  FREE: { label: 'FREE', color: 'text-chrome/50', bg: 'bg-dark-700', border: 'border-dark-600' },
+  PLUS: { label: 'PLUS', color: 'text-neon-acid', bg: 'bg-neon-acid/10', border: 'border-neon-acid/30' },
+  PRO: { label: 'PRO', color: 'text-neon-pink', bg: 'bg-neon-pink/10', border: 'border-neon-pink/30' }
+};
+
 export default function ProfilePage() {
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
@@ -43,28 +49,28 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4 animate-pulse">👤</div>
-          <div className="text-xl text-gray-400">Carregando perfil...</div>
+          <div className="text-8xl font-display text-neon-red mb-4 animate-pulse">...</div>
+          <div className="text-xl font-mono text-chrome/50 uppercase tracking-wider">Carregando perfil</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-void">
       {/* Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900 border-b border-dark-700">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-red-vibrant rounded-full filter blur-[100px] animate-pulse"></div>
+      <div className="relative overflow-hidden bg-surface border-b-2 border-neon-red/30">
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-neon-red/10 rounded-full filter blur-[150px]"></div>
         </div>
 
         <div className="relative py-12 px-6">
           <div className="max-w-5xl mx-auto">
             <button
               onClick={() => navigate('/')}
-              className="text-gray-400 hover:text-white mb-4 flex items-center gap-2 transition-colors"
+              className="text-chrome/50 hover:text-neon-red mb-4 flex items-center gap-2 font-mono text-sm uppercase tracking-wider transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -73,19 +79,19 @@ export default function ProfilePage() {
             </button>
 
             <div className="flex items-center justify-between">
-              <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-red-vibrant via-pink-500 to-purple-600 text-transparent bg-clip-text">
-                Meu Perfil
+              <h1 className="text-5xl md:text-6xl font-display tracking-wider text-chrome">
+                MEU <span className="text-neon-red">PERFIL</span>
               </h1>
               <div className="flex gap-3">
                 <button
                   onClick={() => navigate('/profile/edit')}
-                  className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold rounded-xl hover:scale-105 transition-all"
+                  className="px-6 py-3 bg-neon-acid text-void font-bold font-mono text-sm uppercase tracking-wider shadow-brutal-acid hover:bg-neon-pink hover:shadow-brutal transition-all"
                 >
                   Editar Perfil
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="px-6 py-3 bg-red-600 text-white font-bold rounded-xl hover:bg-red-500 transition-colors"
+                  className="px-6 py-3 bg-dark-800 text-neon-red font-bold font-mono text-sm uppercase tracking-wider border-2 border-neon-red hover:bg-neon-red hover:text-void transition-all"
                 >
                   Sair
                 </button>
@@ -99,36 +105,36 @@ export default function ProfilePage() {
         <div className="grid md:grid-cols-3 gap-8">
           {/* User Info Sidebar */}
           <div className="space-y-6">
-            <div className="bg-dark-800/50 backdrop-blur-sm border-2 border-dark-700 rounded-2xl p-6">
-              <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                <span className="text-2xl">👤</span>
-                Informações
+            <div className="bg-dark-800 border-2 border-dark-600 p-6">
+              <h2 className="text-xl font-display tracking-wider text-chrome mb-6 uppercase flex items-center gap-2">
+                <span className="text-neon-red">01</span>
+                Informacoes
               </h2>
 
               <div className="space-y-4">
                 <div>
-                  <div className="text-gray-500 text-sm mb-1">Nome</div>
-                  <div className="text-white font-medium">{userData?.data?.nome}</div>
+                  <div className="text-chrome/30 font-mono text-xs uppercase mb-1">Nome</div>
+                  <div className="text-chrome font-mono text-sm">{userData?.data?.nome}</div>
                 </div>
 
                 {isArtista && artist?.nomeArtistico && (
                   <div>
-                    <div className="text-gray-500 text-sm mb-1">Nome Artístico</div>
-                    <div className="text-white font-medium">{artist.nomeArtistico}</div>
+                    <div className="text-chrome/30 font-mono text-xs uppercase mb-1">Nome Artistico</div>
+                    <div className="text-chrome font-mono text-sm">{artist.nomeArtistico}</div>
                   </div>
                 )}
 
                 <div>
-                  <div className="text-gray-500 text-sm mb-1">Email</div>
-                  <div className="text-white font-medium">{userData?.data?.email}</div>
+                  <div className="text-chrome/30 font-mono text-xs uppercase mb-1">Email</div>
+                  <div className="text-chrome font-mono text-sm">{userData?.data?.email}</div>
                 </div>
 
                 <div>
-                  <div className="text-gray-500 text-sm mb-1">Tipo de Conta</div>
-                  <div className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${
+                  <div className="text-chrome/30 font-mono text-xs uppercase mb-1">Tipo de Conta</div>
+                  <div className={`inline-block px-3 py-1 border font-mono text-xs uppercase tracking-wider ${
                     isArtista
-                      ? 'bg-purple-500/20 text-purple-400'
-                      : 'bg-blue-500/20 text-blue-400'
+                      ? 'bg-neon-pink/10 text-neon-pink border-neon-pink/30'
+                      : 'bg-neon-acid/10 text-neon-acid border-neon-acid/30'
                   }`}>
                     {isArtista ? 'Artista' : 'Contratante'}
                   </div>
@@ -137,30 +143,25 @@ export default function ProfilePage() {
                 {isArtista && (
                   <>
                     <div>
-                      <div className="text-gray-500 text-sm mb-1">Plano</div>
-                      <div className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${
-                        artist?.plano === 'PRO'
-                          ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white'
-                          : artist?.plano === 'PLUS'
-                          ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
-                          : 'bg-gray-500/20 text-gray-400'
-                      }`}>
+                      <div className="text-chrome/30 font-mono text-xs uppercase mb-1">Plano</div>
+                      <div className={`inline-block px-3 py-1 border font-mono text-xs uppercase tracking-wider ${PLANOS[artist?.plano || 'FREE'].bg} ${PLANOS[artist?.plano || 'FREE'].color} ${PLANOS[artist?.plano || 'FREE'].border}`}>
                         {artist?.plano || 'FREE'}
                       </div>
                     </div>
 
                     {artist?.categoria && (
                       <div>
-                        <div className="text-gray-500 text-sm mb-1">Categoria</div>
-                        <div className="text-white font-medium">{artist.categoria}</div>
+                        <div className="text-chrome/30 font-mono text-xs uppercase mb-1">Categoria</div>
+                        <div className="text-chrome font-mono text-sm">{artist.categoria}</div>
                       </div>
                     )}
 
-                    {artist?.valorBase && (
+                    {artist?.valorBaseHora && (
                       <div>
-                        <div className="text-gray-500 text-sm mb-1">Valor Base</div>
-                        <div className="text-white font-medium">
-                          R$ {artist.valorBase.toFixed(2)}
+                        <div className="text-chrome/30 font-mono text-xs uppercase mb-1">Valor Base</div>
+                        <div className="text-neon-red font-display text-2xl">
+                          R$ {artist.valorBaseHora}
+                          <span className="text-chrome/30 font-mono text-xs">/HR</span>
                         </div>
                       </div>
                     )}
@@ -169,18 +170,18 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {isArtista && artist?.avaliacaoMedia > 0 && (
-              <div className="bg-dark-800/50 backdrop-blur-sm border-2 border-dark-700 rounded-2xl p-6">
-                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                  <span className="text-xl">⭐</span>
-                  Avaliação
+            {isArtista && artist?.notaMedia > 0 && (
+              <div className="bg-dark-800 border-2 border-dark-600 p-6">
+                <h3 className="text-lg font-display tracking-wider text-chrome mb-4 uppercase flex items-center gap-2">
+                  <span className="text-neon-acid">02</span>
+                  Avaliacao
                 </h3>
                 <div className="text-center">
-                  <div className="text-4xl font-black text-yellow-400 mb-2">
-                    {artist.avaliacaoMedia.toFixed(1)}
+                  <div className="text-5xl font-display text-neon-acid mb-2">
+                    {artist.notaMedia.toFixed(1)}
                   </div>
-                  <div className="text-gray-400 text-sm">
-                    {artist.totalAvaliacoes} avaliações
+                  <div className="text-chrome/30 font-mono text-xs uppercase">
+                    {artist.totalAvaliacoes || 0} avaliacoes
                   </div>
                 </div>
               </div>
@@ -190,9 +191,9 @@ export default function ProfilePage() {
           {/* Main Content */}
           <div className="md:col-span-2 space-y-8">
             {/* Profile Photo */}
-            <div className="bg-dark-800/50 backdrop-blur-sm border-2 border-dark-700 rounded-2xl p-8">
-              <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                <span className="text-3xl">📸</span>
+            <div className="bg-dark-800 border-2 border-dark-600 p-8">
+              <h2 className="text-2xl font-display tracking-wider mb-6 text-chrome uppercase flex items-center gap-3">
+                <span className="text-neon-red font-mono text-lg">03</span>
                 Foto de Perfil
               </h2>
               <ImageUpload
@@ -203,9 +204,9 @@ export default function ProfilePage() {
 
             {/* Portfolio (Artists Only) */}
             {isArtista && (
-              <div className="bg-dark-800/50 backdrop-blur-sm border-2 border-dark-700 rounded-2xl p-8">
-                <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                  <span className="text-3xl">🎨</span>
+              <div className="bg-dark-800 border-2 border-dark-600 p-8">
+                <h2 className="text-2xl font-display tracking-wider mb-6 text-chrome uppercase flex items-center gap-3">
+                  <span className="text-neon-acid font-mono text-lg">04</span>
                   Portfolio
                 </h2>
                 <PortfolioUpload
@@ -217,15 +218,15 @@ export default function ProfilePage() {
 
             {/* Bio (Artists Only) */}
             {isArtista && (
-              <div className="bg-dark-800/50 backdrop-blur-sm border-2 border-dark-700 rounded-2xl p-8">
-                <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
-                  <span className="text-3xl">📝</span>
+              <div className="bg-dark-800 border-2 border-dark-600 p-8">
+                <h2 className="text-2xl font-display tracking-wider mb-4 text-chrome uppercase flex items-center gap-3">
+                  <span className="text-neon-pink font-mono text-lg">05</span>
                   Bio
                 </h2>
                 {artist?.bio ? (
-                  <p className="text-gray-300 leading-relaxed">{artist.bio}</p>
+                  <p className="text-chrome/70 font-mono text-sm leading-relaxed whitespace-pre-line">{artist.bio}</p>
                 ) : (
-                  <p className="text-gray-500 italic">Nenhuma bio adicionada ainda</p>
+                  <p className="text-chrome/30 font-mono text-sm italic">Nenhuma bio adicionada ainda</p>
                 )}
               </div>
             )}

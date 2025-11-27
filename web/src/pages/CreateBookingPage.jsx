@@ -5,6 +5,12 @@ import api from '../services/api';
 import useAuthStore from '../store/authStore';
 import LocationAutocomplete from '../components/LocationAutocomplete';
 
+const PLANOS = {
+  FREE: { label: 'FREE', color: 'text-chrome/50', bg: 'bg-dark-700', border: 'border-dark-600', taxa: '15%' },
+  PLUS: { label: 'PLUS', color: 'text-neon-acid', bg: 'bg-neon-acid/10', border: 'border-neon-acid/30', taxa: '10%' },
+  PRO: { label: 'PRO', color: 'text-neon-pink', bg: 'bg-neon-pink/10', border: 'border-neon-pink/30', taxa: '7%' }
+};
+
 export default function CreateBookingPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -64,7 +70,7 @@ export default function CreateBookingPage() {
     }
 
     if (!artistaId) {
-      setError('Artista não especificado');
+      setError('Artista nao especificado');
       return;
     }
 
@@ -105,7 +111,6 @@ export default function CreateBookingPage() {
 
   const handleLocationChange = (data) => {
     setLocationData(data);
-    // Também atualiza o formData.local para validação
     setFormData(prev => ({ ...prev, local: data.local }));
   };
 
@@ -126,15 +131,15 @@ export default function CreateBookingPage() {
 
   if (!artistaId) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4">⚠️</div>
-          <div className="text-2xl font-bold text-red-vibrant mb-2">
-            Artista não especificado
+          <div className="text-8xl font-display text-neon-red mb-4">!</div>
+          <div className="text-2xl font-display tracking-wider text-chrome mb-2">
+            ARTISTA NAO ESPECIFICADO
           </div>
           <button
             onClick={() => navigate('/artists')}
-            className="mt-4 px-6 py-3 bg-red-vibrant text-white font-bold rounded-lg hover:bg-pink-600 transition-colors"
+            className="mt-6 px-6 py-3 bg-neon-red text-void font-bold font-mono text-sm uppercase tracking-wider shadow-brutal hover:bg-neon-acid hover:shadow-brutal-acid transition-all"
           >
             Buscar Artistas
           </button>
@@ -145,15 +150,15 @@ export default function CreateBookingPage() {
 
   if (user?.tipo !== 'CONTRATANTE') {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4">🚫</div>
-          <div className="text-2xl font-bold text-red-vibrant mb-2">
-            Apenas contratantes podem criar bookings
+          <div className="text-8xl font-display text-neon-red mb-4">X</div>
+          <div className="text-2xl font-display tracking-wider text-chrome mb-2">
+            APENAS CONTRATANTES PODEM CRIAR BOOKINGS
           </div>
           <button
             onClick={() => navigate('/artists')}
-            className="mt-4 px-6 py-3 bg-red-vibrant text-white font-bold rounded-lg hover:bg-pink-600 transition-colors"
+            className="mt-6 px-6 py-3 bg-neon-red text-void font-bold font-mono text-sm uppercase tracking-wider shadow-brutal hover:bg-neon-acid hover:shadow-brutal-acid transition-all"
           >
             Voltar
           </button>
@@ -163,33 +168,33 @@ export default function CreateBookingPage() {
   }
 
   return (
-    <div className="min-h-screen py-12">
+    <div className="min-h-screen bg-void py-12">
       <div className="max-w-4xl mx-auto px-6">
         {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => navigate(`/artists/${artistaId}`)}
-            className="text-gray-400 hover:text-white mb-4 flex items-center gap-2 transition-colors"
+            className="text-chrome/50 hover:text-neon-red mb-4 flex items-center gap-2 font-mono text-sm uppercase tracking-wider transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             Voltar
           </button>
-          <h1 className="text-4xl md:text-5xl font-black mb-2 bg-gradient-to-r from-red-vibrant via-pink-500 to-purple-600 text-transparent bg-clip-text">
-            Criar Booking
+          <h1 className="text-5xl md:text-6xl font-display tracking-wider text-chrome mb-2">
+            CRIAR <span className="text-neon-red">BOOKING</span>
           </h1>
-          <p className="text-gray-400 text-lg">
-            Faça uma proposta de booking para {artist?.nomeArtistico}
+          <p className="text-chrome/50 font-mono text-sm uppercase tracking-wider">
+            Faca uma proposta de booking para {artist?.nomeArtistico}
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
           {/* Form */}
           <div className="md:col-span-2">
-            <div className="bg-dark-800/50 backdrop-blur-sm border-2 border-dark-700 rounded-2xl p-8">
+            <div className="bg-dark-800 border-2 border-dark-600 p-8">
               {error && (
-                <div className="mb-6 p-4 bg-red-vibrant/10 border border-red-vibrant/50 rounded-xl text-red-vibrant text-sm">
+                <div className="mb-6 p-4 bg-neon-red/10 border-2 border-neon-red text-neon-red font-mono text-sm">
                   {error}
                 </div>
               )}
@@ -197,7 +202,7 @@ export default function CreateBookingPage() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <label className="block text-xs font-mono uppercase tracking-wider text-chrome/70 mb-2">
                       Data do Evento *
                     </label>
                     <input
@@ -213,13 +218,13 @@ export default function CreateBookingPage() {
                       required
                       placeholder="dd/mm/aaaa"
                       maxLength="10"
-                      className="w-full px-4 py-3 bg-dark-900 border border-dark-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-red-vibrant transition-colors"
+                      className="w-full px-4 py-4 bg-dark-900 border-2 border-dark-600 text-chrome font-mono text-sm placeholder-chrome/30 focus:outline-none focus:border-neon-red transition-colors"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Horário de Início *
+                    <label className="block text-xs font-mono uppercase tracking-wider text-chrome/70 mb-2">
+                      Horario de Inicio *
                     </label>
                     <input
                       type="time"
@@ -227,14 +232,14 @@ export default function CreateBookingPage() {
                       value={formData.horarioInicio}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-dark-900 border border-dark-700 rounded-xl text-white focus:outline-none focus:border-red-vibrant transition-colors"
+                      className="w-full px-4 py-4 bg-dark-900 border-2 border-dark-600 text-chrome font-mono text-sm focus:outline-none focus:border-neon-red transition-colors"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Duração (horas) *
+                  <label className="block text-xs font-mono uppercase tracking-wider text-chrome/70 mb-2">
+                    Duracao (horas) *
                   </label>
                   <input
                     type="number"
@@ -244,29 +249,29 @@ export default function CreateBookingPage() {
                     required
                     min="1"
                     max="24"
-                    className="w-full px-4 py-3 bg-dark-900 border border-dark-700 rounded-xl text-white focus:outline-none focus:border-red-vibrant transition-colors"
+                    className="w-full px-4 py-4 bg-dark-900 border-2 border-dark-600 text-chrome font-mono text-sm focus:outline-none focus:border-neon-red transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-chrome/70 mb-2">
                     Local do Evento *
                   </label>
                   <LocationAutocomplete
                     value={locationData.local}
                     onChange={handleLocationChange}
-                    placeholder="Digite o endereço do evento"
+                    placeholder="Digite o endereco do evento"
                   />
                   {locationData.localLatitude && locationData.localLongitude && (
-                    <p className="text-xs text-green-400 mt-2">
-                      ✓ Localização selecionada: {locationData.localLatitude.toFixed(6)}, {locationData.localLongitude.toFixed(6)}
+                    <p className="text-neon-acid font-mono text-xs mt-2 uppercase">
+                      Localizacao selecionada: {locationData.localLatitude.toFixed(6)}, {locationData.localLongitude.toFixed(6)}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Descrição do Evento *
+                  <label className="block text-xs font-mono uppercase tracking-wider text-chrome/70 mb-2">
+                    Descricao do Evento *
                   </label>
                   <textarea
                     name="descricaoEvento"
@@ -274,13 +279,13 @@ export default function CreateBookingPage() {
                     onChange={handleChange}
                     required
                     rows="5"
-                    placeholder="Descreva o tipo de evento, público esperado, estilo musical desejado, etc."
-                    className="w-full px-4 py-3 bg-dark-900 border border-dark-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-red-vibrant transition-colors resize-none"
+                    placeholder="Descreva o tipo de evento, publico esperado, estilo musical desejado, etc."
+                    className="w-full px-4 py-4 bg-dark-900 border-2 border-dark-600 text-chrome font-mono text-sm placeholder-chrome/30 focus:outline-none focus:border-neon-red transition-colors resize-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-chrome/70 mb-2">
                     Valor Proposto (opcional)
                   </label>
                   <input
@@ -291,17 +296,17 @@ export default function CreateBookingPage() {
                     placeholder={`Deixe em branco para usar o valor base (R$ ${artist?.valorBaseHora}/h)`}
                     step="0.01"
                     min="0"
-                    className="w-full px-4 py-3 bg-dark-900 border border-dark-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-red-vibrant transition-colors"
+                    className="w-full px-4 py-4 bg-dark-900 border-2 border-dark-600 text-chrome font-mono text-sm placeholder-chrome/30 focus:outline-none focus:border-neon-red transition-colors"
                   />
-                  <p className="text-gray-500 text-xs mt-2">
-                    Se não especificar, será usado o valor base do artista multiplicado pela duração
+                  <p className="text-chrome/30 font-mono text-xs mt-2 uppercase">
+                    Se nao especificar, sera usado o valor base do artista multiplicado pela duracao
                   </p>
                 </div>
 
                 <button
                   type="submit"
                   disabled={createBookingMutation.isPending}
-                  className="w-full py-4 bg-gradient-to-r from-red-vibrant to-pink-600 text-white font-bold text-lg rounded-xl hover:scale-105 hover:shadow-2xl hover:shadow-red-vibrant/60 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  className="w-full py-4 bg-neon-red text-void font-bold font-mono text-sm uppercase tracking-widest shadow-brutal hover:bg-neon-acid hover:shadow-brutal-acid transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {createBookingMutation.isPending ? 'Criando Booking...' : 'Enviar Proposta'}
                 </button>
@@ -313,62 +318,66 @@ export default function CreateBookingPage() {
           <div className="space-y-6">
             {/* Artist Info */}
             {artist && (
-              <div className="bg-dark-800/50 backdrop-blur-sm border-2 border-dark-700 rounded-2xl p-6">
-                <h3 className="text-lg font-bold text-white mb-4">Artista</h3>
+              <div className="bg-dark-800 border-2 border-dark-600 p-6">
+                <h3 className="text-lg font-display tracking-wider text-chrome mb-4 uppercase">Artista</h3>
                 <div className="flex flex-col items-center text-center">
                   {artist.usuario?.foto ? (
                     <img
                       src={artist.usuario.foto}
                       alt={artist.nomeArtistico}
-                      className="w-20 h-20 rounded-full object-cover border-4 border-dark-700 mb-3"
+                      className="w-20 h-20 object-cover border-2 border-dark-600 mb-3"
                     />
                   ) : (
-                    <div className="w-20 h-20 rounded-full bg-dark-700 border-4 border-dark-600 flex items-center justify-center text-3xl mb-3">
-                      🎵
+                    <div className="w-20 h-20 bg-dark-700 border-2 border-dark-600 flex items-center justify-center text-3xl font-display text-neon-red/50 mb-3">
+                      A
                     </div>
                   )}
-                  <div className="text-xl font-bold text-white mb-1">
+                  <div className="text-xl font-display tracking-wider text-chrome mb-1 uppercase">
                     {artist.nomeArtistico}
                   </div>
-                  <div className="text-gray-400 text-sm mb-3">
+                  <div className="text-chrome/50 font-mono text-xs uppercase mb-3">
                     {artist.categoria}
                   </div>
-                  <div className="text-red-vibrant font-bold">
-                    R$ {artist.valorBaseHora}/hora
+                  <div className={`px-3 py-1 border font-mono text-xs uppercase tracking-wider mb-3 ${PLANOS[artist.plano].bg} ${PLANOS[artist.plano].color} ${PLANOS[artist.plano].border}`}>
+                    {artist.plano}
+                  </div>
+                  <div className="text-neon-red font-display text-2xl">
+                    R$ {artist.valorBaseHora}
+                    <span className="text-chrome/30 font-mono text-xs">/HR</span>
                   </div>
                 </div>
               </div>
             )}
 
             {/* Price Estimate */}
-            <div className="bg-dark-800/50 backdrop-blur-sm border-2 border-dark-700 rounded-2xl p-6">
-              <h3 className="text-lg font-bold text-white mb-4">Estimativa de Valor</h3>
+            <div className="bg-dark-800 border-2 border-dark-600 p-6">
+              <h3 className="text-lg font-display tracking-wider text-chrome mb-4 uppercase">Estimativa de Valor</h3>
 
               <div className="space-y-3">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Duração</span>
-                  <span className="text-white font-medium">{formData.duracao}h</span>
+                <div className="flex justify-between">
+                  <span className="text-chrome/50 font-mono text-xs uppercase">Duracao</span>
+                  <span className="text-chrome font-mono text-sm">{formData.duracao}h</span>
                 </div>
 
                 {artist && (
                   <>
-                    <div className="flex justify-between text-sm pb-3 border-b border-dark-700">
-                      <span className="text-gray-400">Valor do Artista</span>
-                      <span className="text-white font-medium">
+                    <div className="flex justify-between pb-3 border-b-2 border-dark-600">
+                      <span className="text-chrome/50 font-mono text-xs uppercase">Valor do Artista</span>
+                      <span className="text-chrome font-mono text-sm">
                         R$ {formData.valorProposto || (artist.valorBaseHora * parseInt(formData.duracao || 0)).toFixed(2)}
                       </span>
                     </div>
 
-                    <div className="flex justify-between text-sm pb-3 border-b border-dark-700">
-                      <span className="text-gray-400">Taxa da Plataforma</span>
-                      <span className="text-white font-medium">
-                        {artist.plano === 'FREE' ? '15%' : artist.plano === 'PLUS' ? '10%' : '7%'}
+                    <div className="flex justify-between pb-3 border-b-2 border-dark-600">
+                      <span className="text-chrome/50 font-mono text-xs uppercase">Taxa da Plataforma</span>
+                      <span className="text-chrome font-mono text-sm">
+                        {PLANOS[artist.plano].taxa}
                       </span>
                     </div>
 
                     <div className="flex justify-between pt-3">
-                      <span className="text-white font-bold">Valor Total</span>
-                      <span className="text-red-vibrant font-bold text-xl">
+                      <span className="text-chrome font-display tracking-wider uppercase">Valor Total</span>
+                      <span className="text-neon-red font-display text-2xl">
                         R$ {calculateEstimatedValue().toFixed(2)}
                       </span>
                     </div>
@@ -376,9 +385,9 @@ export default function CreateBookingPage() {
                 )}
               </div>
 
-              <div className="mt-4 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-                <p className="text-blue-400 text-xs">
-                  Esta é uma estimativa. O valor final será confirmado após a negociação com o artista.
+              <div className="mt-4 p-3 bg-neon-acid/10 border-2 border-neon-acid/30">
+                <p className="text-neon-acid font-mono text-xs uppercase">
+                  Esta e uma estimativa. O valor final sera confirmado apos a negociacao com o artista.
                 </p>
               </div>
             </div>

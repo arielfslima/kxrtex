@@ -154,11 +154,11 @@ export default function LocationAutocomplete({ value, onChange, placeholder = "D
         defaultValue={value}
         placeholder={placeholder}
         required
-        className="w-full px-4 py-3 bg-dark-900 border border-dark-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-red-vibrant transition-colors"
+        className="w-full px-4 py-3 bg-dark-900 border-2 border-dark-600 text-chrome font-mono text-sm placeholder-chrome/30 focus:outline-none focus:border-neon-red transition-colors"
       />
       {!isLoaded && (
         <div className="absolute right-3 top-1/2 -translate-y-1/2">
-          <div className="w-5 h-5 border-2 border-gray-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="text-neon-acid font-mono text-xs uppercase animate-pulse">...</div>
         </div>
       )}
     </div>

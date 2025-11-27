@@ -30,11 +30,22 @@ export default function NotificationToast() {
   const getIcon = (type) => {
     switch (type) {
       case 'new-booking-request':
-        return '📅';
+        return 'NEW';
       case 'booking-accepted':
-        return '✅';
+        return 'OK';
       default:
-        return '🔔';
+        return '!';
+    }
+  };
+
+  const getIconColor = (type) => {
+    switch (type) {
+      case 'new-booking-request':
+        return 'text-neon-acid';
+      case 'booking-accepted':
+        return 'text-neon-acid';
+      default:
+        return 'text-neon-pink';
     }
   };
 
@@ -42,16 +53,22 @@ export default function NotificationToast() {
     <div className="fixed top-20 right-6 z-50 animate-slide-in-right">
       <div
         onClick={handleClick}
-        className="group relative bg-dark-800 border-2 border-red-vibrant rounded-2xl p-4 shadow-2xl shadow-red-vibrant/30 cursor-pointer hover:scale-105 transition-all max-w-sm"
+        className="group relative bg-dark-800 border-2 border-neon-red p-4 shadow-brutal cursor-pointer hover:shadow-brutal-acid transition-all max-w-sm"
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-red-vibrant/10 to-pink-600/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        {/* Corner accents */}
+        <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-neon-acid"></div>
+        <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-neon-acid"></div>
+        <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-neon-acid"></div>
+        <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-neon-acid"></div>
 
         <div className="relative flex gap-4">
-          <div className="text-4xl">{getIcon(notification.type)}</div>
+          <div className={`text-2xl font-display ${getIconColor(notification.type)}`}>
+            {getIcon(notification.type)}
+          </div>
           <div className="flex-1">
-            <div className="text-white font-bold mb-1">{notification.title}</div>
-            <div className="text-gray-300 text-sm mb-2">{notification.message}</div>
-            <div className="text-gray-500 text-xs">
+            <div className="text-chrome font-display tracking-wider uppercase mb-1">{notification.title}</div>
+            <div className="text-chrome/70 font-mono text-xs mb-2 uppercase">{notification.message}</div>
+            <div className="text-chrome/30 font-mono text-xs uppercase">
               {notification.timestamp.toLocaleTimeString('pt-BR')}
             </div>
           </div>
@@ -60,9 +77,9 @@ export default function NotificationToast() {
               e.stopPropagation();
               removeNotification(notification.id);
             }}
-            className="text-gray-500 hover:text-white transition-colors"
+            className="text-chrome/50 hover:text-neon-red transition-colors font-display text-xl"
           >
-            ✕
+            X
           </button>
         </div>
       </div>
