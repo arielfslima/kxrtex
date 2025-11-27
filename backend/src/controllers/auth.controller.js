@@ -2,6 +2,7 @@ import prisma from '../config/database.js';
 import { hashPassword, comparePassword } from '../utils/password.js';
 import { generateToken } from '../utils/jwt.js';
 import { AppError } from '../middlewares/errorHandler.js';
+import emailService from '../services/email.service.js';
 
 export const register = async (req, res, next) => {
   try {
@@ -75,6 +76,11 @@ export const register = async (req, res, next) => {
 
     // Gerar token
     const token = generateToken(usuario.id);
+
+    // Enviar email de boas-vindas (async, não bloqueia resposta)
+    emailService.sendWelcomeEmail(usuario).catch(err =>
+      console.error('Erro ao enviar email de boas-vindas:', err)
+    );
 
     // Remover senha do retorno
     const { senhaHash: _, ...usuarioSemSenha } = usuario;

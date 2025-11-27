@@ -7,6 +7,8 @@ import {
   getPaymentStatus,
   refundPayment
 } from '../services/asaas.service.js';
+import emailService from '../services/email.service.js';
+import notificationService from '../services/notification.service.js';
 
 // NOTE: Using prisma.transacao instead of prisma.transacao to match schema.prisma model name
 
@@ -275,6 +277,45 @@ export const simulatePaymentConfirmation = async (req, res, next) => {
       }
     });
 
+    // Enviar notificações (email + push) para ambos - async, não bloqueia resposta
+    // Email para contratante
+    emailService.sendPaymentConfirmedEmail(
+      pagamento.booking.contratante.usuario,
+      pagamento.booking,
+      pagamento.booking.artista,
+      pagamento.valor
+    ).catch(err =>
+      console.error('[EMAIL] Erro ao enviar confirmação para contratante:', err)
+    );
+
+    // Email para artista
+    emailService.sendPaymentConfirmedEmail(
+      pagamento.booking.artista.usuario,
+      pagamento.booking,
+      pagamento.booking.artista,
+      pagamento.booking.valorArtista
+    ).catch(err =>
+      console.error('[EMAIL] Erro ao enviar confirmação para artista:', err)
+    );
+
+    // Push para contratante
+    notificationService.notifyPaymentConfirmed(
+      pagamento.booking.contratante.usuarioId,
+      pagamento.booking,
+      pagamento.valor
+    ).catch(err =>
+      console.error('[PUSH] Erro ao enviar notificação para contratante:', err)
+    );
+
+    // Push para artista
+    notificationService.notifyPaymentConfirmed(
+      pagamento.booking.artista.usuarioId,
+      pagamento.booking,
+      pagamento.booking.valorArtista
+    ).catch(err =>
+      console.error('[PUSH] Erro ao enviar notificação para artista:', err)
+    );
+
     res.json({
       message: 'Pagamento simulado com sucesso',
       data: {
@@ -342,6 +383,45 @@ export const handleWebhook = async (req, res, next) => {
             tipo: 'SISTEMA'
           }
         });
+
+        // Enviar notificações (email + push) para ambos - async, não bloqueia resposta
+        // Email para contratante
+        emailService.sendPaymentConfirmedEmail(
+          pagamento.booking.contratante.usuario,
+          pagamento.booking,
+          pagamento.booking.artista,
+          pagamento.valor
+        ).catch(err =>
+          console.error('[EMAIL] Erro ao enviar confirmação para contratante:', err)
+        );
+
+        // Email para artista
+        emailService.sendPaymentConfirmedEmail(
+          pagamento.booking.artista.usuario,
+          pagamento.booking,
+          pagamento.booking.artista,
+          pagamento.booking.valorArtista
+        ).catch(err =>
+          console.error('[EMAIL] Erro ao enviar confirmação para artista:', err)
+        );
+
+        // Push para contratante
+        notificationService.notifyPaymentConfirmed(
+          pagamento.booking.contratante.usuarioId,
+          pagamento.booking,
+          pagamento.valor
+        ).catch(err =>
+          console.error('[PUSH] Erro ao enviar notificação para contratante:', err)
+        );
+
+        // Push para artista
+        notificationService.notifyPaymentConfirmed(
+          pagamento.booking.artista.usuarioId,
+          pagamento.booking,
+          pagamento.booking.valorArtista
+        ).catch(err =>
+          console.error('[PUSH] Erro ao enviar notificação para artista:', err)
+        );
 
         console.log('Pagamento confirmado:', pagamento.id);
         break;

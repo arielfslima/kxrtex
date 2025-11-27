@@ -7,6 +7,7 @@ export const useChat = (bookingId) => {
   const { user, token } = useAuthStore();
   const [messages, setMessages] = useState([]);
   const [typingUsers, setTypingUsers] = useState([]);
+  const [isConnected, setIsConnected] = useState(false);
   const typingTimeoutRef = useRef(null);
 
   // Carregar histórico de mensagens
@@ -26,6 +27,19 @@ export const useChat = (bookingId) => {
 
     socketService.connect(token);
     socketService.joinBooking(bookingId);
+
+    // Atualizar estado inicial de conexão
+    setIsConnected(socketService.isConnected());
+
+    // Listener para conexão
+    const handleConnect = () => {
+      setIsConnected(true);
+    };
+
+    // Listener para desconexão
+    const handleDisconnect = () => {
+      setIsConnected(false);
+    };
 
     // Listener para novas mensagens
     socketService.onNewMessage((message) => {
@@ -55,8 +69,18 @@ export const useChat = (bookingId) => {
       setTypingUsers((prev) => prev.filter((u) => u.userId !== userId));
     });
 
+    // Registrar listeners de conexão no socket service
+    if (socketService.socket) {
+      socketService.socket.on('connect', handleConnect);
+      socketService.socket.on('disconnect', handleDisconnect);
+    }
+
     // Cleanup
     return () => {
+      if (socketService.socket) {
+        socketService.socket.off('connect', handleConnect);
+        socketService.socket.off('disconnect', handleDisconnect);
+      }
       socketService.leaveBooking(bookingId);
       socketService.offNewMessage();
       socketService.offUserTyping();
@@ -118,6 +142,6 @@ export const useChat = (bookingId) => {
     sendMessage,
     startTyping,
     stopTyping,
-    isConnected: socketService.isConnected(),
+    isConnected, // Agora é reativo!
   };
 };

@@ -5,35 +5,21 @@ export default function ChatMessage({ message, isOwn, user }) {
   const isSystemMessage = message.tipo === 'SISTEMA';
 
   if (isSystemMessage) {
+    // Detectar aviso de anti-circunvenção
+    const isWarning = message.conteudo.toLowerCase().includes('detectamos') ||
+      message.conteudo.toLowerCase().includes('compartilhamento') ||
+      message.conteudo.toLowerCase().includes('aviso');
+
     return (
       <View style={styles.systemContainer}>
-        <View style={styles.systemBubble}>
-          <Text style={styles.systemIcon}>ℹ️</Text>
+        <View style={[styles.systemBubble, isWarning && styles.warningBubble]}>
+          <Text style={isWarning ? styles.warningIcon : styles.systemIcon}>
+            {isWarning ? '⚠️' : 'ℹ️'}
+          </Text>
           <Text style={styles.systemText}>{message.conteudo}</Text>
         </View>
         <Text style={styles.timestamp}>
-          {new Date(message.createdAt).toLocaleTimeString('pt-BR', {
-            hour: '2-digit',
-            minute: '2-digit',
-          })}
-        </Text>
-      </View>
-    );
-  }
-
-  // Detectar aviso de anti-circunvenção
-  const isWarning = message.conteudo.toLowerCase().includes('detectamos') ||
-    message.conteudo.toLowerCase().includes('compartilhamento');
-
-  if (isWarning && isSystemMessage) {
-    return (
-      <View style={styles.systemContainer}>
-        <View style={[styles.systemBubble, styles.warningBubble]}>
-          <Text style={styles.warningIcon}>⚠️</Text>
-          <Text style={styles.systemText}>{message.conteudo}</Text>
-        </View>
-        <Text style={styles.timestamp}>
-          {new Date(message.createdAt).toLocaleTimeString('pt-BR', {
+          {new Date(message.timestamp).toLocaleTimeString('pt-BR', {
             hour: '2-digit',
             minute: '2-digit',
           })}
@@ -52,7 +38,7 @@ export default function ChatMessage({ message, isOwn, user }) {
           {message.conteudo}
         </Text>
         <Text style={[styles.timestamp, isOwn && styles.ownTimestamp]}>
-          {new Date(message.createdAt).toLocaleTimeString('pt-BR', {
+          {new Date(message.timestamp).toLocaleTimeString('pt-BR', {
             hour: '2-digit',
             minute: '2-digit',
           })}

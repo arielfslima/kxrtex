@@ -247,7 +247,7 @@ const BookingDetailScreen = () => {
           {isArtist && !checkInChegada && (
             <TouchableOpacity
               style={styles.checkInButton}
-              onPress={() => setShowCheckInModal(true)}
+              onPress={() => router.push(`/checkin/${id}?type=checkin`)}
             >
               <Text style={styles.actionButtonText}>📍 Fazer Check-in</Text>
             </TouchableOpacity>
@@ -267,6 +267,8 @@ const BookingDetailScreen = () => {
 
     // Booking Em Andamento
     if (booking.status === 'EM_ANDAMENTO') {
+      const checkOutSaida = booking.checkIns?.find(c => c.tipo === 'SAIDA');
+
       return (
         <View style={styles.actionsContainer}>
           <TouchableOpacity
@@ -275,6 +277,15 @@ const BookingDetailScreen = () => {
           >
             <Text style={styles.actionButtonText}>💬 Abrir Chat</Text>
           </TouchableOpacity>
+
+          {isArtist && !checkOutSaida && (
+            <TouchableOpacity
+              style={styles.checkInButton}
+              onPress={() => router.push(`/checkin/${id}?type=checkout`)}
+            >
+              <Text style={styles.actionButtonText}>🏁 Fazer Check-out</Text>
+            </TouchableOpacity>
+          )}
 
           {isContratante && (
             <TouchableOpacity

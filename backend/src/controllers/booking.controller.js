@@ -1,6 +1,8 @@
 import prisma from '../config/database.js';
 import { AppError } from '../middlewares/errorHandler.js';
 import { getSocketInstance } from '../utils/socket.js';
+import emailService from '../services/email.service.js';
+import notificationService from '../services/notification.service.js';
 
 const calcularTaxaPlataforma = (valorArtista, planoArtista) => {
   const taxas = {
@@ -134,6 +136,18 @@ export const createBooking = async (req, res, next) => {
 
       console.log(`Socket.IO: Emitido new-booking-request para user-${booking.artista.usuario.id}`);
     }
+
+    // Enviar notificações (email + push) - async, não bloqueia resposta
+    emailService.sendNewBookingRequestEmail(booking.artista, booking, booking.contratante).catch(err =>
+      console.error('[EMAIL] Erro ao enviar nova solicitação:', err)
+    );
+
+    notificationService.notifyNewBooking(
+      booking.artista.usuario.id,
+      booking
+    ).catch(err =>
+      console.error('[PUSH] Erro ao enviar notificação:', err)
+    );
 
     res.status(201).json({
       message: 'Proposta de booking criada com sucesso',
@@ -349,6 +363,23 @@ export const acceptBooking = async (req, res, next) => {
 
       console.log(`Socket.IO: Emitido booking-accepted para user-${bookingAtualizado.contratante.usuario.id}`);
     }
+
+    // Enviar notificações (email + push) - async, não bloqueia resposta
+    emailService.sendBookingAcceptedEmail(
+      bookingAtualizado.contratante,
+      bookingAtualizado,
+      bookingAtualizado.artista
+    ).catch(err =>
+      console.error('[EMAIL] Erro ao enviar booking aceito:', err)
+    );
+
+    notificationService.notifyBookingAccepted(
+      bookingAtualizado.contratante.usuario.id,
+      bookingAtualizado,
+      bookingAtualizado.artista
+    ).catch(err =>
+      console.error('[PUSH] Erro ao enviar notificação:', err)
+    );
 
     res.json({
       message: 'Booking aceito com sucesso',

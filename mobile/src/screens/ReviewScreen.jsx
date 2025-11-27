@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  SafeAreaView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -16,11 +17,20 @@ import { useAuthStore } from '../store/authStore';
 import { api } from '../services/api';
 import { COLORS } from '../constants/colors';
 
-const RATING_LABELS = {
+// Critérios comuns a todos
+const COMMON_CRITERIA = {
   profissionalismo: 'Profissionalismo',
   pontualidade: 'Pontualidade',
-  performance: 'Performance/Qualidade',
   comunicacao: 'Comunicação',
+};
+
+// Critérios específicos para avaliar artistas (contratante avalia)
+const ARTIST_CRITERIA = {
+  performance: 'Performance/Qualidade',
+};
+
+// Critérios específicos para avaliar contratantes (artista avalia)
+const CONTRACTOR_CRITERIA = {
   condicoes: 'Condições do Local',
   respeito: 'Respeito',
 };
@@ -53,13 +63,19 @@ const ReviewScreen = ({ bookingId, booking }) => {
   const queryClient = useQueryClient();
   const { user } = useAuthStore();
 
-  const [ratings, setRatings] = useState({
-    profissionalismo: 0,
-    pontualidade: 0,
-    performance: 0,
-    comunicacao: 0,
-    condicoes: 0,
-    respeito: 0,
+  const isArtist = user?.tipo === 'ARTISTA';
+
+  // Determinar critérios baseado no tipo de usuário
+  const criteriaToRate = isArtist
+    ? { ...COMMON_CRITERIA, ...CONTRACTOR_CRITERIA } // Artista avalia contratante
+    : { ...COMMON_CRITERIA, ...ARTIST_CRITERIA };     // Contratante avalia artista
+
+  const [ratings, setRatings] = useState(() => {
+    const initialRatings = {};
+    Object.keys(criteriaToRate).forEach(key => {
+      initialRatings[key] = 0;
+    });
+    return initialRatings;
   });
   const [comentario, setComentario] = useState('');
   const [error, setError] = useState('');
@@ -117,20 +133,21 @@ const ReviewScreen = ({ bookingId, booking }) => {
 
   if (!booking) {
     return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorIcon}>⚠️</Text>
-        <Text style={styles.errorTitle}>Booking não encontrado</Text>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <Text style={styles.backButtonText}>Voltar</Text>
-        </TouchableOpacity>
-      </View>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorIcon}>⚠️</Text>
+          <Text style={styles.errorTitle}>Booking não encontrado</Text>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <Text style={styles.backButtonText}>Voltar</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
     );
   }
 
-  const isArtist = user?.tipo === 'ARTISTA';
   const otherUser = isArtist
     ? booking.contratante?.usuario
     : booking.artista?.usuario;
@@ -138,7 +155,8 @@ const ReviewScreen = ({ bookingId, booking }) => {
   const hasRatings = Object.values(ratings).some((r) => r > 0);
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -193,7 +211,7 @@ const ReviewScreen = ({ bookingId, booking }) => {
         {/* Rating Criteria */}
         <Text style={styles.sectionTitle}>Avalie os critérios</Text>
 
-        {Object.entries(RATING_LABELS).map(([key, label]) => (
+        {Object.entries(criteriaToRate).map(([key, label]) => (
           <View key={key} style={styles.criterionContainer}>
             <Text style={styles.criterionLabel}>{label}</Text>
             <StarRating
@@ -251,7 +269,8 @@ const ReviewScreen = ({ bookingId, booking }) => {
           )}
         </TouchableOpacity>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

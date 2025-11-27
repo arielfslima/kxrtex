@@ -7,6 +7,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  SafeAreaView,
+  TouchableOpacity,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { COLORS } from '../../src/constants/colors';
@@ -44,35 +46,48 @@ export default function ChatScreen() {
 
   if (loadingBooking || loadingMessages) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={COLORS.accent} />
-        <Text style={styles.loadingText}>Carregando chat...</Text>
-      </View>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={COLORS.accent} />
+          <Text style={styles.loadingText}>Carregando chat...</Text>
+        </View>
+      </SafeAreaView>
     );
   }
 
   if (!booking) {
     return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>Booking não encontrado</Text>
-      </View>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>Booking não encontrado</Text>
+          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+            <Text style={styles.backButtonText}>Voltar</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
     );
   }
 
   // Verificar se usuário pode acessar o chat
   const canAccessChat =
+    booking.status === 'ACEITO' ||
     booking.status === 'CONFIRMADO' ||
     booking.status === 'EM_ANDAMENTO' ||
     booking.status === 'CONCLUIDO';
 
   if (!canAccessChat) {
     return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorTitle}>Chat Não Disponível</Text>
-        <Text style={styles.errorText}>
-          O chat estará disponível após o pagamento ser confirmado.
-        </Text>
-      </View>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorTitle}>💬 Chat Não Disponível</Text>
+          <Text style={styles.errorText}>
+            O chat estará disponível após o artista aceitar o booking.
+          </Text>
+          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+            <Text style={styles.backButtonText}>Voltar</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
     );
   }
 
@@ -80,30 +95,42 @@ export default function ChatScreen() {
     user?.tipo === 'ARTISTA' ? booking.contratante : booking.artista;
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
-    >
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.headerInfo}>
-          <Text style={styles.headerName}>
-            {otherUser?.nomeArtistico || otherUser?.nome}
-          </Text>
-          <View style={styles.statusRow}>
-            <View
-              style={[
-                styles.statusDot,
-                { backgroundColor: isConnected ? COLORS.success : COLORS.textTertiary },
-              ]}
-            />
-            <Text style={styles.statusText}>
-              {isConnected ? 'Online' : 'Offline'}
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.backIconButton} onPress={() => router.back()}>
+            <Text style={styles.backIcon}>←</Text>
+          </TouchableOpacity>
+
+          <View style={styles.headerInfo}>
+            <Text style={styles.headerName}>
+              {otherUser?.nomeArtistico || otherUser?.usuario?.nome || otherUser?.nome}
             </Text>
+            <View style={styles.statusRow}>
+              <View
+                style={[
+                  styles.statusDot,
+                  { backgroundColor: isConnected ? '#4CAF50' : COLORS.textTertiary },
+                ]}
+              />
+              <Text style={styles.statusText}>
+                {isConnected ? 'Online' : 'Offline'}
+              </Text>
+            </View>
           </View>
+
+          <TouchableOpacity
+            style={styles.infoButton}
+            onPress={() => router.push(`/bookings/${bookingId}`)}
+          >
+            <Text style={styles.infoIcon}>ℹ️</Text>
+          </TouchableOpacity>
         </View>
-      </View>
 
       {/* Messages List */}
       <FlatList
@@ -154,15 +181,16 @@ export default function ChatScreen() {
         disabled={!isConnected}
       />
 
-      {/* Connection Warning */}
-      {!isConnected && (
-        <View style={styles.warningBar}>
-          <Text style={styles.warningText}>
-            ⚠️ Você está offline. Reconectando...
-          </Text>
-        </View>
-      )}
-    </KeyboardAvoidingView>
+        {/* Connection Warning */}
+        {!isConnected && (
+          <View style={styles.warningBar}>
+            <Text style={styles.warningText}>
+              ⚠️ Você está offline. Reconectando...
+            </Text>
+          </View>
+        )}
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
@@ -200,6 +228,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: COLORS.textSecondary,
     textAlign: 'center',
+    marginBottom: 24,
+  },
+  backButton: {
+    backgroundColor: COLORS.accent,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: COLORS.text,
+    fontSize: 16,
+    fontWeight: '600',
   },
   header: {
     flexDirection: 'row',
@@ -209,6 +249,17 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(139, 0, 0, 0.2)',
   },
+  backIconButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  backIcon: {
+    fontSize: 28,
+    color: COLORS.text,
+  },
   headerInfo: {
     flex: 1,
   },
@@ -217,6 +268,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: COLORS.text,
     marginBottom: 4,
+  },
+  infoButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 8,
+  },
+  infoIcon: {
+    fontSize: 20,
   },
   statusRow: {
     flexDirection: 'row',

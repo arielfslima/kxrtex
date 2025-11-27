@@ -1,29 +1,80 @@
 import prisma from '../config/database.js';
 import { AppError } from '../middlewares/errorHandler.js';
 
+/**
+ * Calcula score de perfil completo (0-10 pontos)
+ * Critérios do PRD:
+ * - Bio (min 50 chars): 2 pontos
+ * - Portfolio (3+ fotos): 3 pontos
+ * - Vídeos no portfolio: 2 pontos
+ * - Redes sociais preenchidas: 1 ponto
+ * - Verificado: 2 pontos
+ */
 const calcularPerfilCompleto = (artista) => {
   let pontos = 0;
 
-  if (artista.bio && artista.bio.length >= 50) pontos += 2;
-  if (artista.portfolio && artista.portfolio.length >= 3) pontos += 3;
-  if (artista.portfolio && artista.portfolio.some(url => url.includes('video'))) pontos += 2;
-  if (artista.redesSociais && Object.keys(artista.redesSociais).length > 0) pontos += 1;
-  if (artista.statusVerificacao === 'VERIFICADO') pontos += 2;
+  // Bio completa (mínimo 50 caracteres)
+  if (artista.bio && artista.bio.length >= 50) {
+    pontos += 2;
+  }
 
-  return pontos;
+  // Portfolio com 3 ou mais itens
+  if (artista.portfolio && artista.portfolio.length >= 3) {
+    pontos += 3;
+  }
+
+  // Tem vídeos no portfolio
+  if (artista.portfolio && artista.portfolio.some(url =>
+    url.includes('video') || url.includes('.mp4') || url.includes('.mov')
+  )) {
+    pontos += 2;
+  }
+
+  // Redes sociais configuradas
+  if (artista.redesSociais && typeof artista.redesSociais === 'object') {
+    const redes = Object.keys(artista.redesSociais).filter(key => artista.redesSociais[key]);
+    if (redes.length > 0) {
+      pontos += 1;
+    }
+  }
+
+  // Status verificado
+  if (artista.statusVerificacao === 'VERIFICADO') {
+    pontos += 2;
+  }
+
+  return pontos; // Máximo: 10 pontos
 };
 
+/**
+ * Calcula score de ranking do artista (0-400+ pontos)
+ * Fórmula do PRD:
+ * score = (plano_weight * 40) + (avaliacao * 30) + (bookings_completos * 20) + (perfil_completo * 10)
+ *
+ * Distribuição de pesos:
+ * - Plano: 40% (PRO=120, PLUS=80, FREE=40)
+ * - Avaliação: 30% (0-150 pontos, baseado em nota 0-5)
+ * - Bookings completos: 20% (0-200+ pontos)
+ * - Perfil completo: 10% (0-100 pontos)
+ *
+ * @param {Object} artista - Objeto do artista do Prisma
+ * @returns {Number} Score de ranking (maior = melhor)
+ */
 const calcularScoreRanking = (artista) => {
+  // Pesos dos planos (PRO tem 3x o peso do FREE)
   const planoWeights = { PRO: 3, PLUS: 2, FREE: 1 };
+
+  // Calcula pontos de perfil completo (0-10)
   const perfilCompleto = calcularPerfilCompleto(artista);
 
+  // Aplica fórmula do PRD
   const score =
-    (planoWeights[artista.plano] * 40) +
-    (artista.notaMedia * 30) +
-    (artista.totalBookings * 20) +
-    (perfilCompleto * 10);
+    (planoWeights[artista.plano] * 40) +       // 40-120 pontos
+    ((artista.notaMedia || 0) * 30) +           // 0-150 pontos (5 estrelas * 30)
+    ((artista.totalBookings || 0) * 20) +       // 0-infinito (20 pontos por booking)
+    (perfilCompleto * 10);                      // 0-100 pontos (10 pts * 10)
 
-  return score;
+  return Math.round(score); // Arredonda para inteiro
 };
 
 export const listArtists = async (req, res, next) => {
@@ -122,16 +173,38 @@ export const listArtists = async (req, res, next) => {
       );
     }
 
-    const artistasSemScore = artistasOrdenados.map(({ score, ...artista }) => artista);
+    // Incluir score no response se em modo debug
+    const includeScore = req.query.debug === 'true';
+
+    const artistasResponse = includeScore
+      ? artistasOrdenados.map(artista => ({
+          ...artista,
+          _debug: {
+            score: artista.score,
+            perfilCompleto: calcularPerfilCompleto(artista),
+            planoWeight: { PRO: 3, PLUS: 2, FREE: 1 }[artista.plano],
+            breakdown: {
+              plano: { PRO: 3, PLUS: 2, FREE: 1 }[artista.plano] * 40,
+              avaliacao: (artista.notaMedia || 0) * 30,
+              bookings: (artista.totalBookings || 0) * 20,
+              perfil: calcularPerfilCompleto(artista) * 10
+            }
+          }
+        }))
+      : artistasOrdenados.map(({ score, ...artista }) => artista);
 
     res.json({
-      data: artistasSemScore,
+      data: artistasResponse,
       pagination: {
         page: parseInt(page),
         limit: parseInt(limit),
         total,
         totalPages: Math.ceil(total / parseInt(limit))
-      }
+      },
+      meta: includeScore ? {
+        orderBy,
+        debug: 'Score calculation enabled. Remove ?debug=true for production.'
+      } : undefined
     });
   } catch (error) {
     next(error);
