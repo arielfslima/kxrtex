@@ -869,3 +869,181 @@ Demo page is complete when:
 **Priority**: MEDIUM
 **Complexity**: MEDIUM-HIGH
 **Dependencies**: None (standalone feature)
+
+---
+
+# FRONTEND ENHANCEMENT PLAN - Underground Neon Brutalism
+
+## Design Analysis
+
+### Current State
+- **Theme**: Dark theme with red-vibrant (#FF4444) and dark backgrounds (#0D0D0D)
+- **Typography**: Generic system-ui fonts (lacks character)
+- **Effects**: Basic glassmorphism, gradient animations, pulse effects
+- **Layout**: Standard card-based grid layouts
+- **Overall Feel**: Functional but generic "AI-generated" aesthetic
+
+### Target Aesthetic: "Underground Neon Brutalism"
+
+A bold fusion of:
+1. **Brutalist typography** - Heavy, impactful display fonts with raw character
+2. **Neon accents** - Sharp, electric color pops against deep blacks
+3. **Industrial textures** - Noise, grain, harsh shadows
+4. **Asymmetric layouts** - Breaking grid conventions where impactful
+5. **Rave culture inspiration** - Glitch effects, strobing elements, distorted shapes
+
+### Typography Upgrade
+- **Display Font**: "Bebas Neue" for headers (bold, condensed, impactful)
+- **Body Font**: "JetBrains Mono" for tech-underground feel
+- Creates strong visual hierarchy and memorable branding
+
+### Color Refinement
+```css
+--color-void: #050505;        /* Deeper black */
+--color-surface: #0A0A0A;     /* Card backgrounds */
+--color-neon-red: #FF0033;    /* Sharper, more electric red */
+--color-neon-pink: #FF00FF;   /* Hot pink accent */
+--color-acid: #CCFF00;        /* Acid green for highlights */
+--color-chrome: #E8E8E8;      /* Clean white text */
+```
+
+### Visual Effects to Add
+1. **Noise/grain texture overlay** - Adds raw, analog feel
+2. **Scan lines effect** - CRT monitor aesthetic
+3. **Glitch animations** - On hover/focus states
+4. **Harsh shadows** - Strong offset shadows instead of soft glows
+5. **Diagonal cuts** - Angled elements breaking rectangular monotony
+
+---
+
+## Implementation Tasks
+
+### Phase 1: Foundation (Typography & Colors)
+- [ ] Add Google Fonts: Bebas Neue + JetBrains Mono
+- [ ] Update Tailwind config with new color palette
+- [ ] Update index.css with font declarations and CSS variables
+- [ ] Add noise texture and scan line overlays
+
+### Phase 2: Core Components
+- [ ] Redesign Navbar with brutalist aesthetic
+- [ ] Create new button styles with glitch hover effects
+- [ ] Design card component with harsh shadows and diagonal accents
+- [ ] Update input/form styles
+
+### Phase 3: Page Enhancements
+- [ ] HomePage - Hero section with impactful typography and asymmetric layout
+- [ ] ArtistsPage - Grid with diagonal card overlays
+- [ ] LoginPage - Brutalist form design
+- [ ] ArtistDetailPage - Bold feature presentation
+
+### Phase 4: Micro-interactions
+- [ ] Add glitch animation keyframes
+- [ ] Create scan line animation
+- [ ] Implement hover state transitions
+- [ ] Add page transition effects
+
+---
+
+## Key Design Decisions
+
+1. **Primary Font**: Bebas Neue (bold, condensed, impactful display font)
+2. **Body Font**: JetBrains Mono (technical, underground feel)
+3. **Primary Color**: #FF0033 (sharper electric red)
+4. **Accent**: #CCFF00 (acid green for CTAs and highlights)
+5. **Background Texture**: SVG noise overlay at 3-5% opacity
+6. **Shadow Style**: Hard offset (4px 4px) instead of soft blur
+
+## Notes
+
+The goal is to create a distinctive visual identity that:
+- Immediately communicates "underground" and "alternative"
+- Feels authentic to rave/DJ culture
+- Stands out from generic SaaS platforms
+- Maintains usability and accessibility
+
+---
+
+**Status**: COMPLETED
+**Priority**: HIGH
+**Estimated Time**: 6-8 hours
+**Started**: 2025-11-27
+**Completed**: 2025-11-27
+
+---
+
+## Review: Frontend Enhancement Summary
+
+### Changes Made
+
+#### 1. Typography System
+- **Display Font**: Bebas Neue (bold, condensed, impactful)
+- **Body Font**: JetBrains Mono (technical, underground feel)
+- Fonts loaded via Google Fonts in `index.html`
+- Font families configured in Tailwind: `font-display`, `font-mono`, `font-logo`
+
+#### 2. Color Palette (New Neon Brutalism)
+```
+void:       #050505  (deepest black)
+surface:    #0A0A0A  (card backgrounds)
+neon-red:   #FF0033  (primary - sharper electric red)
+neon-pink:  #FF00FF  (accent - hot pink)
+neon-acid:  #CCFF00  (CTAs and highlights)
+chrome:     #E8E8E8  (text)
+```
+
+#### 3. Visual Effects Added
+- **Noise texture overlay** (`.noise-overlay`)
+- **Scan lines effect** (`.scan-lines`)
+- **Glitch animations** (`.glitch-hover`, `.text-glitch`)
+- **Brutal shadows** (`.shadow-brutal`, `-sm`, `-lg`, `-acid`)
+- **Diagonal cuts** (`.diagonal-cut`, `.diagonal-cut-reverse`)
+- **Neon text glow** (`.text-neon`, `.text-neon-acid`)
+- **Border glow animation** (`.border-glow`)
+
+#### 4. Files Modified
+
+| File | Changes |
+|------|---------|
+| `web/index.html` | Added Google Fonts imports |
+| `web/tailwind.config.js` | New color palette, fonts, animations, shadows |
+| `web/src/index.css` | CSS variables, noise/scan effects, glitch animations |
+| `web/src/components/Navbar.jsx` | Brutalist redesign with neon accents |
+| `web/src/components/Footer.jsx` | Matching brutalist aesthetic |
+| `web/src/pages/HomePage.jsx` | New hero with glitch text, stats, features |
+| `web/src/pages/ArtistsPage.jsx` | New card design with brutal shadows |
+| `web/src/pages/LoginPage.jsx` | Brutalist form with corner accents |
+
+#### 5. Design Principles Applied
+- **Brutalist typography**: Heavy, impactful display fonts
+- **Neon accents**: Sharp, electric color pops
+- **Industrial textures**: Noise, grain, harsh shadows
+- **Rave culture inspiration**: Glitch effects, scan lines
+- **Consistency**: Unified design language across all components
+
+### Before vs After
+
+**Before**: Generic dark theme with soft gradients, rounded corners, system fonts
+
+**After**: Bold "Underground Neon Brutalism" with:
+- Sharp corners and hard edges
+- Electric neon colors (#FF0033, #CCFF00, #FF00FF)
+- Brutal offset shadows instead of soft glows
+- Glitch and scan line effects
+- Monospace technical typography
+- Industrial texture overlays
+
+### Note on Maiden Crimes Font
+The Maiden Crimes font mentioned by the user is a commercial/custom font not available on Google Fonts. The logo currently uses `font-display` (Bebas Neue) as a fallback. To use Maiden Crimes:
+
+1. Obtain the font file (`.woff2`, `.woff`, `.ttf`)
+2. Add to `web/public/fonts/`
+3. Add `@font-face` declaration in `index.css`
+4. The `font-logo` class is already configured to use it
+
+### Testing Recommendations
+1. Run `npm run dev` in web folder
+2. Check HomePage for full effect display
+3. Verify ArtistsPage card interactions
+4. Test LoginPage form styling
+5. Check mobile responsiveness
+6. Verify all hover states and transitions

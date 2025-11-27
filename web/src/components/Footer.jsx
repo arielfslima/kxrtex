@@ -4,23 +4,23 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-dark-900 border-t border-dark-700 mt-auto">
+    <footer className="bg-surface border-t-2 border-neon-red/30 mt-auto">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           {/* Brand */}
           <div className="md:col-span-1">
-            <Link to="/" className="inline-block mb-4">
-              <span className="text-3xl font-black bg-gradient-to-r from-red-vibrant to-pink-500 text-transparent bg-clip-text">
+            <Link to="/" className="inline-block mb-4 glitch-hover">
+              <span className="text-3xl font-logo tracking-[0.05em] text-neon-red">
                 KXRTEX
               </span>
             </Link>
-            <p className="text-gray-400 text-sm leading-relaxed mb-4">
+            <p className="text-chrome/50 font-mono text-xs leading-relaxed mb-4 uppercase">
               A plataforma que conecta artistas underground com eventos que buscam autenticidade.
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-3">
               <a
                 href="#"
-                className="w-10 h-10 rounded-full bg-dark-700 flex items-center justify-center text-gray-400 hover:bg-red-vibrant hover:text-white transition-all"
+                className="w-10 h-10 border border-dark-600 flex items-center justify-center text-chrome/50 hover:border-neon-red hover:text-neon-red transition-all"
                 aria-label="Instagram"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -29,7 +29,7 @@ export default function Footer() {
               </a>
               <a
                 href="#"
-                className="w-10 h-10 rounded-full bg-dark-700 flex items-center justify-center text-gray-400 hover:bg-red-vibrant hover:text-white transition-all"
+                className="w-10 h-10 border border-dark-600 flex items-center justify-center text-chrome/50 hover:border-neon-acid hover:text-neon-acid transition-all"
                 aria-label="Twitter"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -38,7 +38,7 @@ export default function Footer() {
               </a>
               <a
                 href="#"
-                className="w-10 h-10 rounded-full bg-dark-700 flex items-center justify-center text-gray-400 hover:bg-red-vibrant hover:text-white transition-all"
+                className="w-10 h-10 border border-dark-600 flex items-center justify-center text-chrome/50 hover:border-neon-pink hover:text-neon-pink transition-all"
                 aria-label="YouTube"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -50,25 +50,25 @@ export default function Footer() {
 
           {/* Links */}
           <div>
-            <h4 className="text-white font-bold mb-4">Plataforma</h4>
+            <h4 className="text-chrome font-display tracking-wider text-lg mb-4 uppercase">Plataforma</h4>
             <ul className="space-y-3">
               <li>
-                <Link to="/artists" className="text-gray-400 hover:text-red-vibrant transition-colors">
+                <Link to="/artists" className="text-chrome/50 font-mono text-xs uppercase tracking-wider hover:text-neon-red transition-colors">
                   Encontrar Artistas
                 </Link>
               </li>
               <li>
-                <Link to="/register" className="text-gray-400 hover:text-red-vibrant transition-colors">
+                <Link to="/register" className="text-chrome/50 font-mono text-xs uppercase tracking-wider hover:text-neon-red transition-colors">
                   Seja um Artista
                 </Link>
               </li>
               <li>
-                <Link to="/demo" className="text-gray-400 hover:text-red-vibrant transition-colors">
+                <Link to="/demo" className="text-chrome/50 font-mono text-xs uppercase tracking-wider hover:text-neon-red transition-colors">
                   Como Funciona
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-red-vibrant transition-colors">
+                <a href="#" className="text-chrome/50 font-mono text-xs uppercase tracking-wider hover:text-neon-red transition-colors">
                   Planos e Precos
                 </a>
               </li>
@@ -76,25 +76,25 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-white font-bold mb-4">Suporte</h4>
+            <h4 className="text-chrome font-display tracking-wider text-lg mb-4 uppercase">Suporte</h4>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-gray-400 hover:text-red-vibrant transition-colors">
+                <a href="#" className="text-chrome/50 font-mono text-xs uppercase tracking-wider hover:text-neon-acid transition-colors">
                   Central de Ajuda
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-red-vibrant transition-colors">
+                <a href="#" className="text-chrome/50 font-mono text-xs uppercase tracking-wider hover:text-neon-acid transition-colors">
                   FAQ
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-red-vibrant transition-colors">
+                <a href="#" className="text-chrome/50 font-mono text-xs uppercase tracking-wider hover:text-neon-acid transition-colors">
                   Contato
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-red-vibrant transition-colors">
+                <a href="#" className="text-chrome/50 font-mono text-xs uppercase tracking-wider hover:text-neon-acid transition-colors">
                   Reportar Problema
                 </a>
               </li>
@@ -102,25 +102,25 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-white font-bold mb-4">Legal</h4>
+            <h4 className="text-chrome font-display tracking-wider text-lg mb-4 uppercase">Legal</h4>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-gray-400 hover:text-red-vibrant transition-colors">
+                <a href="#" className="text-chrome/50 font-mono text-xs uppercase tracking-wider hover:text-neon-pink transition-colors">
                   Termos de Uso
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-red-vibrant transition-colors">
+                <a href="#" className="text-chrome/50 font-mono text-xs uppercase tracking-wider hover:text-neon-pink transition-colors">
                   Politica de Privacidade
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-red-vibrant transition-colors">
+                <a href="#" className="text-chrome/50 font-mono text-xs uppercase tracking-wider hover:text-neon-pink transition-colors">
                   Politica de Cookies
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-red-vibrant transition-colors">
+                <a href="#" className="text-chrome/50 font-mono text-xs uppercase tracking-wider hover:text-neon-pink transition-colors">
                   Regulamento
                 </a>
               </li>
@@ -129,16 +129,16 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-dark-700 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-gray-500 text-sm">
+        <div className="mt-12 pt-8 border-t-2 border-dark-700 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-chrome/30 font-mono text-xs uppercase tracking-wider">
             {currentYear} KXRTEX. Todos os direitos reservados.
           </p>
           <div className="flex items-center gap-6">
-            <span className="flex items-center gap-2 text-gray-500 text-sm">
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-              Sistema Operacional
+            <span className="flex items-center gap-2 text-chrome/30 font-mono text-xs uppercase">
+              <span className="w-2 h-2 bg-neon-acid animate-pulse"></span>
+              Sistema Online
             </span>
-            <span className="text-gray-600 text-sm">v1.0.0</span>
+            <span className="text-neon-red font-mono text-xs">v1.0.0</span>
           </div>
         </div>
       </div>
